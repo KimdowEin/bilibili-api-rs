@@ -1,20 +1,23 @@
 #![allow(dead_code)]
-
 use core::panic;
 use std::fmt::Display;
 use base64::{engine::general_purpose::URL_SAFE, Engine as _};
 
-use crate::session::{Data, ResponseData, Session};
+use crate::session::{Data, Query, ResponseData, Session};
 use rsa::{pkcs8::DecodePublicKey, Pkcs1v15Encrypt, RsaPublicKey};
 use serde::{Deserialize, Serialize};
 
+
+/******人类行为验证******/
+
+/// 人类验证响应
 #[derive(Debug, Serialize, Deserialize)]
 pub struct CaptchaData {
     pub token: String,
     pub geetest: Geetest,
 }
 impl CaptchaData {
-    fn take(self) -> (String, String) {
+    pub fn take(self) -> (String, String) {
         (self.token, self.geetest.challenge)
     }
 }
@@ -56,6 +59,11 @@ fn manual_verification(geetest: &Geetest) {
     
 }
 
+
+/******账号密码登录******/
+
+
+/// 登录盐
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LoginKey {
     #[serde(rename = "hash")]
@@ -63,6 +71,8 @@ pub struct LoginKey {
     key: String,
 }
 
+/// 登录查询头
+#[derive(Debug, Serialize, Deserialize)]
 pub struct WebLoginQuery {
     username: String,
     password: String,
@@ -101,21 +111,11 @@ impl WebLoginQuery {
             seccode,
         }
     }
-    /// 生成查询字符串
-    pub fn to_query(&self) -> String {
-        format!(
-            "username={}&password={}&keep={}&token={}&challenge={}&validate={}&seccode={}",
-            self.username,
-            self.password,
-            self.keep,
-            self.token,
-            self.challenge,
-            self.validate,
-            self.seccode
-        )
-    }
 }
+impl Query for WebLoginQuery{}
 
+
+/// 登录响应数据
 #[derive(Debug, Serialize, Deserialize)]
 pub struct WebLoginResponse {
     code: i32,
@@ -175,14 +175,12 @@ impl Session {
 }
 
 #[cfg(test)]
+#[cfg(feature = "manual")]
 mod tests {
     use std::io::BufRead;
-
-    use tokio::{fs::File, io::AsyncReadExt};
-
+    use tokio::fs::File;
     use super::*;
     #[tokio::test]
-    #[cfg(feature = "manual")]
     /// 这个要单独测试，因为需要手动输入验证码
     async fn test_web_login() {
         let session = Session::new();
@@ -216,7 +214,8 @@ mod tests {
             validate,
             seccode,
         )
-        .to_query();
+        .to_query()
+        .unwrap();
         let response = session.web_login(query).await;
         assert_eq!(0,response.code)
 

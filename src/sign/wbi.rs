@@ -1,12 +1,13 @@
+use std::time::{self, SystemTime, UNIX_EPOCH};
+
 use serde::{Deserialize, Serialize};
 
-use crate::session::Session;
+use crate::session::{Query, Session};
 
 const MIXIN_KEY_ENC_TAB: [u8; 64] = [
-    46, 47, 18, 2, 53, 8, 23, 32, 15, 50, 10, 31, 58, 3, 45, 35, 27, 43, 5, 49,
-    33, 9, 42, 19, 29, 28, 14, 39, 12, 38, 41, 13, 37, 48, 7, 16, 24, 55, 40,
-    61, 26, 17, 0, 1, 60, 51, 30, 4, 22, 25, 54, 21, 56, 59, 6, 63, 57, 62, 11,
-    36, 20, 34, 44, 52
+    46, 47, 18, 2, 53, 8, 23, 32, 15, 50, 10, 31, 58, 3, 45, 35, 27, 43, 5, 49, 33, 9, 42, 19, 29,
+    28, 14, 39, 12, 38, 41, 13, 37, 48, 7, 16, 24, 55, 40, 61, 26, 17, 0, 1, 60, 51, 30, 4, 22, 25,
+    54, 21, 56, 59, 6, 63, 57, 62, 11, 36, 20, 34, 44, 52,
 ];
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -30,49 +31,32 @@ impl Wbi {
     }
 }
 
+pub trait WbiSign {}
+
 impl Session {
-    async fn mixin_key(&mut self){
+    async fn mixin_key(&mut self) {
         let wbi = self.nav().await.web_img;
         let mixin_key = wbi.mixin_key();
         self.mixin_key = mixin_key;
     }
 
-    /// 键名升序排序后编码 URL Query
-    /// 如 bar=514&foo=114&wts=1702204169&zab=1919810
-    /// 每次请求都应该调用获得签名
-    /// 调用前Query添加wts参数
-    /// 调用后再添加一次相同的wts参数，而后拼接wrid参数
-    pub fn w_rid(&self,mut query:String) -> String {
-        query.push_str(&self.mixin_key);
-        format!("{:x}",md5::compute(query))
+    fn key(&self)->String{
+        self.mixin_key.clone()
     }
+ 
 }
-
-
 
 #[cfg(test)]
 mod test {
-    use crate::session::Session;
     use super::Wbi;
-    
+
     #[test]
     fn mixin_key_test() {
-        let wbi = Wbi{
-            img_url:"7cd084941338484aae1ad9425b84077c".to_owned(),
-            sub_url:"4932caff0ff746eab6f01bf08b70ac45".to_owned(),
+        let wbi = Wbi {
+            img_url: "7cd084941338484aae1ad9425b84077c".to_owned(),
+            sub_url: "4932caff0ff746eab6f01bf08b70ac45".to_owned(),
         };
         let wbi = wbi.mixin_key();
-        assert_eq!(wbi,"ea1db124af3c7062474693fa704f4ff8");
-    }
-
-    #[test]
-    fn w_rid_test() {
-        let query = "bar=514&foo=114&wts=1702204169&zab=1919810".to_owned();
-        let mut session = Session::new();
-        session.mixin_key = "ea1db124af3c7062474693fa704f4ff8".to_owned();
-        let wrid = session.w_rid(query);
-
-        assert_eq!(wrid,"8f6f2b5b3d485fe1886cec6a0be8c5d4");
-
+        assert_eq!(wbi, "ea1db124af3c7062474693fa704f4ff8");
     }
 }
