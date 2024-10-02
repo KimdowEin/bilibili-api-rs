@@ -6,6 +6,7 @@ edition = "2021"
 [dependencies]
 base64 = "0.22.1"
 chrono = "0.4.38"
+futures-util = "0.3.30"
 md5 = "0.7.0"
 rand = "0.8.5"
 reqwest = { version = "0.12.7", features = ["cookies", "json", "stream"] }
@@ -13,7 +14,7 @@ rsa = "0.9.6"
 serde = { version = "1.0.210", features = ["derive"] }
 serde_json = "1.0.128"
 serde_qs = "0.13.0"
-thirtyfour = "0.33.0"
+serde_repr = "0.1.19"
 tokio = { version = "1.40.0", features = ["full"] }
 toml = "0.8.19"
 webbrowser = "1.0.2"

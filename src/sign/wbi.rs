@@ -1,8 +1,7 @@
-use std::time::{self, SystemTime, UNIX_EPOCH};
+#![allow(dead_code)]
 
+use crate::session::Session;
 use serde::{Deserialize, Serialize};
-
-use crate::session::{Query, Session};
 
 const MIXIN_KEY_ENC_TAB: [u8; 64] = [
     46, 47, 18, 2, 53, 8, 23, 32, 15, 50, 10, 31, 58, 3, 45, 35, 27, 43, 5, 49, 33, 9, 42, 19, 29,
@@ -10,13 +9,14 @@ const MIXIN_KEY_ENC_TAB: [u8; 64] = [
     54, 21, 56, 59, 6, 63, 57, 62, 11, 36, 20, 34, 44, 52,
 ];
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Wbi {
     img_url: String,
     sub_url: String,
 }
 
 impl Wbi {
+    /// 获取 wbi 签名
     fn mixin_key(&self) -> String {
         let mut raw_wbi = String::new();
         raw_wbi.push_str(&self.img_url);
@@ -34,16 +34,13 @@ impl Wbi {
 pub trait WbiSign {}
 
 impl Session {
-    async fn mixin_key(&mut self) {
-        let wbi = self.nav().await.web_img;
+    /// 获取 wbi 签名，每日更新
+    pub async fn mixin_key(&mut self) -> Result<(), reqwest::Error> {
+        let wbi = self.nav().await?.wbi_img;
         let mixin_key = wbi.mixin_key();
-        self.mixin_key = mixin_key;
+        self.set_mixin_key(mixin_key);
+        Ok(())
     }
-
-    fn key(&self)->String{
-        self.mixin_key.clone()
-    }
- 
 }
 
 #[cfg(test)]

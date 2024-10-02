@@ -1,2 +1,2 @@
-mod stream;
-mod info;
+pub mod stream;
+pub mod info;

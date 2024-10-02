@@ -8,17 +8,44 @@ use serde::{Deserialize, Serialize};
 
 //导航栏用户信息
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize,Clone)]
 pub struct NavData {
     #[serde(rename = "isLogin")]
     is_login: bool,
-    pub web_img: Wbi,
+    pub wbi_img: Wbi,
+}
+impl NavData {
+    pub fn is_login(&self) -> bool {
+        self.is_login
+    }
 }
 
 impl Session {
-    pub async fn nav(&self) -> NavData {
+    pub async fn nav(&self) -> Result<NavData, reqwest::Error> {
         let url = "https://api.bilibili.com/x/web-interface/nav";
         let response = self
+            .get(url)
+            .send()
+            .await?
+            .json::<ResponseData>()
+            .await?
+            .take();
+        if let Some(Data::NavData(data)) = response {
+            Ok(data)
+        } else {
+            panic!("Unexpected response type")
+        }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[tokio::test]
+    async fn nav_test() {
+        let session = Session::new();
+        let url = "https://api.bilibili.com/x/web-interface/nav";
+        let response = session
             .get(url)
             .send()
             .await
@@ -26,12 +53,12 @@ impl Session {
             .json::<ResponseData>()
             .await
             .unwrap()
-            .take()
-            .unwrap();
-
-        match response {
-            Data::NavData(data) => data,
-            _ => panic!("Unexpected response type"),
-        }
+            .take();
+        let nav = if let Some(Data::NavData(data)) = response {
+            data
+        } else {
+            panic!("Unexpected response type")
+        };
+        println!("{:?}", nav);
     }
 }
