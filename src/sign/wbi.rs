@@ -43,17 +43,3 @@ impl Session {
     }
 }
 
-#[cfg(test)]
-mod test {
-    use super::Wbi;
-
-    #[test]
-    fn mixin_key_test() {
-        let wbi = Wbi {
-            img_url: "7cd084941338484aae1ad9425b84077c".to_owned(),
-            sub_url: "4932caff0ff746eab6f01bf08b70ac45".to_owned(),
-        };
-        let wbi = wbi.mixin_key();
-        assert_eq!(wbi, "ea1db124af3c7062474693fa704f4ff8");
-    }
-}

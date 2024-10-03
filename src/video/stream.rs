@@ -23,13 +23,8 @@ pub enum Qn {
     ///1080p超清
     FHD = 80,
 }
-impl Qn {
-    fn decode(self) -> u32 {
-        self as u32
-    }
-}
 ///视频流格式标识
-#[derive(Debug, Serialize_repr, Deserialize_repr,PartialEq)]
+#[derive(Debug, Serialize_repr, Deserialize_repr, PartialEq)]
 #[repr(u32)]
 pub enum Fnval {
     MP4 = 1,
@@ -41,14 +36,9 @@ pub enum Fnval {
     K8 = 1024,
     AV1 = 2048,
 }
-impl Fnval {
-    fn decode(self) -> u32 {
-        self as u32
-    }
-}
-#[derive(Debug, Serialize_repr, Deserialize_repr,PartialEq)]
+#[derive(Debug, Serialize_repr, Deserialize_repr, PartialEq)]
 #[repr(u32)]
-pub enum CodecId{
+pub enum CodecId {
     AVC = 7,
     HEVC = 12,
     AV1 = 13,
@@ -59,8 +49,8 @@ pub struct WebPlayerUrlQuery {
     // avid:i64,
     pub bvid: String,
     pub cid: u64,
-    qn: u32,
-    fnval: u32,
+    qn: Qn,
+    fnval: Fnval,
     // fnver:i64,
     fourk: u8,
     // session:String,
@@ -73,13 +63,13 @@ pub struct WebPlayerUrlQuery {
 impl Query for WebPlayerUrlQuery {}
 impl WbiSign for WebPlayerUrlQuery {}
 impl WebPlayerUrlQuery {
-    fn new(bvid: String, cid: u64, qn: Qn, fnval: Fnval) -> Self {
+    pub fn new(bvid: String, cid: u64, qn: Qn, fnval: Fnval) -> Self {
         let fourk = if fnval == Fnval::K4 { 1 } else { 0 };
         WebPlayerUrlQuery {
             bvid,
             cid,
-            qn: qn.decode(),
-            fnval: fnval.decode(),
+            qn,
+            fnval,
             fourk,
         }
     }
@@ -87,43 +77,43 @@ impl WebPlayerUrlQuery {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct WebPlayUrlData {
-    quality:Qn,
+    quality: Qn,
     timelength: usize,
     accept_format: String,
     accept_quality: Vec<Qn>,
     video_codecid: CodecId,
-    durl: Option<Vec<Durl>>,
-    dash: Option<Dash>,
+    pub durl: Option<Vec<Durl>>,
+    pub dash: Option<Dash>,
     last_play_time: usize,
     last_play_cid: i64,
 }
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Durl {
-    length: usize,
-    size: usize,
-    url: String,
-    backup_url: Vec<String>,
+    pub length: usize,
+    pub size: usize,
+    pub url: String,
+    pub backup_url: Vec<String>,
 }
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Dash {
-    duration: usize,
-    video: Vec<Video>,
-    audio: Option<Vec<Audio>>,
-    dolby: Dolby,
-    flac: Option<Flac>,
+    pub duration: usize,
+    pub video: Vec<Video>,
+    pub audio: Option<Vec<Audio>>,
+    pub dolby: Dolby,
+    pub flac: Option<Flac>,
 }
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Audio {
-    id: Qn,
-    base_url: String,
-    backup_url: Vec<String>,
-    bandwidth: usize,
-    mime_type: String,
-    codecs: String,
-    sar: String,
-    start_with_sap: i64,
-    segment_base: SegmentBase,
-    codecid: i64,
+    pub id: Qn,
+    pub base_url: String,
+    pub backup_url: Vec<String>,
+    pub bandwidth: usize,
+    pub mime_type: String,
+    pub codecs: String,
+    pub sar: String,
+    pub start_with_sap: i64,
+    pub segment_base: SegmentBase,
+    pub codecid: i64,
 }
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SegmentBase {
@@ -132,24 +122,24 @@ pub struct SegmentBase {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct Video {
+pub struct Video {
     #[serde(flatten)]
-    comment: Audio,
-    width: i64,
-    height: i64,
-    frame_rate: String,
+    pub comment: Audio,
+    pub width: i64,
+    pub height: i64,
+    pub frame_rate: String,
 }
 #[derive(Debug, Serialize, Deserialize)]
-struct Dolby {
+pub struct Dolby {
     #[serde(rename = "type")]
-    dolby_type: u8,
-    audio: Vec<Audio>,
+    pub dolby_type: u8,
+    pub audio: Vec<Audio>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct Flac {
-    display: bool,
-    audio: Audio,
+pub struct Flac {
+    pub display: bool,
+    pub audio: Audio,
 }
 
 impl Session {
@@ -174,36 +164,3 @@ impl Session {
     }
 }
 
-#[cfg(test)]
-mod test {
-    use tokio::{fs, io::AsyncWriteExt};
-
-    use crate::video::info::WebVideoInfoQuery;
-
-    use super::*;
-    #[tokio::test]
-    async fn test_get_web_playurl() {
-        let mut session = Session::new();
-        let mixin_key = fs::read_to_string("./test/key.txt").await.unwrap();
-        session.set_mixin_key(mixin_key);
-        let bvid = "BV1QVtfejExd".to_owned();
-        let query = WebVideoInfoQuery::new(None, bvid.clone())
-            .to_query()
-            .unwrap();
-        let cid = session.get_web_video_info(query).await.unwrap().cid;
-
-        let query = WebPlayerUrlQuery::new(bvid, cid, Qn::HDP, Fnval::MP4)
-            .to_query()
-            .unwrap();
-        let data= session.get_web_playurl(query).await.unwrap();
-        let url = data.durl.unwrap()[0].url.clone();
-        let mut file = fs::File::create_new("./test/video.mp4").await.unwrap();
-        let mut stream = session.get(url).send().await.unwrap().bytes_stream();
-        use futures_util::StreamExt;
-
-        while let Some(item) = stream.next().await {
-            file.write(&item.unwrap()).await.unwrap();
-        }
-
-    }
-}

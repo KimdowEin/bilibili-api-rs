@@ -1,4 +1,4 @@
-mod sign;
-mod session;
-mod login;
-mod video;
+pub mod sign;
+pub mod session;
+pub mod login;
+pub mod video;

@@ -37,28 +37,3 @@ impl Session {
         }
     }
 }
-
-#[cfg(test)]
-mod test {
-    use super::*;
-    #[tokio::test]
-    async fn nav_test() {
-        let session = Session::new();
-        let url = "https://api.bilibili.com/x/web-interface/nav";
-        let response = session
-            .get(url)
-            .send()
-            .await
-            .unwrap()
-            .json::<ResponseData>()
-            .await
-            .unwrap()
-            .take();
-        let nav = if let Some(Data::NavData(data)) = response {
-            data
-        } else {
-            panic!("Unexpected response type")
-        };
-        println!("{:?}", nav);
-    }
-}

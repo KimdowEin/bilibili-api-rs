@@ -44,6 +44,7 @@ impl Session {
             .pool_idle_timeout(None)
             .build()
             .unwrap();
+
         let mixin_key = String::new();
         Self { client, mixin_key }
     }
@@ -56,11 +57,16 @@ impl Session {
         self.mixin_key.clone()
     }
     /// 心跳,保持连接
-    pub async fn heartbeat(&self)->Result<(), reqwest::Error>{
+    pub async fn heartbeat(&self) -> Result<(), reqwest::Error> {
         let url = "https://api.bilibili.com/x/web-interface/nav";
         self.get(url).send().await?;
         Ok(())
     }
+
+    // #[cfg(feature = "wasm")]
+    // pub fn get_cookie(&self) -> String {
+
+    // }
 }
 
 impl Deref for Session {
@@ -122,55 +128,5 @@ pub trait Query: Serialize + Sized {
         let w_rid = format!("w_rid={:?}", md5::compute(&hash_query));
         let query = format!("{}&{}&{}", ori_query, w_rid, wts);
         query
-    }
-}
-
-
-#[cfg(test)]
-mod test {
-    use serde::Serialize;
-
-    use crate::sign::wbi::WbiSign;
-
-    use super::*;
-
-    #[derive(Serialize)]
-    struct TestQuery {
-        bar: i64,
-        foo: i64,
-        zab: i64,
-    }
-    impl WbiSign for TestQuery {}
-    impl Query for TestQuery {
-        fn sign(&self, mixin_key: &str) -> String
-        where
-            Self: WbiSign,
-        {
-            let timestamp = 1702204169;
-            let wts = format!("wts={}", timestamp);
-            let ori_query = self.to_query().unwrap();
-            let mut querys = ori_query.split("&").collect::<Vec<&str>>();
-            querys.push(&wts);
-            querys.sort();
-            let mut hash_query = querys.join("&");
-            hash_query.push_str(mixin_key);
-
-            let w_rid = format!("w_rid={:?}", md5::compute(&hash_query));
-            assert_eq!(w_rid, "w_rid=8f6f2b5b3d485fe1886cec6a0be8c5d4");
-
-            let query = format!("{}&{}&{}", ori_query, w_rid, wts);
-            query
-        }
-    }
-
-    #[test]
-    fn w_rid_test() {
-        let query = TestQuery {
-            bar: 514,
-            foo: 114,
-            zab: 1919810,
-        };
-        let mixin_key = "ea1db124af3c7062474693fa704f4ff8";
-        query.sign(mixin_key);
     }
 }

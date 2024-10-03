@@ -135,33 +135,3 @@ impl Session {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    #[tokio::test]
-    async fn test_get_web_video_info() {
-        let session = Session::new();
-        let query = WebVideoInfoQuery::new(None, "BV1AA4m1V74W".to_owned())
-            .to_query()
-            .unwrap();
-        let url = format!(
-            "{}?{}",
-            "https://api.bilibili.com/x/web-interface/wbi/view", query
-        );
-        let response = session
-            .get(url)
-            .send()
-            .await
-            .unwrap()
-            .json::<ResponseData>()
-            .await
-            .unwrap()
-            .take();
-        let data = if let Some(Data::WebVideoInfoData(data)) = response {
-            data
-        } else {
-            panic!("Unexpected response type")
-        };
-        println!("{}", data.title)
-    }
-}

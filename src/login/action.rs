@@ -112,12 +112,17 @@ impl WebLoginQuery {
 impl Query for WebLoginQuery {}
 
 /// 登录响应数据
-#[derive(Debug, Serialize, Deserialize,PartialEq)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct WebLoginData {
     code: WebLoginCode,
 }
+impl WebLoginData {
+    pub fn code(&self) -> WebLoginCode {
+        self.code.clone()
+    }
+}
 
-#[derive(Debug, Serialize_repr, Deserialize_repr,PartialEq)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
 #[repr(i64)]
 pub enum WebLoginCode {
     Success = 0,
@@ -178,68 +183,5 @@ impl Session {
         );
         let response = self.post(url).send().await?.json::<WebLoginData>().await?;
         Ok(response)
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    #[cfg(feature = "manual")]
-    #[tokio::test]
-    /// 这个要单独测试，因为需要手动输入验证码
-    /// 顺便存一下key，其他测试就不用反复登录了
-    async fn test_web_login() {
-        use std::{
-            fs::File,
-            io::{BufRead, Read},
-            thread,
-            time::Duration,
-        };
-        let mut session = Session::new();
-        let captcha_data = session.captcha().await.unwrap();
-
-        // 耗时操作，发送心跳保持连接
-        manual_verification(&captcha_data.geetest);
-        thread::sleep(Duration::from_secs(10));
-        session.heartbeat().await.unwrap();
-
-        let stdin = std::io::stdin();
-        let mut validate = String::new();
-        stdin.lock().read_line(&mut validate).unwrap();
-        let validate = validate.trim().to_owned();
-
-        let mut buf = String::new();
-        File::open("test/user.txt")
-            .unwrap()
-            .read_to_string(&mut buf)
-            .unwrap();
-
-        let buf = buf.lines().collect::<Vec<&str>>();
-        let username = buf[0].to_owned();
-        let password = buf[1].to_owned();
-
-        let loginkey = session.get_login_key().await.unwrap();
-        let query = WebLoginQuery::new(loginkey, username, password, captcha_data, validate)
-            .to_query()
-            .unwrap();
-        let url = format!(
-            "{}?{}",
-            "https://passport.bilibili.com/x/passport-login/web/login", query
-        );
-        let response = session.post(url).send().await.unwrap().json::<WebLoginData>().await.unwrap();
-        // let response = session.web_login(query).await.unwrap();
-        assert_eq!(WebLoginCode::Success, response.code);
-
-        // 存key
-        session.mixin_key().await.unwrap();
-        let key = session.key();
-        let _ = std::fs::write("test/key.txt", key);
-    }
-
-    #[tokio::test]
-    async fn test_get_login_key() {
-        let session = Session::new();
-        let loginkey = session.get_login_key().await.unwrap();
-        println!("loginkey:{:?}", loginkey);
     }
 }
