@@ -4,9 +4,18 @@ use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
 use crate::{
-    session::{Data, Query, ResponseData, Session},
+    session::Query,
     sign::wbi::WbiSign,
 };
+#[cfg(feature = "session")]
+mod session_use{
+    pub use reqwest::Error;
+    pub use crate::session::{Data,ResponseData};
+    pub use crate::session::Session;
+}
+#[cfg(feature = "session")]
+use session_use::*;
+
 
 ///视频清晰度标识
 #[derive(Debug, Serialize_repr, Deserialize_repr)]
@@ -142,13 +151,13 @@ pub struct Flac {
     pub audio: Audio,
 }
 
+pub const WEB_PLAYURL: &str = "https://api.bilibili.com/x/player/wbi/playurl";
+
+#[cfg(feature="session")]
 impl Session {
     /// 获取视频流地址_web端
-    pub async fn get_web_playurl(&self, query: String) -> Result<WebPlayUrlData, reqwest::Error> {
-        let url = format!(
-            "{}?{}",
-            "https://api.bilibili.com/x/player/wbi/playurl", query
-        );
+    pub async fn get_web_playurl(&self, query: String) -> Result<WebPlayUrlData, Error> {
+        let url = format!("{}?{}", WEB_PLAYURL, query);
         let response = self
             .get(url)
             .send()
@@ -163,4 +172,3 @@ impl Session {
         }
     }
 }
-

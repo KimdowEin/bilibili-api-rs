@@ -1,6 +1,13 @@
 #![allow(dead_code)]
 
-use crate::session::Session;
+#[cfg(feature = "session")]
+mod session_use{
+    pub use reqwest::Error;
+    pub use crate::session::Session;
+}
+#[cfg(feature = "session")]
+use session_use::*;
+
 use serde::{Deserialize, Serialize};
 
 const MIXIN_KEY_ENC_TAB: [u8; 64] = [
@@ -33,9 +40,10 @@ impl Wbi {
 
 pub trait WbiSign {}
 
+#[cfg(feature="session")]
 impl Session {
     /// 获取 wbi 签名，每日更新
-    pub async fn mixin_key(&mut self) -> Result<(), reqwest::Error> {
+    pub async fn mixin_key(&mut self) -> Result<(), Error> {
         let wbi = self.nav().await?.wbi_img;
         let mixin_key = wbi.mixin_key();
         self.set_mixin_key(mixin_key);

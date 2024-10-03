@@ -1,13 +1,25 @@
 #![allow(dead_code)]
 
-use crate::session::{Data, Query, ResponseData, Session};
+use crate::session::Query;
 use base64::{engine::general_purpose::URL_SAFE, Engine as _};
-use reqwest::Error;
 use rsa::{pkcs8::DecodePublicKey, Pkcs1v15Encrypt, RsaPublicKey};
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 use std::fmt::Display;
 
+#[cfg(feature = "session")]
+mod session_use{
+    pub use reqwest::Error;
+    pub use crate::session::{Data,ResponseData};
+    pub use crate::session::Session;
+}
+#[cfg(feature = "session")]
+use session_use::*;
+
+
+pub const CAPTCHA_URL:&str = "https://passport.bilibili.com/x/passport-login/captcha?source=main_web";
+pub const LOGIN_KEY_URL: &str = "https://passport.bilibili.com/x/passport-login/web/key";
+pub const LOGIN_URL: &str = "https://passport.bilibili.com/x/passport-login/web/login";
 /******人类行为验证******/
 
 /// 人类验证响应
@@ -28,10 +40,11 @@ pub struct Geetest {
     pub gt: String,
 }
 
+#[cfg(feature = "session")]
 impl Session {
     /// 获取人机验证
     pub async fn captcha(&self) -> Result<CaptchaData, Error> {
-        let url = "https://passport.bilibili.com/x/passport-login/captcha?source=main_web";
+        let url = CAPTCHA_URL;
         let response = self
             .get(url)
             .send()
@@ -157,10 +170,12 @@ impl Display for WebLoginCode {
     }
 }
 
+
+#[cfg(feature = "session")]
 impl Session {
     /// 获取登录秘钥
     pub async fn get_login_key(&self) -> Result<LoginKeyData, Error> {
-        let url = "https://passport.bilibili.com/x/passport-login/web/key";
+        let url = LOGIN_KEY_URL;
         let response = self
             .get(url)
             .send()
@@ -179,7 +194,7 @@ impl Session {
     pub async fn web_login(&self, query: String) -> Result<WebLoginData, Error> {
         let url = format!(
             "{}?{}",
-            "https://passport.bilibili.com/x/passport-login/web/login", query
+            LOGIN_URL, query
         );
         let response = self.post(url).send().await?.json::<WebLoginData>().await?;
         Ok(response)

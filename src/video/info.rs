@@ -1,6 +1,14 @@
 use serde::{Deserialize, Serialize};
 
-use crate::session::{Data, Query, ResponseData, Session};
+use crate::session::Query;
+#[cfg(feature = "session")]
+mod session_use{
+    pub use reqwest::Error;
+    pub use crate::session::{Data,ResponseData};
+    pub use crate::session::Session;
+}
+#[cfg(feature = "session")]
+use session_use::*;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct WebVideoInfoQuery {
@@ -114,11 +122,14 @@ pub struct Staff {
     pub face: String,
 }
 
+pub const WEB_VIDEO_INFO:&str = "https://api.bilibili.com/x/web-interface/wbi/view";
+
+#[cfg(feature="session")]
 impl Session {
-    pub async fn get_web_video_info(&self, query: String) -> Result<WebVideoInfoData, reqwest::Error> {
+    pub async fn get_web_video_info(&self, query: String) -> Result<WebVideoInfoData, Error> {
         let url = format!(
             "{}?{}",
-            "https://api.bilibili.com/x/web-interface/wbi/view", query
+            WEB_VIDEO_INFO, query
         );
         let response = self
             .get(url)

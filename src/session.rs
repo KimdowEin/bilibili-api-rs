@@ -8,24 +8,31 @@ use crate::{
     sign::wbi::WbiSign,
     video::{info::WebVideoInfoData, stream::WebPlayUrlData},
 };
-use reqwest::{
-    header::{HeaderMap, HeaderValue},
-    Client,
-};
+
 use serde::{Deserialize, Serialize};
-use std::{
-    ops::Deref,
-    time::{SystemTime, UNIX_EPOCH},
-};
+use std::time::{SystemTime, UNIX_EPOCH};
+#[cfg(feature = "session")]
+mod session_use {
+    pub use reqwest::{
+        Error,
+        header::{HeaderMap, HeaderValue},
+        Client,
+    };
+    pub use std::ops::Deref;
+}
+#[cfg(feature = "session")]
+use session_use::*;
 
 /// 会话信息
 /// mixin_key 需要登录后才有
 /// 每日刷新一次
 /// 每次web端请求要使用w_rid函数生成query
+#[cfg(feature = "session")]
 pub struct Session {
     client: Client,
     mixin_key: String,
 }
+#[cfg(feature = "session")]
 impl Session {
     pub fn new() -> Self {
         let mut headers = HeaderMap::new();
@@ -57,7 +64,7 @@ impl Session {
         self.mixin_key.clone()
     }
     /// 心跳,保持连接
-    pub async fn heartbeat(&self) -> Result<(), reqwest::Error> {
+    pub async fn heartbeat(&self) -> Result<(), Error> {
         let url = "https://api.bilibili.com/x/web-interface/nav";
         self.get(url).send().await?;
         Ok(())
@@ -68,7 +75,7 @@ impl Session {
 
     // }
 }
-
+#[cfg(feature = "session")]
 impl Deref for Session {
     type Target = Client;
     fn deref(&self) -> &Self::Target {

@@ -1,14 +1,21 @@
 #![allow(dead_code)]
 
-use crate::{
-    session::{Data, ResponseData, Session},
-    sign::wbi::Wbi,
-};
+use crate::sign::wbi::Wbi;
 use serde::{Deserialize, Serialize};
+#[cfg(feature = "session")]
+mod session_use{
+    pub use crate::session::Session;
+    pub use crate::session::{Data, ResponseData};
+}
+#[cfg(feature = "session")]
+use session_use::*;
 
+
+
+pub const NAV_URL: &str = "https://api.bilibili.com/x/web-interface/nav";
 //导航栏用户信息
 
-#[derive(Debug, Deserialize, Serialize,Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct NavData {
     #[serde(rename = "isLogin")]
     is_login: bool,
@@ -20,9 +27,11 @@ impl NavData {
     }
 }
 
+
+#[cfg(feature = "session")]
 impl Session {
     pub async fn nav(&self) -> Result<NavData, reqwest::Error> {
-        let url = "https://api.bilibili.com/x/web-interface/nav";
+        let url = NAV_URL;
         let response = self
             .get(url)
             .send()
