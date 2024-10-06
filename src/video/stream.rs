@@ -3,24 +3,16 @@
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
-use crate::{
-    session::Query,
-    sign::wbi::WbiSign,
-};
-#[cfg(feature = "session")]
-mod session_use{
-    pub use reqwest::Error;
-    pub use crate::session::{Data,ResponseData};
-    pub use crate::session::Session;
-}
-#[cfg(feature = "session")]
-use session_use::*;
+use crate::{common::Query, sign::wbi::WbiSign};
 
+pub const WEB_PLAYURL: &str = "https://api.bilibili.com/x/player/wbi/playurl";
 
 ///视频清晰度标识
 #[derive(Debug, Serialize_repr, Deserialize_repr)]
 #[repr(u32)]
 pub enum Qn {
+    /// 240p急速
+    FT = 6,
     ///360p流畅
     FL = 16,
     ///480p清晰
@@ -150,25 +142,38 @@ pub struct Flac {
     pub display: bool,
     pub audio: Audio,
 }
+#[cfg(feature = "session")]
+mod session {
+    use super::*;
+    use crate::common::Session;
+    use crate::common::{Data, ResponseData};
+    use reqwest::Error;
 
-pub const WEB_PLAYURL: &str = "https://api.bilibili.com/x/player/wbi/playurl";
-
-#[cfg(feature="session")]
-impl Session {
-    /// 获取视频流地址_web端
-    pub async fn get_web_playurl(&self, query: String) -> Result<WebPlayUrlData, Error> {
-        let url = format!("{}?{}", WEB_PLAYURL, query);
-        let response = self
-            .get(url)
-            .send()
-            .await?
-            .json::<ResponseData>()
-            .await?
-            .take();
-        if let Some(Data::WebPlayUrlData(playurl)) = response {
-            Ok(playurl)
-        } else {
-            panic!("Unexpected response type")
+    impl Session {
+        /// 获取视频流地址_web端
+        pub async fn get_web_playurl(&self, query: String) -> Result<WebPlayUrlData, Error> {
+            let url = format!("{}?{}", WEB_PLAYURL, query);
+            let response = self
+                .get(url)
+                .send()
+                .await?;
+            println!("response: {:?}",response.text().await.unwrap());
+            let url = format!("{}?{}", WEB_PLAYURL, query);
+            let response = self
+                .get(url)
+                .send()
+                .await?
+                .json::<ResponseData>()
+                .await?
+                .take();
+            if let Some(Data::WebPlayUrlData(playurl)) = response {
+                Ok(playurl)
+            } else {
+                panic!("Unexpected response type")
+            }
         }
     }
 }
+#[cfg(feature = "session")]
+pub use session::*;
+

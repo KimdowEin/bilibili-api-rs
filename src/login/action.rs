@@ -1,23 +1,14 @@
 #![allow(dead_code)]
 
-use crate::session::Query;
+use crate::common::Query;
 use base64::{engine::general_purpose::URL_SAFE, Engine as _};
 use rsa::{pkcs8::DecodePublicKey, Pkcs1v15Encrypt, RsaPublicKey};
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 use std::fmt::Display;
 
-#[cfg(feature = "session")]
-mod session_use{
-    pub use reqwest::Error;
-    pub use crate::session::{Data,ResponseData};
-    pub use crate::session::Session;
-}
-#[cfg(feature = "session")]
-use session_use::*;
-
-
-pub const CAPTCHA_URL:&str = "https://passport.bilibili.com/x/passport-login/captcha?source=main_web";
+pub const CAPTCHA_URL: &str =
+    "https://passport.bilibili.com/x/passport-login/captcha?source=main_web";
 pub const LOGIN_KEY_URL: &str = "https://passport.bilibili.com/x/passport-login/web/key";
 pub const LOGIN_URL: &str = "https://passport.bilibili.com/x/passport-login/web/login";
 /******人类行为验证******/
@@ -38,37 +29,6 @@ impl CaptchaData {
 pub struct Geetest {
     pub challenge: String,
     pub gt: String,
-}
-
-#[cfg(feature = "session")]
-impl Session {
-    /// 获取人机验证
-    pub async fn captcha(&self) -> Result<CaptchaData, Error> {
-        let url = CAPTCHA_URL;
-        let response = self
-            .get(url)
-            .send()
-            .await?
-            .json::<ResponseData>()
-            .await?
-            .take();
-
-        if let Some(Data::CaptchaData(captcha_data)) = response {
-            Ok(captcha_data)
-        } else {
-            panic!("Unexpected response type")
-        }
-    }
-}
-/// 跳转人工认证页面
-/// 外源，可能会失效
-#[cfg(feature = "manual")]
-pub fn manual_verification(geetest: &Geetest) {
-    let url = "https://kuresaru.github.io/geetest-validator/";
-    let url = format!("{}?gt={}&challenge={}", url, geetest.gt, geetest.challenge);
-    if let Err(e) = webbrowser::open(&url) {
-        eprintln!("Error opening browser: {}", e);
-    }
 }
 
 /******账号密码登录******/
@@ -172,31 +132,66 @@ impl Display for WebLoginCode {
 
 
 #[cfg(feature = "session")]
-impl Session {
-    /// 获取登录秘钥
-    pub async fn get_login_key(&self) -> Result<LoginKeyData, Error> {
-        let url = LOGIN_KEY_URL;
-        let response = self
-            .get(url)
-            .send()
-            .await?
-            .json::<ResponseData>()
-            .await?
-            .take();
+mod session {
+    use super::*;
+    use crate::common::Session;
+    use crate::common::{Data, ResponseData};
+    use reqwest::Error;
 
-        if let Some(Data::LoginKey(login_key)) = response {
-            Ok(login_key)
-        } else {
-            panic!("Unexpected response type")
+    impl Session {
+        /// 获取人机验证
+        pub async fn captcha(&self) -> Result<CaptchaData, Error> {
+            let url = CAPTCHA_URL;
+            let response = self
+                .get(url)
+                .send()
+                .await?
+                .json::<ResponseData>()
+                .await?
+                .take();
+
+            if let Some(Data::CaptchaData(captcha_data)) = response {
+                Ok(captcha_data)
+            } else {
+                panic!("Unexpected response type")
+            }
+        }
+
+        /// 获取登录秘钥
+        pub async fn get_login_key(&self) -> Result<LoginKeyData, Error> {
+            let url = LOGIN_KEY_URL;
+            let response = self
+                .get(url)
+                .send()
+                .await?
+                .json::<ResponseData>()
+                .await?
+                .take();
+
+            if let Some(Data::LoginKey(login_key)) = response {
+                Ok(login_key)
+            } else {
+                panic!("Unexpected response type")
+            }
+        }
+        /// web端登录
+        pub async fn web_login(&self, query: String) -> Result<WebLoginData, Error> {
+            let url = format!("{}?{}", LOGIN_URL, query);
+            let response = self.post(url).send().await?.json::<WebLoginData>().await?;
+            Ok(response)
         }
     }
-    /// web端登录
-    pub async fn web_login(&self, query: String) -> Result<WebLoginData, Error> {
-        let url = format!(
-            "{}?{}",
-            LOGIN_URL, query
-        );
-        let response = self.post(url).send().await?.json::<WebLoginData>().await?;
-        Ok(response)
+}
+#[cfg(feature = "session")]
+pub use session::*;
+
+/// 跳转人工认证页面
+/// 外源，可能会失效
+#[cfg(feature = "manual")]
+pub fn manual_verification(geetest: &Geetest) {
+    let url = "https://kuresaru.github.io/geetest-validator/";
+    let url = format!("{}?gt={}&challenge={}", url, geetest.gt, geetest.challenge);
+    if let Err(e) = webbrowser::open(&url) {
+        eprintln!("Error opening browser: {}", e);
     }
 }

@@ -2,13 +2,6 @@
 
 use crate::sign::wbi::Wbi;
 use serde::{Deserialize, Serialize};
-#[cfg(feature = "session")]
-mod session_use{
-    pub use crate::session::Session;
-    pub use crate::session::{Data, ResponseData};
-}
-#[cfg(feature = "session")]
-use session_use::*;
 
 
 
@@ -27,22 +20,31 @@ impl NavData {
     }
 }
 
-
 #[cfg(feature = "session")]
-impl Session {
-    pub async fn nav(&self) -> Result<NavData, reqwest::Error> {
-        let url = NAV_URL;
-        let response = self
-            .get(url)
-            .send()
-            .await?
-            .json::<ResponseData>()
-            .await?
-            .take();
-        if let Some(Data::NavData(data)) = response {
-            Ok(data)
-        } else {
-            panic!("Unexpected response type")
+mod session{
+    use super::*;
+    use crate::common::Session;
+    use crate::common::{Data, ResponseData};
+
+    impl Session {
+        pub async fn nav(&self) -> Result<NavData, reqwest::Error> {
+            let url = NAV_URL;
+            let response = self
+                .get(url)
+                .send()
+                .await?
+                .json::<ResponseData>()
+                .await?
+                .take();
+            if let Some(Data::NavData(data)) = response {
+                Ok(data)
+            } else {
+                panic!("Unexpected response type")
+            }
         }
     }
+    
 }
+#[cfg(feature = "session")]
+pub use session::*;
+

@@ -6,82 +6,77 @@ use crate::{
         info::NavData,
     },
     sign::wbi::WbiSign,
-    video::{info::WebVideoInfoData, stream::WebPlayUrlData},
+    video::{info::video_info::WebVideoInfoData, stream::WebPlayUrlData},
 };
 
 use serde::{Deserialize, Serialize};
 use std::time::{SystemTime, UNIX_EPOCH};
+
+
 #[cfg(feature = "session")]
-mod session_use {
+mod session {
     pub use reqwest::{
-        Error,
         header::{HeaderMap, HeaderValue},
-        Client,
+        Client, Error,
     };
     pub use std::ops::Deref;
-}
-#[cfg(feature = "session")]
-use session_use::*;
 
-/// 会话信息
-/// mixin_key 需要登录后才有
-/// 每日刷新一次
-/// 每次web端请求要使用w_rid函数生成query
-#[cfg(feature = "session")]
-pub struct Session {
-    client: Client,
-    mixin_key: String,
-}
-#[cfg(feature = "session")]
-impl Session {
-    pub fn new() -> Self {
-        let mut headers = HeaderMap::new();
-        headers.insert(
+    /// 会话信息
+    /// mixin_key 需要登录后才有
+    /// 每日刷新一次
+    /// 每次web端请求要使用w_rid函数生成query
+    pub struct Session {
+        client: Client,
+        mixin_key: String,
+    }
+    impl Session {
+        pub fn new() -> Self {
+            let mut headers = HeaderMap::new();
+            headers.insert(
             "User-Agent", 
             HeaderValue::from_str("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0").unwrap()
         );
-        headers.insert(
-            "referer",
-            HeaderValue::from_str("https://www.bilibili.com/").unwrap(),
-        );
+            headers.insert(
+                "referer",
+                HeaderValue::from_str("https://www.bilibili.com/").unwrap(),
+            );
 
-        let client = Client::builder()
-            .cookie_store(true)
-            .default_headers(headers)
-            .pool_idle_timeout(None)
-            .build()
-            .unwrap();
+            let client = Client::builder()
+                .cookie_store(true)
+                .default_headers(headers)
+                .pool_idle_timeout(None)
+                .build()
+                .unwrap();
 
-        let mixin_key = String::new();
-        Self { client, mixin_key }
+            let mixin_key = String::new();
+            Self { client, mixin_key }
+        }
+        /// 设置 wbi 签名
+        pub fn set_mixin_key(&mut self, mixin_key: String) {
+            self.mixin_key = mixin_key;
+        }
+        /// 获取 wbi key
+        pub fn key(&self) -> String {
+            self.mixin_key.clone()
+        }
+        /// 心跳,保持连接
+        pub async fn heartbeat(&self) -> Result<(), Error> {
+            let url = "https://api.bilibili.com/x/web-interface/nav";
+            self.get(url).send().await?;
+            Ok(())
+        }
     }
-    /// 设置 wbi 签名
-    pub fn set_mixin_key(&mut self, mixin_key: String) {
-        self.mixin_key = mixin_key;
-    }
-    /// 获取 wbi key
-    pub fn key(&self) -> String {
-        self.mixin_key.clone()
-    }
-    /// 心跳,保持连接
-    pub async fn heartbeat(&self) -> Result<(), Error> {
-        let url = "https://api.bilibili.com/x/web-interface/nav";
-        self.get(url).send().await?;
-        Ok(())
-    }
-
-    // #[cfg(feature = "wasm")]
-    // pub fn get_cookie(&self) -> String {
-
-    // }
-}
-#[cfg(feature = "session")]
-impl Deref for Session {
-    type Target = Client;
-    fn deref(&self) -> &Self::Target {
-        &self.client
+    impl Deref for Session {
+        type Target = Client;
+        fn deref(&self) -> &Self::Target {
+            &self.client
+        }
     }
 }
+
+#[cfg(feature="session")]
+pub use session::*;
+
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct ResponseData {

@@ -1,13 +1,5 @@
 #![allow(dead_code)]
 
-#[cfg(feature = "session")]
-mod session_use{
-    pub use reqwest::Error;
-    pub use crate::session::Session;
-}
-#[cfg(feature = "session")]
-use session_use::*;
-
 use serde::{Deserialize, Serialize};
 
 const MIXIN_KEY_ENC_TAB: [u8; 64] = [
@@ -24,7 +16,7 @@ pub struct Wbi {
 
 impl Wbi {
     /// 获取 wbi 签名
-    fn mixin_key(&self) -> String {
+    pub fn mixin_key(&self) -> String {
         let mut raw_wbi = String::new();
         raw_wbi.push_str(&self.img_url);
         raw_wbi.push_str(&self.sub_url);
@@ -39,15 +31,19 @@ impl Wbi {
 }
 
 pub trait WbiSign {}
+#[cfg(feature = "session")]
+mod session {
+    use crate::common::Session;
+    use reqwest::Error;
 
-#[cfg(feature="session")]
-impl Session {
-    /// 获取 wbi 签名，每日更新
-    pub async fn mixin_key(&mut self) -> Result<(), Error> {
-        let wbi = self.nav().await?.wbi_img;
-        let mixin_key = wbi.mixin_key();
-        self.set_mixin_key(mixin_key);
-        Ok(())
+    impl Session {
+        /// 获取 wbi 签名，每日更新
+        pub async fn mixin_key(&mut self) -> Result<(), Error> {
+            let wbi = self.nav().await?.wbi_img;
+            let mixin_key = wbi.mixin_key();
+            self.set_mixin_key(mixin_key);
+            Ok(())
+        }
     }
 }
-
+#[cfg(feature = "session")]pub use session::*;

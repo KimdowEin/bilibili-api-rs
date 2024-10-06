@@ -1,4 +1,4 @@
 pub mod sign;
-pub mod session;
+pub mod common;
 pub mod login;
 pub mod video;
