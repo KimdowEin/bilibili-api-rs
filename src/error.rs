@@ -2,6 +2,7 @@ use std::{error::Error as Err, fmt::Display};
 
 #[derive(Debug)]
 pub enum Error {
+    #[cfg(feature = "session")]
     RequsetError(reqwest::Error),
     IoError(std::io::Error),
     ResponseError(ResponseError),
@@ -33,6 +34,7 @@ impl From<String> for ResponseError {
 //     }
 // }
 
+#[cfg(feature = "session")]
 impl From<reqwest::Error> for Error {
     fn from(value: reqwest::Error) -> Self {
         Error::RequsetError(value)
@@ -69,6 +71,7 @@ impl Err for Error {}
 impl Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
+            #[cfg(feature = "session")]
             Error::RequsetError(e) => write!(f, "RequsetError: {}", e),
             Error::IoError(e) => write!(f, "IoError: {}", e),
             Error::ResponseError(e) => write!(f, "ResponseError: {}", e),
