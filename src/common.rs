@@ -1,108 +1,9 @@
 #![allow(dead_code)]
 
-use crate::{
-    login::{
-        action::{CaptchaData, LoginKeyData},
-        info::NavData,
-    },
-    sign::wbi::WbiSign,
-    video::{info::video_info::WebVideoInfoData, stream::WebPlayUrlData},
-};
+use crate::error::ResponseError;
 
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use std::time::{SystemTime, UNIX_EPOCH};
-
-
-#[cfg(feature = "session")]
-mod session {
-    pub use reqwest::{
-        header::{HeaderMap, HeaderValue},
-        Client, Error,
-    };
-    pub use std::ops::Deref;
-
-    /// 会话信息
-    /// mixin_key 需要登录后才有
-    /// 每日刷新一次
-    /// 每次web端请求要使用w_rid函数生成query
-    pub struct Session {
-        client: Client,
-        mixin_key: String,
-    }
-    impl Session {
-        pub fn new() -> Self {
-            let mut headers = HeaderMap::new();
-            headers.insert(
-            "User-Agent", 
-            HeaderValue::from_str("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0").unwrap()
-        );
-            headers.insert(
-                "referer",
-                HeaderValue::from_str("https://www.bilibili.com/").unwrap(),
-            );
-
-            let client = Client::builder()
-                .cookie_store(true)
-                .default_headers(headers)
-                .pool_idle_timeout(None)
-                .build()
-                .unwrap();
-
-            let mixin_key = String::new();
-            Self { client, mixin_key }
-        }
-        /// 设置 wbi 签名
-        pub fn set_mixin_key(&mut self, mixin_key: String) {
-            self.mixin_key = mixin_key;
-        }
-        /// 获取 wbi key
-        pub fn key(&self) -> String {
-            self.mixin_key.clone()
-        }
-        /// 心跳,保持连接
-        pub async fn heartbeat(&self) -> Result<(), Error> {
-            let url = "https://api.bilibili.com/x/web-interface/nav";
-            self.get(url).send().await?;
-            Ok(())
-        }
-    }
-    impl Deref for Session {
-        type Target = Client;
-        fn deref(&self) -> &Self::Target {
-            &self.client
-        }
-    }
-}
-
-#[cfg(feature="session")]
-pub use session::*;
-
-
-#[derive(Debug, Deserialize, Serialize)]
-pub struct ResponseData {
-    code: i64,
-    message: String,
-    ttl: u8,
-    data: Data,
-}
-#[derive(Debug, Deserialize, Serialize)]
-#[serde(untagged)]
-pub enum Data {
-    NavData(NavData),
-    CaptchaData(CaptchaData),
-    LoginKey(LoginKeyData),
-    WebPlayUrlData(WebPlayUrlData),
-    WebVideoInfoData(WebVideoInfoData),
-    None,
-}
-impl ResponseData {
-    pub fn take(self) -> Option<Data> {
-        match self.data {
-            Data::None => None,
-            _ => Some(self.data),
-        }
-    }
-}
 
 pub trait Query: Serialize + Sized {
     /// 生成原始query
@@ -132,3 +33,82 @@ pub trait Query: Serialize + Sized {
         query
     }
 }
+
+pub trait WbiSign {}
+
+pub trait Response: Sized {
+    type Data;
+
+    fn is_success(&self) -> bool;
+    fn message(&self) -> String;
+    fn data(self) -> Self::Data;
+
+    // 根据code判断是否成功
+    fn result(self) -> Result<Self::Data, ResponseError> {
+        if self.is_success() {
+            // 假设code为0表示成功
+            Ok(self.data())
+        } else {
+            Err(self.message().into())
+        }
+    }
+}
+
+#[cfg(feature = "session")]
+mod session {
+    use std::ops::Deref;
+
+    use reqwest::{
+        header::{HeaderMap, HeaderValue},
+        Client, Error,
+    };
+
+    /// 会话信息
+    /// mixin_key 需要登录后才有
+    /// 每日刷新一次
+    /// 每次web端请求要使用w_rid函数生成query
+    #[derive(Debug, Clone)]
+    pub struct Session {
+        client: Client,
+        pub mixin_key: String,
+    }
+    impl Session {
+        pub fn new() -> Self {
+            let mut headers = HeaderMap::new();
+            headers.insert(
+                "User-Agent", 
+                HeaderValue::from_str("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0").unwrap()
+            );
+            headers.insert(
+                "referer",
+                HeaderValue::from_str("https://www.bilibili.com/").unwrap(),
+            );
+
+            let client = Client::builder()
+                .cookie_store(true)
+                .default_headers(headers)
+                .pool_idle_timeout(None)
+                .build()
+                .unwrap();
+
+            let mixin_key = String::new();
+            Self { client, mixin_key }
+        }
+
+        /// 心跳,保持连接
+        pub async fn heartbeat(&self) -> Result<(), Error> {
+            let url = "https://api.bilibili.com/x/web-interface/nav";
+            self.get(url).send().await?;
+            Ok(())
+        }
+    }
+    impl Deref for Session {
+        type Target = Client;
+        fn deref(&self) -> &Self::Target {
+            &self.client
+        }
+    }
+}
+
+#[cfg(feature = "session")]
+pub use session::Session;

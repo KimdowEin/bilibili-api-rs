@@ -2,7 +2,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::common::Query;
+use crate::{common::{Query,WbiSign}, video::zone::Zone};
 
 pub const WEB_VIDEO_INFO_URL: &str = "https://api.bilibili.com/x/web-interface/wbi/view";
 
@@ -25,6 +25,7 @@ impl WebVideoInfoQuery {
     }
 }
 impl Query for WebVideoInfoQuery {}
+impl WbiSign for WebVideoInfoQuery {}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct WebVideoInfoData {
@@ -35,7 +36,7 @@ pub struct WebVideoInfoData {
     /// 稿件分P总数
     pub videos: u64,
     /// 分区tid
-    pub tid: u64,
+    pub tid: Zone,
     /// 子分区名称
     pub tname: String,
     /// 稿件类型 1:原创 2:转载
@@ -180,24 +181,24 @@ pub struct Page {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Subtitle {
     ///是否允许提交字幕
-    allow_submit: bool,
+    pub allow_submit: bool,
     /// 字幕列表
-    list: Vec<SubtitleItem>,
+    pub list: Vec<SubtitleItem>,
 }
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SubtitleItem {
     /// 字幕id
-    id: u64,
+    pub id: u64,
     /// 字幕语言
-    lan: String,
+    pub lan: String,
     /// 字幕语言名称
-    lan_doc: String,
+    pub lan_doc: String,
     /// 是否锁定
-    is_lock: bool,
+    pub is_lock: bool,
     /// 作者mid
-    author_mid: u64,
+    pub author_mid: u64,
     /// json格式字幕文件url
-    subtitle_url: String,
+    pub subtitle_url: String,
 }
 
 #[derive(Debug, Serialize, Deserialize, Default)]

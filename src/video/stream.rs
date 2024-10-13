@@ -1,11 +1,34 @@
 #![allow(dead_code)]
 
+use std::fmt::Display;
+
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
-use crate::{common::Query, sign::wbi::WbiSign};
+use crate::common::{Query, WbiSign};
 
-pub const WEB_PLAYURL: &str = "https://api.bilibili.com/x/player/wbi/playurl";
+#[derive(Debug, Serialize, Deserialize)]
+pub struct WebPlayUrlResponse {
+    pub code: i32,
+    pub message: String,
+    pub data: WebPlayUrlData,
+}
+#[derive(Debug, Serialize_repr, Deserialize_repr)]
+#[repr(i32)]
+pub enum WebPlayUrlCode {
+    Success = 0,
+    RequestError = -400,
+    VideoNotFound = -404,
+}
+impl Display for WebPlayUrlCode {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            WebPlayUrlCode::Success => write!(f, "成功"),
+            WebPlayUrlCode::RequestError => write!(f, "请求错误"),
+            WebPlayUrlCode::VideoNotFound => write!(f, "视频不存在"),
+        }
+    }
+}
 
 ///视频清晰度标识
 #[derive(Debug, Serialize_repr, Deserialize_repr)]
@@ -37,22 +60,34 @@ pub enum Fnval {
     K8 = 1024,
     AV1 = 2048,
 }
+
 #[derive(Debug, Serialize_repr, Deserialize_repr, PartialEq)]
 #[repr(u32)]
-pub enum CodecId {
+pub enum VideoCodecId {
     AVC = 7,
     HEVC = 12,
     AV1 = 13,
 }
 
+#[derive(Debug, Serialize_repr, Deserialize_repr, PartialEq)]
+#[repr(u32)]
+pub enum AudioCodecId {
+    K64 = 30216,
+    K132 = 30232,
+    K192 = 30280,
+    Dolby = 30250,
+    HiRes = 30251,
+}
+
+pub const WEB_PLAYURL: &str = "https://api.bilibili.com/x/player/wbi/playurl";
+
 #[derive(Debug, Serialize, Deserialize)]
-pub struct WebPlayerUrlQuery {
+pub struct WebPlayUrlQuery {
     // avid:i64,
-    pub bvid: String,
-    pub cid: u64,
+    bvid: String,
+    cid: u64,
     qn: Qn,
     fnval: Fnval,
-    // fnver:i64,
     fourk: u8,
     // session:String,
     // otype:String,
@@ -61,12 +96,12 @@ pub struct WebPlayerUrlQuery {
     // platform:String,
     // high_quality:i64,
 }
-impl Query for WebPlayerUrlQuery {}
-impl WbiSign for WebPlayerUrlQuery {}
-impl WebPlayerUrlQuery {
+impl Query for WebPlayUrlQuery {}
+impl WbiSign for WebPlayUrlQuery {}
+impl WebPlayUrlQuery {
     pub fn new(bvid: String, cid: u64, qn: Qn, fnval: Fnval) -> Self {
         let fourk = if fnval == Fnval::K4 { 1 } else { 0 };
-        WebPlayerUrlQuery {
+        WebPlayUrlQuery {
             bvid,
             cid,
             qn,
@@ -82,7 +117,7 @@ pub struct WebPlayUrlData {
     timelength: usize,
     accept_format: String,
     accept_quality: Vec<Qn>,
-    video_codecid: CodecId,
+    video_codecid: VideoCodecId,
     pub durl: Option<Vec<Durl>>,
     pub dash: Option<Dash>,
     last_play_time: usize,
@@ -142,38 +177,37 @@ pub struct Flac {
     pub display: bool,
     pub audio: Audio,
 }
-#[cfg(feature = "session")]
-mod session {
-    use super::*;
-    use crate::common::Session;
-    use crate::common::{Data, ResponseData};
-    use reqwest::Error;
+// #[cfg(feature = "session")]
+// mod session {
+//     use super::*;
+//     use crate::common::Session;
+//     use crate::common::{Data, ResponseData};
+//     use reqwest::Error;
 
-    impl Session {
-        /// 获取视频流地址_web端
-        pub async fn get_web_playurl(&self, query: String) -> Result<WebPlayUrlData, Error> {
-            let url = format!("{}?{}", WEB_PLAYURL, query);
-            let response = self
-                .get(url)
-                .send()
-                .await?;
-            println!("response: {:?}",response.text().await.unwrap());
-            let url = format!("{}?{}", WEB_PLAYURL, query);
-            let response = self
-                .get(url)
-                .send()
-                .await?
-                .json::<ResponseData>()
-                .await?
-                .take();
-            if let Some(Data::WebPlayUrlData(playurl)) = response {
-                Ok(playurl)
-            } else {
-                panic!("Unexpected response type")
-            }
-        }
-    }
-}
-#[cfg(feature = "session")]
-pub use session::*;
-
+//     impl Session {
+//         /// 获取视频流地址_web端
+//         pub async fn get_web_playurl(&self, query: String) -> Result<WebPlayUrlData, Error> {
+//             let url = format!("{}?{}", WEB_PLAYURL, query);
+//             let response = self
+//                 .get(url)
+//                 .send()
+//                 .await?;
+//             println!("response: {:?}",response.text().await.unwrap());
+//             let url = format!("{}?{}", WEB_PLAYURL, query);
+//             let response = self
+//                 .get(url)
+//                 .send()
+//                 .await?
+//                 .json::<ResponseData>()
+//                 .await?
+//                 .take();
+//             if let Some(Data::WebPlayUrlData(playurl)) = response {
+//                 Ok(playurl)
+//             } else {
+//                 panic!("Unexpected response type")
+//             }
+//         }
+//     }
+// }
+// #[cfg(feature = "session")]
+// pub use session::*;

@@ -30,20 +30,31 @@ impl Wbi {
     }
 }
 
-pub trait WbiSign {}
+
+
+
+
 #[cfg(feature = "session")]
 mod session {
-    use crate::common::Session;
-    use reqwest::Error;
+    use crate::{common::Session, error::Error};
 
     impl Session {
         /// 获取 wbi 签名，每日更新
         pub async fn mixin_key(&mut self) -> Result<(), Error> {
-            let wbi = self.nav().await?.wbi_img;
+            let wbi = self.get_nav().await?.wbi_img;
             let mixin_key = wbi.mixin_key();
             self.set_mixin_key(mixin_key);
             Ok(())
         }
+
+        /// 设置 wbi 签名
+        pub fn set_mixin_key(&mut self, mixin_key: String) {
+            self.mixin_key = mixin_key;
+        }
+        /// 获取 wbi key
+        pub fn key(&self) -> String {
+            self.mixin_key.clone()
+        }
     }
+    
 }
-#[cfg(feature = "session")]pub use session::*;

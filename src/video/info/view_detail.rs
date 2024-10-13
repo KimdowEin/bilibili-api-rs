@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use super::video_info::WebVideoInfoData;
+use super::view::WebVideoInfoData;
 
 /// 视频详细信息
 
@@ -9,40 +9,40 @@ pub const WEB_VIDEO_INFO_DETAIL_URL: &str =
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct WebVideoInfoDetailData {
-    view: WebVideoInfoData,
-    card: Card,
-    tags: Tags,
-    reply: Reply,
-    related: Vec<Related>,
+    pub view: WebVideoInfoData,
+    pub card: Card,
+    pub tags: Tags,
+    pub reply: Reply,
+    pub related: Vec<Related>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Card {
-    card: CardData,
-    space: Sapce,
-    following: bool,
-    archive_count: u64,
-    article_count: u64,
-    follower: u64,
-    like_num: u64,
+    pub card: CardData,
+    pub space: Sapce,
+    pub following: bool,
+    pub archive_count: u64,
+    pub article_count: u64,
+    pub follower: u64,
+    pub like_num: u64,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct CardData {
-    mid: u64,
-    name: String,
-    sex: String,
-    face: String,
-    face_nft: u8,
-    fans: u64,
-    attention: u64,
-    sign: String,
+    pub mid: u64,
+    pub name: String,
+    pub sex: String,
+    pub face: String,
+    pub face_nft: u8,
+    pub fans: u64,
+    pub attention: u64,
+    pub sign: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Sapce {
-    s_img: String,
-    l_img: String,
+    pub s_img: String,
+    pub l_img: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use super::video_info::Dimension;
+use super::view::Dimension;
 
 ///查询视频分P列表 (avid/bvid转cid)
 
@@ -8,14 +8,14 @@ pub const PLAYER_PAGELIST_URL: &str = "https://api.bilibili.com/x/player/pagelis
 
 
 #[derive(Debug, Serialize, Deserialize)] 
-struct PlayerPageListData{
-    cid: u64,
-    page: u64,
-    from: String,
-    part: String,
-    duration: u64,
-    vid: String,
-    weblink: String,
-    dimension: Dimension,
-    first_frame: String,
+pub struct PlayerPageListData{
+    pub cid: u64,
+    pub page: u64,
+    pub from: String,
+    pub part: String,
+    pub duration: u64,
+    pub vid: String,
+    pub weblink: String,
+    pub dimension: Dimension,
+    pub first_frame: String,
 }
