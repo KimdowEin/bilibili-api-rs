@@ -26,6 +26,6 @@ webbrowser = { version = "1.0.2", optional = true }
 
 futures-util = "0.3.30"
 [features]
-default = ["session","manual"]
+default = []
 session = ["reqwest","tokio"]
 manual = ["webbrowser", "session"]
