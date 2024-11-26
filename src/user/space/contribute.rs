@@ -1,6 +1,9 @@
 use serde::{Deserialize, Serialize};
 
-use crate::{common::{Query,WbiSign},  video::zone::Zone};
+use crate::{
+    common::{Query, WbiSign},
+    video::zone::Zone,
+};
 
 pub const VIDEO_CONTRIBUTE_URL: &str = "https://api.bilibili.com/x/space/wbi/arc/search";
 
@@ -33,13 +36,13 @@ impl ToString for Order {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct VideoContributeData{
+pub struct VideoContributeData {
     pub list: VideoContributeList,
     pub page: VideoContributePage,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct VideoContributeList{
+pub struct VideoContributeList {
     pub vlist: Vec<VideoContributeItem>,
 }
 
@@ -58,13 +61,31 @@ pub struct VideoContributeItem {
     pub pic: String,
     pub play: u64,
     pub title: String,
-    pub typeid:Zone,
+    // pub typeid: Zone,
     pub video_review: u64,
-
 }
 #[derive(Debug, Serialize, Deserialize)]
 pub struct VideoContributePage {
     pub count: u64,
-    pub pn:usize,
-    pub ps:u64,
+    pub pn: usize,
+    pub ps: u64,
+}
+
+
+#[test]
+fn test() {
+    #[derive(Deserialize, Serialize)]
+struct Query {
+    name: String,
+    age: Option<u8>,
+    occupation: String,
+}
+    let a = serde_qs::to_string(
+        &Query{
+            name: "John".to_string(),
+            age: None,
+            occupation: "Engineer".to_string(),
+        }
+    ).unwrap();
+    println!("{}",a)
 }

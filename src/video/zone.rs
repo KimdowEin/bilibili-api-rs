@@ -1,7 +1,8 @@
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
-#[derive(Debug,Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[serde(untagged)]
 pub enum Zone {
     Douga(Douga),
     Anime(Anime),
@@ -27,7 +28,7 @@ pub enum Zone {
     Unknown,
 }
 
-#[derive(Debug,Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
 #[repr(i32)]
 pub enum Douga {
     Douga = 1,
@@ -41,7 +42,7 @@ pub enum Douga {
     Other = 27,
 }
 
-#[derive(Debug,Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
 #[repr(i32)]
 pub enum Anime {
     Anime = 13,
@@ -51,7 +52,7 @@ pub enum Anime {
     Serial = 33,
 }
 
-#[derive(Debug,Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
 #[repr(i32)]
 pub enum Guochuang {
     Guochuang = 167,
@@ -62,7 +63,7 @@ pub enum Guochuang {
     Motioncomic = 195,
 }
 
-#[derive(Debug,Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
 #[repr(i32)]
 pub enum Music {
     Music = 3,
@@ -75,9 +76,10 @@ pub enum Music {
     Other = 130,
     Commentary = 243,
     Tutorial = 244,
+    EleMusic = 194,
 }
 
-#[derive(Debug,Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
 #[repr(i32)]
 pub enum Dance {
     Dance = 129,
@@ -90,7 +92,7 @@ pub enum Dance {
     Gestures = 255,
 }
 
-#[derive(Debug,Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
 #[repr(i32)]
 pub enum Game {
     Game = 4,
@@ -104,7 +106,7 @@ pub enum Game {
     Mugen = 19,
 }
 
-#[derive(Debug,Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
 #[repr(i32)]
 pub enum Knowledge {
     Knowledge = 36,
@@ -116,9 +118,12 @@ pub enum Knowledge {
     Career = 209,
     Design = 229,
     Skill = 122,
+    Speech = 39,
+    War = 96,
+    Machine = 98,
 }
 
-#[derive(Debug,Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
 #[repr(i32)]
 pub enum Tech {
     Tech = 188,
@@ -129,7 +134,7 @@ pub enum Tech {
     Diy = 233,
 }
 
-#[derive(Debug,Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
 #[repr(i32)]
 pub enum Sports {
     Sports = 234,
@@ -141,7 +146,7 @@ pub enum Sports {
     Comprehensive = 238,
 }
 
-#[derive(Debug,Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
 #[repr(i32)]
 pub enum Car {
     Car = 223,
@@ -155,7 +160,7 @@ pub enum Car {
     Life = 176,
 }
 
-#[derive(Debug,Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
 #[repr(i32)]
 pub enum Life {
     Life = 160,
@@ -169,7 +174,7 @@ pub enum Life {
     Parenting = 254,
 }
 
-#[derive(Debug,Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
 #[repr(i32)]
 pub enum Food {
     Food = 211,
@@ -180,7 +185,7 @@ pub enum Food {
     Record = 215,
 }
 
-#[derive(Debug,Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
 #[repr(i32)]
 pub enum Animal {
     Animal = 217,
@@ -192,7 +197,7 @@ pub enum Animal {
     AnimalComposite = 75,
 }
 
-#[derive(Debug,Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
 #[repr(i32)]
 pub enum Kichiku {
     Kichiku = 119,
@@ -203,7 +208,7 @@ pub enum Kichiku {
     Course = 127,
 }
 
-#[derive(Debug,Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
 #[repr(i32)]
 pub enum Fashion {
     Fashion = 155,
@@ -213,7 +218,7 @@ pub enum Fashion {
     Catwalk = 159,
 }
 
-#[derive(Debug,Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
 #[repr(i32)]
 pub enum Information {
     Information = 202,
@@ -223,7 +228,7 @@ pub enum Information {
     Multiple = 206,
 }
 
-#[derive(Debug,Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
 #[repr(i32)]
 pub enum Ent {
     Ent = 5,
@@ -233,7 +238,7 @@ pub enum Ent {
     Celebrity = 137,
 }
 
-#[derive(Debug,Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
 #[repr(i32)]
 pub enum Cinephile {
     Cinephile = 181,
@@ -244,7 +249,7 @@ pub enum Cinephile {
     Shortfilm2 = 256,
 }
 
-#[derive(Debug,Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
 #[repr(i32)]
 pub enum Documentary {
     Documentary = 177,
@@ -254,7 +259,7 @@ pub enum Documentary {
     Travel = 180,
 }
 
-#[derive(Debug,Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
 #[repr(i32)]
 pub enum Movie {
     Movie = 23,
@@ -264,10 +269,11 @@ pub enum Movie {
     Other = 83,
 }
 
-#[derive(Debug,Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
 #[repr(i32)]
 pub enum TV {
     TV = 11,
     Mainland = 185,
     Overseas = 187,
 }
+

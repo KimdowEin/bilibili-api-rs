@@ -5,7 +5,7 @@ use serde_repr::{Deserialize_repr, Serialize_repr};
 
 use crate::common::Query;
 
-#[derive(Debug, Serialize, Deserialize)]    
+#[derive(Debug, Serialize, Deserialize)]
 pub struct StatResponse {
     pub code: StatResponseCode,
     pub message: String,
@@ -31,11 +31,11 @@ impl Display for StatResponseCode {
         }
     }
 }
-#[derive(Debug, Serialize, Deserialize)]    
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(untagged)]
 pub enum StatData {
     BvidStatData(BvidStatData),
     AvidStatData(AidStatData),
-    
 }
 
 pub const AID_STAT_URL: &str = "https://api.bilibili.com/archive_stat/stat";

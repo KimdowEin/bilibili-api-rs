@@ -1,13 +1,15 @@
 /// 视频基本信息
-
 use serde::{Deserialize, Serialize};
 
-use crate::{common::{Query,WbiSign}, video::zone::Zone};
+use crate::{
+    common::{Query, WbiSign},
+    video::zone::Zone,
+};
 
 pub const WEB_VIDEO_INFO_URL: &str = "https://api.bilibili.com/x/web-interface/wbi/view";
 
 /// WEB_VIDEO_INFO_URL or WEB_VIDEO_INFO_DETAIL_URL
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct WebVideoInfoQuery {
     aid: Option<u64>,
     bvid: Option<String>,
@@ -27,7 +29,7 @@ impl WebVideoInfoQuery {
 impl Query for WebVideoInfoQuery {}
 impl WbiSign for WebVideoInfoQuery {}
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize,PartialEq)]
 pub struct WebVideoInfoData {
     /// 稿件bvid
     pub bvid: String,
@@ -78,12 +80,12 @@ pub struct WebVideoInfoData {
     /// 视频分P列表
     pub pages: Vec<Page>,
     /// 视频CC字幕信息
-    pub subtitle: Subtitle,
+    pub subtitle: Option<Subtitle>,
     /// 合作成员列表
     #[serde(default)]
     pub staff: Vec<Staff>,
 }
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize,PartialEq)]
 pub struct Desc {
     /// 简介内容
     pub raw_text: String,
@@ -93,7 +95,7 @@ pub struct Desc {
     /// 被@的用户mid
     pub biz_id: u64,
 }
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize,PartialEq)]
 pub struct Rights {
     /// 是否允许承包
     pub bp: u8,
@@ -121,7 +123,7 @@ pub struct Rights {
     pub is_360: u8,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize,PartialEq)]
 pub struct Owner {
     /// UP mid
     pub mid: u64,
@@ -130,7 +132,7 @@ pub struct Owner {
     /// UP头像
     pub face: String,
 }
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize,PartialEq)]
 pub struct Stat {
     /// 稿件avid
     pub aid: u64,
@@ -158,7 +160,7 @@ pub struct Stat {
     pub evaluation: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize,PartialEq)]
 pub struct Page {
     /// 视频分P的cid
     pub cid: u64,
@@ -178,14 +180,14 @@ pub struct Page {
     pub dimension: Dimension,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize,PartialEq)]
 pub struct Subtitle {
     ///是否允许提交字幕
     pub allow_submit: bool,
     /// 字幕列表
     pub list: Vec<SubtitleItem>,
 }
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize,PartialEq)]
 pub struct SubtitleItem {
     /// 字幕id
     pub id: u64,
@@ -201,7 +203,7 @@ pub struct SubtitleItem {
     pub subtitle_url: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Serialize, Deserialize,PartialEq, Default)]
 pub struct Dimension {
     pub width: u64,
     pub height: u64,
@@ -209,10 +211,70 @@ pub struct Dimension {
     pub rotate: u64,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize,PartialEq)]
 pub struct Staff {
     pub mid: u64,
     pub title: String, //名称
     pub name: String,  //昵称(暂时不知道有什么差别)
     pub face: String,
 }
+
+#[cfg(feature = "session")]
+mod session {
+    use super::*;
+    use crate::{
+        common::{Query, Response, Session},
+        error::Error,
+        video::info::{InfoData, InfoResponse},
+    };
+
+    impl Session {
+        pub async fn get_web_video_info(
+            &self,
+            query: WebVideoInfoQuery,
+        ) -> Result<WebVideoInfoData, Error> {
+            let url = format!("{}?{}", WEB_VIDEO_INFO_URL, query.sign(&self.mixin_key));
+            let infodata = self
+                .get(url)
+                .send()
+                .await?
+                .json::<InfoResponse>()
+                .await?
+                .result()?;
+
+            if let InfoData::WebVideoInfoData(data) = infodata {
+                Ok(data)
+            } else {
+                Err(Error::from("Unexpected response type"))
+            }
+        }
+    }
+}
+
+
+// #[cfg(test)]
+// mod test {
+//     use super::*;
+//     use crate::common::Session;
+
+//     #[tokio::test]
+//     async fn test_video_info_get_web_video_info() {
+//         let session = Session::new();
+//         let query = WebVideoInfoQuery::new(None, "BV1Ty2pYNE5u".to_owned());
+//         let result = session.get_web_video_info(query).await;
+
+//         println!("{:?}",result);
+
+//         assert!(result.is_ok());
+//     }
+// }
+
+
+
+
+
+
+
+
+
+

@@ -8,7 +8,7 @@ const MIXIN_KEY_ENC_TAB: [u8; 64] = [
     54, 21, 56, 59, 6, 63, 57, 62, 11, 36, 20, 34, 44, 52,
 ];
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug,Default, Clone, Deserialize, Serialize)]
 pub struct Wbi {
     img_url: String,
     sub_url: String,
@@ -30,17 +30,13 @@ impl Wbi {
     }
 }
 
-
-
-
-
 #[cfg(feature = "session")]
 mod session {
     use crate::{common::Session, error::Error};
 
     impl Session {
         /// 获取 wbi 签名，每日更新
-        pub async fn mixin_key(&mut self) -> Result<(), Error> {
+        pub async fn get_mixin_key(&mut self) -> Result<(), Error> {
             let wbi = self.get_nav().await?.wbi_img;
             let mixin_key = wbi.mixin_key();
             self.set_mixin_key(mixin_key);
@@ -56,5 +52,21 @@ mod session {
             self.mixin_key.clone()
         }
     }
-    
+}
+
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+
+    #[test]
+    fn mixin_key_test() {
+        let wbi = Wbi{
+            img_url: "7cd084941338484aae1ad9425b84077c".to_owned(),
+            sub_url: "4932caff0ff746eab6f01bf08b70ac45".to_owned(),
+        };
+        let mixin_key = wbi.mixin_key();
+        assert_eq!(mixin_key, "ea1db124af3c7062474693fa704f4ff8");
+    }
 }

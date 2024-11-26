@@ -1,15 +1,20 @@
+//！密码账号登录
+//！```
+//! #密码登录流程
+//!
+//! ```
+
 #![allow(dead_code)]
-///////////////////
-/// 账号密码登录 ///
-///////////////////
+use std::fmt::Display;
+
+use base64::{engine::general_purpose::URL_SAFE, Engine as _};
 use rsa::{pkcs8::DecodePublicKey, Pkcs1v15Encrypt, RsaPublicKey};
 use serde::{Deserialize, Serialize};
-use base64::{engine::general_purpose::URL_SAFE, Engine as _};
 
 use super::captcha::CaptchaData;
-use crate::common::Query;
+use crate::{common::Query, error::Error};
 
-/// 获取公钥&盐(web端)
+/// 获取公钥&盐(只有web端需要)
 pub const LOGIN_KEY_URL: &str = "https://passport.bilibili.com/x/passport-login/web/key";
 
 /// 登录盐
@@ -17,50 +22,68 @@ pub const LOGIN_KEY_URL: &str = "https://passport.bilibili.com/x/passport-login/
 pub struct LoginKeyData {
     /// 有效时间为 20s
     #[serde(rename = "hash")]
-    pub salt: String,
-    pub key: String,
+    salt: String,
+    key: String,
 }
+impl LoginKeyData {
+    pub fn take(self) -> (String, String) {
+        (self.salt, self.key)
+    }
+}
+/// 登录操作(post)
+pub const WEB_LOGIN_URL: &str = "https://passport.bilibili.com/x/passport-login/web/login";
 
-pub const LOGIN_URL: &str = "https://passport.bilibili.com/x/passport-login/web/login";
+pub fn decode_password<S>(password: S, loginkey: LoginKeyData) -> Result<String,Error>
+where
+    S: AsRef<str> + Display,
+{
+    let (salt, key) = loginkey.take();
 
+    let data = format!("{}{}", salt, password);
+
+    let mut rng = rand::thread_rng();
+    let pub_key = RsaPublicKey::from_public_key_pem(&key)?;
+    let enc_data = pub_key.encrypt(&mut rng, Pkcs1v15Encrypt, data.as_bytes())?;
+    let password = URL_SAFE.encode(enc_data);
+    Ok(password)
+}
 /// 登录查询头
 #[derive(Debug, Serialize, Deserialize)]
 pub struct WebLoginQuery {
     username: String,
     password: String,
     keep: u8,
-    token: String,
-    challenge: String,
+    #[serde(rename = "token")]
+    captcha_token: String,
+    #[serde(rename = "challenge")]
+    captcha_challenge: String,
     validate: String,
     seccode: String,
+    go_url: Option<String>,
+    source: Option<String>,
 }
 impl WebLoginQuery {
     pub fn new(
-        loginkey: LoginKeyData,
         username: String,
         password: String,
-        captcha_data: CaptchaData,
+        captcha: CaptchaData,
         validate: String,
+        go_url: Option<String>,
+        source: Option<String>,
     ) -> Self {
-        let mut rng = rand::thread_rng();
-        let data = format!("{}{}", loginkey.salt, password);
-        let data = data.as_bytes();
-        let pub_key = loginkey.key;
-        let pub_key = RsaPublicKey::from_public_key_pem(&pub_key).unwrap();
-        let enc_data = pub_key
-            .encrypt(&mut rng, Pkcs1v15Encrypt, &data[..])
-            .expect("failed to encrypt");
-        let password = URL_SAFE.encode(enc_data);
-        let (token, challenge) = captcha_data.take();
+        let (captcha_token, captcha_challenge) = captcha.take();
         let seccode = format!("{}|jordan", validate);
+
         WebLoginQuery {
             username,
             password,
             keep: 0,
-            token,
-            challenge,
+            captcha_token,
+            captcha_challenge,
             validate,
             seccode,
+            go_url,
+            source,
         }
     }
 }
@@ -70,16 +93,20 @@ impl Query for WebLoginQuery {}
 /// 登录响应数据
 #[derive(Debug, Serialize, Deserialize)]
 pub struct WebLoginData {
-    message: String,
-    refresh_token: String,
-    timestamp: u64,
+    pub message: String,
+    pub refresh_token: String,
+    pub timestamp: u64,
+    pub url:String,
 }
 
 
-
 #[cfg(feature = "session")]
-mod session{
-    use crate::{common::{Query, Response, Session}, error::Error, login::action::{LoginData, WebLoginResponse}};
+mod session {
+    use crate::{
+        common::{Query, Response, Session},
+        error::Error,
+        login::action::{LoginData, WebLoginResponse},
+    };
 
     use super::{LoginKeyData, WebLoginData, WebLoginQuery, LOGIN_KEY_URL, LOGIN_URL};
 
@@ -97,14 +124,14 @@ mod session{
 
             if let LoginData::LoginKeyData(data) = logindata {
                 Ok(data)
-            }else{
+            } else {
                 Err(Error::from("Unexpected response type"))
             }
         }
 
         /// web端登录
         pub async fn web_login(&self, query: WebLoginQuery) -> Result<WebLoginData, Error> {
-            let url = format!("{}?{}", LOGIN_URL, query.to_query()?);
+            let url = format!("{}?{}", WEB_LOGIN_URL, query.to_query()?);
             let logindata = self
                 .post(url)
                 .send()
@@ -115,11 +142,9 @@ mod session{
 
             if let LoginData::WebLoginData(data) = logindata {
                 Ok(data)
-            }else{
+            } else {
                 Err(Error::from("Unexpected response type"))
             }
         }
-        
-        
     }
 }

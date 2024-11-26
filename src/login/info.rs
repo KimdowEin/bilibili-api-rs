@@ -1,7 +1,7 @@
+//! 用户基本信息
+//! 导航栏的用户信息都来自这里的请求
+
 #![allow(dead_code)]
-///////////////////
-/// 登录基本信息 ///
-///////////////////
 use std::fmt::Display;
 
 use coin::CoinData;
@@ -12,32 +12,39 @@ use stat::StatData;
 
 use crate::common::Response;
 
-
 pub mod coin;
 pub mod nav;
 pub mod stat;
 
+/// 登陆基本信息响应结构体
 #[derive(Debug, Serialize, Deserialize)]
 pub struct InfoResponse {
-    pub code: InfoResponseCode,
-    pub message: String,
-    pub data: Option<InfoData>,
+    code: InfoResponseCode,
+    message: String,
+    data: InfoData,
 }
 
 impl Response for InfoResponse {
-    type Data = InfoData; 
+    type Data = InfoData;
     fn is_success(&self) -> bool {
         self.code == InfoResponseCode::Success
     }
-   fn message(&self) -> String {
-       self.message.clone()
-   } 
-   fn data(self) -> Self::Data {
-       self.data.unwrap()
-   }
+    fn message(self) -> String {
+        self.message
+    }
+    fn data(self) -> Self::Data {
+        self.data
+    }
+}
+
+impl Display for InfoResponse {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.message)
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(untagged)]
 pub enum InfoData {
     NavData(NavData),
     StatData(StatData),
@@ -63,3 +70,18 @@ impl Display for InfoResponseCode {
     }
 }
 
+// #[cfg(test)]
+// mod tests {
+//     use crate::common::Session;
+
+//     #[tokio::test]
+//     async fn test_login_info_get_nav() {
+//         Session::new().get_nav().await.unwrap();
+//     }
+
+//     #[tokio::test]
+//     async fn test_login_info_stat() {}
+
+//     #[tokio::test]
+//     async fn test_login_info_get_coin() {}
+// }

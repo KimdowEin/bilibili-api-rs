@@ -19,8 +19,8 @@ pub enum SpaceResponseCode {
     RequestForbidden = -412,
 }
 
-
 #[derive(Debug, Serialize, Deserialize)]
+#[serde(untagged)]
 pub enum SpaceData {
-    VideoContributeData(VideoContributeData)
+    VideoContributeData(VideoContributeData),
 }

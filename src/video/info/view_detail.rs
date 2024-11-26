@@ -9,11 +9,11 @@ pub const WEB_VIDEO_INFO_DETAIL_URL: &str =
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct WebVideoInfoDetailData {
-    pub view: WebVideoInfoData,
     pub card: Card,
     pub tags: Tags,
     pub reply: Reply,
     pub related: Vec<Related>,
+    pub view: WebVideoInfoData,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

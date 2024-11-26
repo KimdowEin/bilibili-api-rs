@@ -1,5 +1,5 @@
-pub mod stream;
-pub mod info;
-pub mod zone;
-pub mod stat;
 pub mod collection;
+pub mod info;
+pub mod stat;
+pub mod stream;
+pub mod zone;

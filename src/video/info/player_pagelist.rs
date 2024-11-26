@@ -6,9 +6,8 @@ use super::view::Dimension;
 
 pub const PLAYER_PAGELIST_URL: &str = "https://api.bilibili.com/x/player/pagelist";
 
-
-#[derive(Debug, Serialize, Deserialize)] 
-pub struct PlayerPageListData{
+#[derive(Debug, Serialize, Deserialize)]
+pub struct PlayerPageListData {
     pub cid: u64,
     pub page: u64,
     pub from: String,
