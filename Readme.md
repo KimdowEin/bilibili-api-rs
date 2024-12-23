@@ -12,13 +12,14 @@
 [dependencies]
 bilibili-api-rs = {git = "https://github.com/KimdowEin/bilibili-api-rs",features = ["session","manual"]}
 ```
+
 登录(password)
 其实直接去浏览器复制cookie会好一
 ```rust
 use bilibili_api_rs::service::session::Session;
 use bilibili_api_rs::service::login::manual_verification;
 
-async fn login_by_password() {
+async fn _login_by_password() {
   let (username, password) = ("username", "password");
 
   let session = Session::new().unwrap();
@@ -46,13 +47,14 @@ async fn login_by_password() {
   session.save_cookies().unwrap();
 }
 ```
+
 下载视频
 ```rust
 
 ```
 
 ### 功能 feature
-- "session" 提供一个会话，一些请求模板代码，cookies的导入和保存，
+- "session" 提供一个会话 一些常用请求模板代码 cookies的导入和保存 
 - "manual" 提供一个函数跳转到过人机验证的网站，导入cookies比这个实用
 
 ### 进度

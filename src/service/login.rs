@@ -2,7 +2,7 @@ use crate::{
     error::Error,
     model::{
         login::{
-            captcha::{Captcha, Geetest},
+            captcha::Captcha,
             password::{LoginKey, LoginState},
         },
         response::BiliResponse,
@@ -48,6 +48,8 @@ impl Session {
 
 /// 跳转人工认证页面
 /// 外源，可能会失效
+#[cfg(feature = "manual")]
+use crate::model::login::captcha::Geetest;
 #[cfg(feature = "manual")]
 pub fn manual_verification(geetest: &Geetest) -> Result<(), Error> {
     let url = "https://kuresaru.github.io/geetest-validator/";

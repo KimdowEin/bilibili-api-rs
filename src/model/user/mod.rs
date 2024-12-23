@@ -6,3 +6,4 @@ pub mod account;
 pub mod exp;
 pub mod vip;
 pub mod safe;
+pub mod official;

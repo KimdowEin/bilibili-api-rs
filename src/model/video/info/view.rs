@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::model::video::zone::Zone;
+use crate::model::{user::{official::{Official, OfficialVerify}, vip::Vip2}, video::zone::Zone};
 
 use super::{cids::Cids, desc::{VideoDesc, VideoDesc2}, state::{Dimension, VideoStat, VideoState}};
 
@@ -177,7 +177,7 @@ pub struct Card {
     #[serde(rename = "Official")]
     pub official: Official,
     pub official_verify: OfficialVerify,
-    pub vip: Vip,
+    pub vip: Vip2,
     pub is_senior_member: u8,
 }
 #[derive(Debug, Serialize, Deserialize)]
@@ -199,44 +199,7 @@ pub struct Nameplate {
     pub level: String,
     pub condition: String,
 }
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Official {
-    pub role: u64,
-    pub title: String,
-    pub desc: String,
-    #[serde(rename = "type")]
-    pub is_verified: i8,
-}
-#[derive(Debug, Serialize, Deserialize)]
-pub struct OfficialVerify {
-    pub is_verified: i8,
-    pub desc: String,
-}
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Vip {
-    #[serde(rename = "type")]
-    pub vip_type: u8,
-    pub status: u8,
-    pub due_data: u64,
-    pub vip_pay_type: u8,
-    pub label: VipLabel,
-    pub avatar_subscript: u8,
-    pub nickname_color: String,
-    pub role: u8,
-    pub avatar_subscript_url: String,
-    pub tv_vip_status: u8,
-    pub tv_vip_pay_type: u8,
-}
-#[derive(Debug, Serialize, Deserialize)]
-pub struct VipLabel {
-    pub text: String,
-    pub label_theme: String,
-    pub text_color: String,
-    pub bg_color: String,
-    pub border_color: String,
-    pub img_label_uri_hans_static: String,
-    pub img_label_uri_hant_static: String,
-}
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Sapce {
     pub s_img: String,

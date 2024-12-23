@@ -56,3 +56,10 @@ pub struct LiveRoomStatus{
     pub hidden_till: String,
     pub broadcast_type: u8,
 }
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct LiveRoomNews{
+    pub content: String,
+    pub ctime: String,
+    pub ctime_text: String,
+}

@@ -15,10 +15,10 @@ const COOKIES_URLS: &str = "https://api.bilibili.com";
 
 pub fn headers() -> header::HeaderMap {
     let mut headers = header::HeaderMap::new();
-    // headers.insert(
-    //     "referer",
-    //     header::HeaderValue::from_static("https://www.bilibili.com"),
-    // );
+    headers.insert(
+        "referer",
+        header::HeaderValue::from_static("https://www.bilibili.com"),
+    );
 
     headers.insert(
         "User-Agent",

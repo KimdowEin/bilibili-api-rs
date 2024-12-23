@@ -1,6 +1,8 @@
 use crate::model::sign::wbi::Wbi;
 use serde::{Deserialize, Serialize};
 
+use super::{exp::LevelInfo, official::{Official, OfficialVerify}, vip::Vip};
+
 ///导航栏
 #[derive(Debug, Deserialize, Serialize)]
 pub struct NavInfo {
@@ -36,7 +38,7 @@ pub struct UserNav {
     pub official: Official,
     /// 认证信息
     #[serde(rename = "officialVerify")]
-    pub official2: Official2,
+    pub official_verify: OfficialVerify,
 
     // pendant: Pendant,
 
@@ -55,63 +57,9 @@ pub struct UserNav {
     pub is_jury: bool,
 }
 
-#[derive(Debug, Default, Deserialize, Serialize)]
-pub struct LevelInfo {
-    /// 当前等级
-    pub current_level: u8,
-    /// 当前等级经验最低值
-    pub current_min: u64,
-    /// 当前经验
-    pub current_exp: u64,
-    /// 下级等级经验
-    pub next_exp: String,
-}
 
-#[derive(Debug, Default, Deserialize, Serialize)]
-pub struct Official {
-    /// todo
-    pub role: u64,
-    pub title: String,
-    pub desc: String,
-    #[serde(rename = "type")]
-    pub is_verified: u8,
-}
-#[derive(Debug, Default, Deserialize, Serialize)]
-pub struct Official2 {
-    #[serde(rename = "type")]
-    pub is_verified: u8,
-    pub desc: String,
-}
 
-#[derive(Debug, Default, Deserialize, Serialize)]
-pub struct Vip {
-    /// 有无大会员
-    #[serde(rename = "vipStatus")]
-    pub vip_status: u8,
-    /// 大会员到期时间
-    #[serde(rename = "VipDueDate")]
-    pub vip_due_date: i32,
-    /// 大会员类型
-    #[serde(rename = "vipType")]
-    pub vip_type: u8,
-    /// 有无大会员
-    pub vip_pay_type: u8,
-    /// 怀疑是愚人节彩蛋
-    pub vip_theme_type: u64,
-    /// 会员标签
-    pub vip_label: VipLabel,
-    ///是否显示会员图标
-    pub vip_avatar_subscript: u8,
-    /// 会员昵称颜色
-    pub vip_nickname_color: String,
-    /// 是否硬核会员
-    pub is_senior_member: u8,
-}
-#[derive(Debug, Default, Deserialize, Serialize)]
-pub struct VipLabel {
-    pub text: String,
-    pub label_theme: String,
-}
+
 
 #[derive(Debug, Default, Deserialize, Serialize)]
 pub struct Wallet {
