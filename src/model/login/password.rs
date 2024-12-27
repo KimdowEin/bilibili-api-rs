@@ -5,12 +5,12 @@ use rsa::{pkcs8::DecodePublicKey, Pkcs1v15Encrypt, RsaPublicKey};
 use crate::error::Error;
 
 /// 登录盐
+/// 有效时间为 20s
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LoginKey {
-    /// 有效时间为 20s
     #[serde(rename = "hash")]
-    pub(crate) salt: String,
-    pub(crate) key: String,
+    pub salt: String,
+    pub key: String,
 }
 
 /// 登录响应数据

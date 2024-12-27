@@ -1,7 +1,7 @@
 //! 视频基本信息
 use serde::{Deserialize, Serialize};
 
-use crate::traits::Query;
+use crate::traits::{Query, WbiSign};
 
 // stat::StatData
 
@@ -10,7 +10,7 @@ pub const VIDEO_VIEW_URL: &str = "https://api.bilibili.com/x/web-interface/wbi/v
 /// 视频超详细信息
 pub const VIDEO_INFO_URL: &str = "https://api.bilibili.com/x/web-interface/wbi/view/detail";
 
-#[derive(Debug,Default, Clone, Deserialize, Serialize)]
+#[derive(Debug, Default, Clone, Deserialize, Serialize)]
 pub struct VideoInfoQuery {
     aid: Option<u64>,
     bvid: Option<String>,
@@ -28,3 +28,4 @@ impl VideoInfoQuery {
     }
 }
 impl Query for VideoInfoQuery {}
+impl WbiSign for VideoInfoQuery {}

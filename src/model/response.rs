@@ -7,20 +7,21 @@ use crate::error::Error;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct BiliResponse<T> {
-    pub code: BiliResponseCode,
+    pub code: i32,
     pub message: String,
-    pub data: T,
+    pub data:Option<T>,
 }
 impl<T> BiliResponse<T> {
     pub fn is_success(&self) -> bool {
-        self.code == BiliResponseCode::Success
+        self.code == 0
+        // self.code == BiliResponseCode::Success
     }
 
     pub fn data(self) -> Result<T, Error> {
         if self.is_success() {
-            Ok(self.data)
+            self.data.ok_or(Error::from("No data in response"))
         } else {
-            Err(Error::ResponseError(self.message))
+            Err(Error::QueryError(self.message))
         }
     }
 }
@@ -37,6 +38,8 @@ pub enum BiliResponseCode {
     CoinShortage = -104,
     CaptchaError = -105,
     CsrfError = -111,
+    
+    DangerError = -352,
 
     RequestError = -400,
     AccountException = -403,
@@ -72,6 +75,10 @@ pub enum BiliResponseCode {
     RsaDecryptFail = 86000,
 
     ArgsError = 2001000,
+
+
+    #[serde(default)]
+    OtherError,
 }
 
 impl Display for BiliResponseCode {
@@ -93,6 +100,7 @@ impl Display for BiliResponseCode {
             BiliResponseCode::CoinToSelf => write!(f, "不能给自己投币"),
             BiliResponseCode::CoinTooMuch => write!(f, "投币数量超过限制"),
 
+            BiliResponseCode::DangerError => write!(f, "风控错误"),
             BiliResponseCode::GeetestError => write!(f, "极验服务出错"),
 
             
@@ -119,6 +127,8 @@ impl Display for BiliResponseCode {
             BiliResponseCode::VideoInvisible => write!(f, "视频不可见"),
             BiliResponseCode::VideoNotFound => write!(f, "视频不存在"),
             BiliResponseCode::VideoNotFound2 => write!(f, "视频不存在"),
+
+            BiliResponseCode::OtherError => write!(f, "其他错误"),
         }
     }
 }

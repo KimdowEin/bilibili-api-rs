@@ -44,7 +44,7 @@ pub struct Dimension {
     pub width: u64,
     pub height: u64,
     /// 是否反转
-    pub rotate: bool,
+    pub rotate: u8,
 }
 
 #[derive(Debug, Default, Serialize_repr, Deserialize_repr, )]

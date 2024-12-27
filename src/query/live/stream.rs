@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::model::live::stream::{Qn, Quality};
+use crate::{model::live::stream::{Qn, Quality}, traits::Query};
 
 pub const LIVE_STREAM_URL: &str = "https://api.live.bilibili.com/room/v1/Room/playUrl";
 
@@ -11,4 +11,7 @@ pub struct LiveStreamQuery {
     pub qn: Option<Qn>,
     pub quality: Option<Quality>,
 
+}
+impl Query for LiveStreamQuery {
+    
 }

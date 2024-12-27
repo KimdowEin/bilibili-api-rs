@@ -103,7 +103,7 @@ pub struct Owner {
 #[derive(Debug, Default, Serialize, Deserialize, )]
 pub struct Subtitle {
     ///是否允许提交字幕
-    pub allow_submit: bool,
+    pub allow_submit: u8,
     /// 字幕列表
     pub list: Vec<SubtitleItem>,
 }

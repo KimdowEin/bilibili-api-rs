@@ -15,7 +15,7 @@ pub trait Query: Serialize+ DeserializeOwned + Sized {
     }
 
     /// 生成需要签名的query
-    fn sign(&self, mixin_key: &str) -> String
+    fn sign(&self, mixin_key: &str) -> Result<String, Error>
     where
         Self: WbiSign,
     {
@@ -24,7 +24,7 @@ pub trait Query: Serialize+ DeserializeOwned + Sized {
             .unwrap()
             .as_secs();
         let wts = format!("wts={}", timestamp);
-        let ori_query = self.to_query().unwrap();
+        let ori_query = self.to_query()?;
         let mut querys = ori_query.split("&").collect::<Vec<&str>>();
         querys.push(&wts);
         querys.sort();
@@ -33,7 +33,7 @@ pub trait Query: Serialize+ DeserializeOwned + Sized {
 
         let w_rid = format!("w_rid={:?}", md5::compute(&hash_query));
         let query = format!("{}&{}&{}", ori_query, w_rid, wts);
-        query
+        Ok(query)
     }
 
 }

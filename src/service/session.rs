@@ -1,5 +1,5 @@
 use std::{
-    fs::File, io::{BufReader, Write}, ops::Deref, path::PathBuf, sync::Arc
+    fs::File, io::{BufReader, Write}, ops::Deref, path::{Path, PathBuf}, sync::Arc
 };
 
 use reqwest::{
@@ -70,14 +70,15 @@ impl Session {
         }
     }
 
-    pub fn new_with_path(path: PathBuf) -> Result<Self, Error> {
+    pub fn new_with_path<P>(path: P) -> Result<Self, Error> 
+    where P: AsRef<Path>,{
         let mut file = File::open(&path)?;
         let reader = BufReader::new(&mut file);
         let cookies: Vec<CookieItem> = serde_json::from_reader(reader)?;
 
         let state = Arc::new(SessionState {
             jar: Arc::new(Jar::default()),
-            cookies_path: path,
+            cookies_path: path.as_ref().to_path_buf(),
         });
 
         cookies.into_iter().for_each(|cookie| {
