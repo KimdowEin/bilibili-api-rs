@@ -92,7 +92,7 @@ async fn main() {
     - [x] 密码登录
     - [ ] 二维码登录
     - [ ] SNS 登录 (QQ & 微信 & 微博)
-  - [o] 登录基本信息
+  - [x] 登录基本信息
   - [o] 个人中心
   - [ ] 注销登录
   - [ ] 登录记录
@@ -145,7 +145,7 @@ async fn main() {
   - service 一些模板代码和session逻辑
 - 命名
   - Query Model Url 前缀有app的是app端的api,没有的是web端或两者共用的api
-  - 字段前缀有app的是app专属，Option是可选
+  - 字段前缀有app的是app专属 Option是可选
 - 一般步骤
   1. 找到请求体(???Query)
   2. 生成请求

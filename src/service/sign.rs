@@ -18,7 +18,7 @@ impl Session {
 
     }
     /// 获取 wbi key
-    pub async fn key(&self) -> String {
+    pub async fn mixin_key(&self) -> String {
         self.mixin_key.read().await.clone()
     }
 }

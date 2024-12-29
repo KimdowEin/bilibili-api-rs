@@ -29,3 +29,5 @@ impl VideoInfoQuery {
 }
 impl Query for VideoInfoQuery {}
 impl WbiSign for VideoInfoQuery {}
+
+

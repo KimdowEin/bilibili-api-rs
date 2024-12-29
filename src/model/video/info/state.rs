@@ -7,7 +7,7 @@ pub struct VideoStat {
     /// 稿件avid
     pub aid: u64,
     /// 播放数
-    pub view: String,
+    pub view: u64,
     /// 弹幕数
     pub danmaku: u64,
     /// 评论数

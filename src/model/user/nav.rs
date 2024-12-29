@@ -9,8 +9,8 @@ pub struct NavInfo {
     #[serde(rename = "isLogin")]
     pub is_login: bool,
     ///用户信息
-    #[serde(flatten, default)]
-    pub nav: UserNav,
+    #[serde(flatten)]
+    pub nav: Option<UserNav>,
     /// Wbi 签名实时口令
     pub wbi_img: Wbi,
 }

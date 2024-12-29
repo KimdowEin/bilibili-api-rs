@@ -103,7 +103,7 @@ pub struct Owner {
 #[derive(Debug, Default, Serialize, Deserialize, )]
 pub struct Subtitle {
     ///是否允许提交字幕
-    pub allow_submit: u8,
+    pub allow_submit: bool,
     /// 字幕列表
     pub list: Vec<SubtitleItem>,
 }
@@ -119,9 +119,11 @@ pub struct SubtitleItem {
     /// 是否锁定
     pub is_lock: bool,
     /// 作者mid
-    pub author_mid: u64,
+    pub author_mid: Option<u64>,
     /// json格式字幕文件url
     pub subtitle_url: String,
+
+    // author
 }
 
 
@@ -140,15 +142,15 @@ pub struct VideoInfo {
     #[serde(rename = "Card")]
     /// 视频up主信息
     pub card: OwnerCard,
-    /// 视频Tag信息
-    #[serde(rename = "Tags")]
-    pub tags: Tags,
-    /// 视频热评信息
-    #[serde(rename = "Reply")]
-    pub reply: Reply,
-    /// 视频相关推荐
-    #[serde(rename = "Related")]
-    pub related: Vec<Related>,
+    // /// 视频Tag信息
+    // #[serde(rename = "Tags")]
+    // pub tags: Tags,
+    // /// 视频热评信息
+    // #[serde(rename = "Reply")]
+    // pub reply: Reply,
+    // /// 视频相关推荐
+    // #[serde(rename = "Related")]
+    // pub related: Vec<Related>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

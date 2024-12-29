@@ -73,32 +73,27 @@ mod tests {
     const BVID: &str = "BV1wDCwYfE2f";
     use super::*;
     #[tokio::test]
-    #[ignore]
-    async fn test_get_video_info() -> Result<(), Error> {
-        let session = Session::new_with_path("./cookies.json")?;
-        let query = VideoInfoQuery::new(None, Some(BVID.to_string()));
-        let url = format!("{}?{}", VIDEO_INFO_URL, query.sign(&*session.mixin_key.read().await)?);
-        println!("{}", url);
-        let info = session.get(url).send().await?
-            .text().await?;
-        // println!("{}", info);
-        Ok(())
+    async fn test_get_video_info() {
+        let mut session = Session::new_with_path("./cookies.json").unwrap();
+        session.get_mixin_key().await.unwrap();
+        let query = VideoInfoQuery::new(None, BVID.to_string());
+
+        let video_info = session.get_video_info(query).await.unwrap();
+
+        assert_eq!("躁転彼女 / 香椎モイミ feat. 雪解",&video_info.view.title);
     }
+    
     #[tokio::test]
-    async fn test_get_video_view() -> Result<(), Error> {
-        let session = Session::new_with_path("./cookies.json")?;
+    async fn test_get_video_view(){
+        let mut session = Session::new_with_path("./cookies.json").unwrap();
+        session.get_mixin_key().await.unwrap();
+        
         let query = VideoInfoQuery::new(None, Some(BVID.to_string()));
+        
+        let video_info = session.get_video_view(query).await.unwrap();
+        
+        assert_eq!("躁転彼女 / 香椎モイミ feat. 雪解",&video_info.title);
 
-        // let info = session.get_video_view(query).await?;
-        let url = format!("{}?{}", VIDEO_VIEW_URL,query.to_query()?);
-        let info = session.get(url).send().await?.text().await?;
-        // println!("{}", info);
-
-        let info:BiliResponse<VideoView> = serde_json::from_str(&info)?;
-
-        // VideoView
-        // println!("{}\n{}",info.title,info.owner.name);
-        Ok(())
 
     }
 }

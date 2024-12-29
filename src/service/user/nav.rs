@@ -11,3 +11,15 @@ impl Session {
     }
 }
 
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[tokio::test]
+    async fn test_get_nav() {
+        let session = Session::new_with_path("./cookies.json").unwrap();
+        let nav = session.get_nav().await.unwrap();
+        assert!(nav.is_login)
+    }
+}
