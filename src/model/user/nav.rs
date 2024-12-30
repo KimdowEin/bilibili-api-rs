@@ -58,9 +58,6 @@ pub struct UserNav {
 }
 
 
-
-
-
 #[derive(Debug, Default, Deserialize, Serialize)]
 pub struct Wallet {
     pub mid: u64,

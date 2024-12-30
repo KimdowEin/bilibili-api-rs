@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::model::live::info::LiveRoomNews;
 
-use super::{exp::MasterLevel, official::OfficialVerify};
+use super::{exp::{LevelView, MasterLevel}, official::{Official, OfficialVerify}, vip::Vip2};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct AccountInfo {
@@ -25,6 +25,26 @@ pub struct AccountInfo2 {
     pub gender:i8,
 }
 
+#[derive(Debug, Default, Serialize, Deserialize, )]
+pub struct Owner {
+    /// UP mid
+    pub mid: u64,
+    /// UP昵称
+    pub name: String,
+    /// UP头像
+    pub face: String,
+}
+
+#[derive(Debug, Default, Serialize, Deserialize, )]
+pub struct Owner2 {
+    /// UP mid
+    pub mid: String,
+    /// UP昵称
+    pub name: String,
+    /// UP头像
+    pub face: String,
+}
+/// 用户直播间信息
 #[derive(Debug, Serialize, Deserialize)]
 pub struct AccountLiveInfo{
     pub info: AccountInfo2,
@@ -38,4 +58,62 @@ pub struct AccountLiveInfo{
     pub room_news:LiveRoomNews,
 }
 
+/// 视频用户栏信息
+#[derive(Debug, Serialize, Deserialize)]
+pub struct OwnerCard {
+    pub card: Card,
+    pub space: Sapce,
+    pub following: bool,
+    pub archive_count: u64,
+    pub article_count: u64,
+    pub follower: u64,
+    pub like_num: u64,
+}
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Card {
+    #[serde(flatten)]
+    pub owner:Owner2,
+    pub sex: String,
+    pub face_nft: u8,
+    pub fans: u64,
+    pub attention: u64,
+    pub sign: String,
+    pub level_info: LevelView,
+    pub pendant: Pendant,
+    pub nameplate: Nameplate,
+    #[serde(rename = "Official")]
+    pub official: Official,
+    pub official_verify: OfficialVerify,
+    pub vip: Vip2,
+    pub is_senior_member: u8,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Pendant {
+    pub pid: u64,
+    pub name: String,
+    pub image: String,
+}
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Nameplate {
+    pub nid: u64,
+    pub name: String,
+    pub image: String,
+    pub image_small: String,
+    pub level: String,
+    pub condition: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Sapce {
+    pub s_img: String,
+    pub l_img: String,
+}
+
+#[derive(Debug, Default, Serialize, Deserialize, )]
+pub struct Staff {
+    #[serde(flatten)]
+    pub owner: Owner,
+    pub title: String, //名称
+}

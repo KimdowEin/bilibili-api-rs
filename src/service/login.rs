@@ -71,6 +71,8 @@ mod tests {
             .captcha()
             .await
             .unwrap();
+
+        assert!(!captcha.token.is_empty())
     }
 
     #[tokio::test]
@@ -81,14 +83,14 @@ mod tests {
             .await
             .unwrap();
 
+        assert!(!key.salt.is_empty())
     }
 
 
     #[tokio::test]
     async fn test_login_by_password(){
         let session = Session::new().unwrap();
-        let captcha = Session::new()
-            .unwrap()
+        let captcha = session
             .captcha()
             .await
             .unwrap();
@@ -100,10 +102,10 @@ mod tests {
             None,
             None,
         );
-        let err = Session::new()
-            .unwrap()
+        let err = session
             .login_by_password(query)
             .await;
+
         assert!(err.is_err());
     }
 }

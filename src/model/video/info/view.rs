@@ -1,8 +1,8 @@
 use serde::{Deserialize, Serialize};
 
-use crate::model::{user::{official::{Official, OfficialVerify}, vip::Vip2}, video::zone::Zone};
+use crate::model::{user::account::{Owner, OwnerCard, Staff}, video::zone::Zone};
 
-use super::{cids::Cids, desc::{VideoDesc, VideoDesc2}, state::{Dimension, VideoStat, VideoState}};
+use super::{cids::Cids, desc::{VideoDesc, VideoDesc2}, state::{Dimension, Rights, VideoStat, VideoState}};
 
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -62,43 +62,7 @@ pub struct VideoView {
     pub staff: Vec<Staff>,
 }
 
-#[derive(Debug, Default, Serialize, Deserialize, )]
-pub struct Rights {
-    /// 是否允许承包
-    pub bp: u8,
-    /// 是否支持充电
-    pub elec: u8,
-    /// 是否支持下载
-    pub download: u8,
-    /// 是否电影
-    pub movie: u8,
-    /// 是否PGC付费
-    pub pay: u8,
-    /// 是否有高码率
-    pub hd5: u8,
-    /// 是否禁止转载
-    pub no_reprint: u8,
-    /// 是否自动播放
-    pub autoplay: u8,
-    /// 是否UGC付费
-    pub ugc_pay: u8,
-    /// 是否合作视频
-    pub is_cooperation: u8,
-    /// 是否互动视频
-    pub is_stein_gate: u8,
-    /// 是否全景视频
-    pub is_360: u8,
-}
 
-#[derive(Debug, Default, Serialize, Deserialize, )]
-pub struct Owner {
-    /// UP mid
-    pub mid: u64,
-    /// UP昵称
-    pub name: String,
-    /// UP头像
-    pub face: String,
-}
 
 #[derive(Debug, Default, Serialize, Deserialize, )]
 pub struct Subtitle {
@@ -127,12 +91,6 @@ pub struct SubtitleItem {
 }
 
 
-#[derive(Debug, Default, Serialize, Deserialize, )]
-pub struct Staff {
-    #[serde(flatten)]
-    pub owner: Owner,
-    pub title: String, //名称
-}
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct VideoInfo {
@@ -154,61 +112,6 @@ pub struct VideoInfo {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct OwnerCard {
-    pub card: Card,
-    pub space: Sapce,
-    pub following: bool,
-    pub archive_count: u64,
-    pub article_count: u64,
-    pub follower: u64,
-    pub like_num: u64,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Card {
-    #[serde(flatten)]
-    pub owner:Owner,
-    pub sex: String,
-    pub face_nft: u8,
-    pub fans: u64,
-    pub attention: u64,
-    pub sign: String,
-    pub level_info: LevelInfo,
-    pub pendant: Pendant,
-    pub nameplate: Nameplate,
-    #[serde(rename = "Official")]
-    pub official: Official,
-    pub official_verify: OfficialVerify,
-    pub vip: Vip2,
-    pub is_senior_member: u8,
-}
-#[derive(Debug, Serialize, Deserialize)]
-pub struct LevelInfo {
-    pub current_level: u8,
-}
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Pendant {
-    pub pid: u64,
-    pub name: String,
-    pub image: String,
-}
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Nameplate {
-    pub nid: u64,
-    pub name: String,
-    pub image: String,
-    pub image_small: String,
-    pub level: String,
-    pub condition: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Sapce {
-    pub s_img: String,
-    pub l_img: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
 pub struct Tags {}
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -216,19 +119,3 @@ pub struct Reply {}
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Related {}
 
-// #[cfg(test)]
-// mod test {
-//     use super::*;
-//     use crate::common::Session;
-
-//     #[tokio::test]
-//     async fn test_video_info_get_web_video_info() {
-//         let session = Session::new();
-//         let query = WebVideoInfoQuery::new(None, "BV1Ty2pYNE5u".to_owned());
-//         let result = session.get_web_video_info(query).await;
-
-//         println!("{:?}",result);
-
-//         assert!(result.is_ok());
-//     }
-// }

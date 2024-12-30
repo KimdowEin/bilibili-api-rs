@@ -31,7 +31,7 @@ pub struct Vip2 {
     #[serde(rename = "type")]
     pub vip_type: u8,
     pub status: u8,
-    pub due_data: u64,
+    pub due_data: Option<u64>,
 
     pub vip_pay_type: u8,
     pub label: VipLabel2,

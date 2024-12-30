@@ -4,10 +4,10 @@ use crate::traits::{Query, WbiSign};
 
 use crate::model::video::stream::{Fnval, Qn};
 
-pub const WEB_PLAYURL: &str = "https://api.bilibili.com/x/player/wbi/playurl";
+pub const VIDEO_STREAM_URL: &str = "https://api.bilibili.com/x/player/wbi/playurl";
 
-#[derive(Debug,Default, Serialize, Deserialize)]
-pub struct PlayerUrlQuery {
+#[derive(Debug, Default, Serialize, Deserialize)]
+pub struct VideoStreamQuery {
     avid: Option<u64>,
     bvid: Option<String>,
     cid: u64,
@@ -21,22 +21,26 @@ pub struct PlayerUrlQuery {
     platform: Option<String>,
     // high_quality: Option<u8>,
 }
-impl Query for PlayerUrlQuery {}
-impl WbiSign for PlayerUrlQuery {}
-impl PlayerUrlQuery {
-    pub fn new(
-        avid: Option<u64>,
-        bvid: Option<String>,
+impl Query for VideoStreamQuery {}
+impl WbiSign for VideoStreamQuery {}
+impl VideoStreamQuery {
+    pub fn new<N, S>(
+        avid: N,
+        bvid: S,
         cid: u64,
         qn: Option<Qn>,
         fnval: Option<Fnval>,
         fourk: Option<bool>,
         platform: Option<String>,
-    ) -> Self {
+    ) -> Self
+    where
+        N: Into<Option<u64>>,
+        S: Into<Option<String>>,
+    {
         let fourk = fourk.map(|b| b as u8);
-        PlayerUrlQuery {
-            avid,
-            bvid,
+        VideoStreamQuery {
+            avid: avid.into(),
+            bvid: bvid.into(),
             cid,
             qn,
             fnval,
@@ -45,4 +49,3 @@ impl PlayerUrlQuery {
         }
     }
 }
-

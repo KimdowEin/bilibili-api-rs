@@ -36,8 +36,33 @@ pub struct VideoStat {
     pub copyright: u8,
 }
 
-
-
+#[derive(Debug, Default, Serialize, Deserialize, )]
+pub struct Rights {
+    /// 是否允许承包
+    pub bp: u8,
+    /// 是否支持充电
+    pub elec: u8,
+    /// 是否支持下载
+    pub download: u8,
+    /// 是否电影
+    pub movie: u8,
+    /// 是否PGC付费
+    pub pay: u8,
+    /// 是否有高码率
+    pub hd5: u8,
+    /// 是否禁止转载
+    pub no_reprint: u8,
+    /// 是否自动播放
+    pub autoplay: u8,
+    /// 是否UGC付费
+    pub ugc_pay: u8,
+    /// 是否合作视频
+    pub is_cooperation: u8,
+    /// 是否互动视频
+    pub is_stein_gate: u8,
+    /// 是否全景视频
+    pub is_360: u8,
+}
 
 #[derive(Debug, Default, Serialize, Deserialize, )]
 pub struct Dimension {

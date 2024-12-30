@@ -14,6 +14,12 @@ pub struct ExpReward {
 
 pub type ExpCoin = u32;
 
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct LevelView {
+    pub current_level: u8,
+}
+
 #[derive(Debug, Default, Deserialize, Serialize)]
 pub struct LevelInfo {
     /// 当前等级

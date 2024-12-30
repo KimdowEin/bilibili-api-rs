@@ -72,27 +72,8 @@ impl Session {
 
     pub fn new_with_path<P>(path: P) -> Result<Self, Error> 
     where P: AsRef<Path>,{
-        let mut file = File::open(&path)?;
-        let reader = BufReader::new(&mut file);
-        let cookies: Vec<CookieItem> = serde_json::from_reader(reader)?;
-
-        let state = Arc::new(SessionState {
-            jar: Arc::new(Jar::default()),
-            cookies_path: path.as_ref().to_path_buf(),
-        });
-
-        cookies.into_iter().for_each(|cookie| {
-            let CookieItem { url, cookies } = cookie;
-            let url = Url::parse(&url).unwrap();
-
-            cookies
-                .split(";")
-                .map(|x| x.trim())
-                .for_each(|cookie| {
-                    state.jar.add_cookie_str(cookie, &url);
-                });
-        });
-
+        
+        let state = Arc::new(SessionState::from_path(path)?);
         let headers = headers();
 
         let client = Client::builder()
@@ -143,6 +124,33 @@ impl Default for SessionState {
             jar: Arc::new(Jar::default()),
         }
     }
+}
+impl SessionState {
+    pub fn from_path<P>(path: P) -> Result<Self, Error> 
+        where P: AsRef<Path> {
+            let mut file = File::open(&path)?;
+            let reader = BufReader::new(&mut file);
+            let cookies: Vec<CookieItem> = serde_json::from_reader(reader)?;
+    
+            let state = SessionState {
+                jar: Arc::new(Jar::default()),
+                cookies_path: path.as_ref().to_path_buf(),
+            };
+    
+            cookies.into_iter().for_each(|cookie| {
+                let CookieItem { url, cookies } = cookie;
+                let url = Url::parse(&url).unwrap();
+    
+                cookies
+                    .split(";")
+                    .map(|x| x.trim())
+                    .for_each(|cookie| {
+                        state.jar.add_cookie_str(cookie, &url);
+                    });
+            });
+            Ok(state)
+    }
+    
 }
 
 #[derive(Debug, Default, Deserialize, Serialize)]
