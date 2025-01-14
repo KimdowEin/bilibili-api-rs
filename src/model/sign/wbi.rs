@@ -2,8 +2,10 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct Wbi {
-    img_url: String,
-    sub_url: String,
+    #[serde(alias = "img_url")]
+    img: String,
+    #[serde(alias = "sub_url")]
+    sub: String,
 }
 
 const MIXIN_KEY_ENC_TAB: [u8; 64] = [
@@ -17,8 +19,8 @@ impl Wbi {
     /// 获取 wbi 签名
     pub fn mixin_key(&self) -> String {
         let mut raw_wbi = String::new();
-        raw_wbi.push_str(&self.img_url);
-        raw_wbi.push_str(&self.sub_url);
+        raw_wbi.push_str(&self.img);
+        raw_wbi.push_str(&self.sub);
         let binding = MIXIN_KEY_ENC_TAB
             .iter()
             .map(|&x| raw_wbi.as_bytes()[x as usize])
@@ -39,8 +41,8 @@ mod test {
     #[test]
     fn mixin_key_test() {
         let wbi = Wbi{
-            img_url: "7cd084941338484aae1ad9425b84077c".to_owned(),
-            sub_url: "4932caff0ff746eab6f01bf08b70ac45".to_owned(),
+            img: "7cd084941338484aae1ad9425b84077c".to_owned(),
+            sub: "4932caff0ff746eab6f01bf08b70ac45".to_owned(),
         };
         let mixin_key = wbi.mixin_key();
         assert_eq!(mixin_key, "ea1db124af3c7062474693fa704f4ff8");

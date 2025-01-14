@@ -1,3 +1,5 @@
+use std::time;
+
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -16,6 +18,9 @@ pub enum Error {
     RsaError1(#[from] rsa::Error),
     #[error("{0}")]
     RsaError2(#[from] rsa::pkcs8::spki::Error),
+    #[error("{0}")]
+    SystemTimeError(#[from] time::SystemTimeError),
+
     #[error("{0}")]
     QueryError(String),
     #[error("{0}")]

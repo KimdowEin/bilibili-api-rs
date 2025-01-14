@@ -5,9 +5,8 @@ pub struct Official {
     /// todo
     pub role: u64,
     pub title: String,
-    pub desc: String,
-    #[serde(rename = "type")]
-    pub is_verified: u8,
+    #[serde(flatten)]
+    pub verify: OfficialVerify,
 }
 #[derive(Debug, Default, Deserialize, Serialize)]
 pub struct OfficialVerify {

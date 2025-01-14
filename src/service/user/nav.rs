@@ -1,4 +1,9 @@
-use crate::{error::Error, model::{response::BiliResponse, user::nav::NavInfo}, query::user::nav::NAV_INFO_URL, service::session::Session};
+use crate::{
+    error::Error,
+    model::{response::BiliResponse, user::nav::NavInfo},
+    query::user::nav::NAV_INFO_URL,
+    service::session::Session,
+};
 
 impl Session {
     pub async fn get_nav(&self) -> Result<NavInfo, Error> {
@@ -11,8 +16,6 @@ impl Session {
     }
 }
 
-
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -20,6 +23,7 @@ mod tests {
     async fn test_get_nav() {
         let session = Session::new_with_path("./cookies.json").unwrap();
         let nav = session.get_nav().await.unwrap();
-        assert!(nav.is_login)
+        assert!(nav.is_login);
+        assert!(nav.nav.is_some());
     }
 }

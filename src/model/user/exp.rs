@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-
+use serde_aux::field_attributes::deserialize_string_from_number;
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ExpReward {
     pub login: bool,
@@ -29,6 +29,7 @@ pub struct LevelInfo {
     /// 当前经验
     pub current_exp: u64,
     /// 下级等级经验
+    #[serde(deserialize_with = "deserialize_string_from_number")]
     pub next_exp: String,
 }
 

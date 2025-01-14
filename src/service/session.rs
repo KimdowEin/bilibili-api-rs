@@ -1,5 +1,9 @@
 use std::{
-    fs::File, io::{BufReader, Write}, ops::Deref, path::{Path, PathBuf}, sync::Arc
+    fs::File,
+    io::{BufReader, Write},
+    ops::Deref,
+    path::{Path, PathBuf},
+    sync::Arc,
 };
 
 use reqwest::{
@@ -11,7 +15,7 @@ use tokio::sync::RwLock;
 
 use crate::error::Error;
 
-const COOKIES_URLS: &str = "https://api.bilibili.com";
+pub const COOKIES_URL: &str = "https://api.bilibili.com";
 
 pub fn headers() -> header::HeaderMap {
     let mut headers = header::HeaderMap::new();
@@ -26,7 +30,6 @@ pub fn headers() -> header::HeaderMap {
     );
     headers
 }
-
 
 pub struct Session {
     pub state: Arc<SessionState>,
@@ -70,9 +73,10 @@ impl Session {
         }
     }
 
-    pub fn new_with_path<P>(path: P) -> Result<Self, Error> 
-    where P: AsRef<Path>,{
-        
+    pub fn new_with_path<P>(path: P) -> Result<Self, Error>
+    where
+        P: AsRef<Path>,
+    {
         let state = Arc::new(SessionState::from_path(path)?);
         let headers = headers();
 
@@ -93,13 +97,13 @@ impl Session {
     pub fn save_cookies(&self) -> Result<(), Error> {
         let mut file = File::create(&self.state.cookies_path)?;
         let mut cookies = Vec::new();
-        let to_url = Url::parse(COOKIES_URLS).unwrap();
+        let to_url = Url::parse(COOKIES_URL).unwrap();
         let cookie = self.state.jar.cookies(&to_url);
         if let Some(cookie) = cookie {
             let cookie = cookie.to_str().unwrap();
 
             let cookie_item = CookieItem {
-                url: COOKIES_URLS.to_string(),
+                url: COOKIES_URL.to_string(),
                 cookies: cookie.to_string(),
             };
             cookies.push(cookie_item);
@@ -109,6 +113,32 @@ impl Session {
         file.write_all(json.as_bytes())?;
 
         Ok(())
+    }
+
+    pub fn get_cookie(&self, url: &str, key: &str) -> Option<String> {
+        let url = Url::parse(url).unwrap();
+        let cookies = self.state.jar.cookies(&url);
+        let cookies = if let Some(cookies) = cookies {
+            cookies
+        } else {
+            return None;
+        };
+
+        let cookies = cookies.to_str().unwrap();
+        for c in cookies.split(';') {
+            let mut parts = c.splitn(2, '=');
+            if let (Some(c_key), Some(value)) = (parts.next(), parts.next()) {
+                if c_key.trim() == key.trim() {
+                    return Some(value.to_string());
+                }
+            }
+        }
+        None
+    }
+
+    pub fn set_ticket(&self, ticket: &str) {
+        let url = Url::parse(COOKIES_URL).unwrap();
+        self.state.jar.add_cookie_str(ticket, &url);
     }
 }
 
@@ -126,31 +156,29 @@ impl Default for SessionState {
     }
 }
 impl SessionState {
-    pub fn from_path<P>(path: P) -> Result<Self, Error> 
-        where P: AsRef<Path> {
-            let mut file = File::open(&path)?;
-            let reader = BufReader::new(&mut file);
-            let cookies: Vec<CookieItem> = serde_json::from_reader(reader)?;
-    
-            let state = SessionState {
-                jar: Arc::new(Jar::default()),
-                cookies_path: path.as_ref().to_path_buf(),
-            };
-    
-            cookies.into_iter().for_each(|cookie| {
-                let CookieItem { url, cookies } = cookie;
-                let url = Url::parse(&url).unwrap();
-    
-                cookies
-                    .split(";")
-                    .map(|x| x.trim())
-                    .for_each(|cookie| {
-                        state.jar.add_cookie_str(cookie, &url);
-                    });
+    pub fn from_path<P>(path: P) -> Result<Self, Error>
+    where
+        P: AsRef<Path>,
+    {
+        let mut file = File::open(&path)?;
+        let reader = BufReader::new(&mut file);
+        let cookies: Vec<CookieItem> = serde_json::from_reader(reader)?;
+
+        let state = SessionState {
+            jar: Arc::new(Jar::default()),
+            cookies_path: path.as_ref().to_path_buf(),
+        };
+
+        cookies.into_iter().for_each(|cookie| {
+            let CookieItem { url, cookies } = cookie;
+            let url = Url::parse(&url).unwrap();
+
+            cookies.split(";").map(|x| x.trim()).for_each(|cookie| {
+                state.jar.add_cookie_str(cookie, &url);
             });
-            Ok(state)
+        });
+        Ok(state)
     }
-    
 }
 
 #[derive(Debug, Default, Deserialize, Serialize)]

@@ -1,8 +1,8 @@
 use serde::{Deserialize, Serialize};
-
+use serde_aux::field_attributes::deserialize_number_from_string;
 use crate::model::live::info::LiveRoomNews;
 
-use super::{exp::{LevelView, MasterLevel}, official::{Official, OfficialVerify}, vip::Vip2};
+use super::{exp::{LevelView, MasterLevel}, official::{Official, OfficialVerify}, vip::Vip};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct AccountInfo {
@@ -28,6 +28,7 @@ pub struct AccountInfo2 {
 #[derive(Debug, Default, Serialize, Deserialize, )]
 pub struct Owner {
     /// UP mid
+    #[serde(deserialize_with = "deserialize_number_from_string")]
     pub mid: u64,
     /// UP昵称
     pub name: String,
@@ -35,15 +36,6 @@ pub struct Owner {
     pub face: String,
 }
 
-#[derive(Debug, Default, Serialize, Deserialize, )]
-pub struct Owner2 {
-    /// UP mid
-    pub mid: String,
-    /// UP昵称
-    pub name: String,
-    /// UP头像
-    pub face: String,
-}
 /// 用户直播间信息
 #[derive(Debug, Serialize, Deserialize)]
 pub struct AccountLiveInfo{
@@ -61,7 +53,7 @@ pub struct AccountLiveInfo{
 /// 视频用户栏信息
 #[derive(Debug, Serialize, Deserialize)]
 pub struct OwnerCard {
-    pub card: Card,
+    pub card: CardView,
     pub space: Sapce,
     pub following: bool,
     pub archive_count: u64,
@@ -71,21 +63,22 @@ pub struct OwnerCard {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct Card {
+pub struct CardView {
     #[serde(flatten)]
-    pub owner:Owner2,
+    pub owner:Owner,
     pub sex: String,
     pub face_nft: u8,
+    pub birthday: String,
     pub fans: u64,
     pub attention: u64,
     pub sign: String,
     pub level_info: LevelView,
     pub pendant: Pendant,
-    pub nameplate: Nameplate,
+    pub nameplate: NamePlate,
     #[serde(rename = "Official")]
     pub official: Official,
     pub official_verify: OfficialVerify,
-    pub vip: Vip2,
+    pub vip: Vip,
     pub is_senior_member: u8,
 }
 
@@ -96,7 +89,7 @@ pub struct Pendant {
     pub image: String,
 }
 #[derive(Debug, Serialize, Deserialize)]
-pub struct Nameplate {
+pub struct NamePlate {
     pub nid: u64,
     pub name: String,
     pub image: String,

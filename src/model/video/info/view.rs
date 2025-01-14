@@ -4,7 +4,8 @@ use crate::model::{user::account::{Owner, OwnerCard, Staff}, video::zone::Zone};
 
 use super::{cids::Cids, desc::{VideoDesc, VideoDesc2}, state::{Dimension, Rights, VideoStat, VideoState}};
 
-
+/// 视频信息概览
+/// https://gitee.com/KimdowEin/bilibili-API-collect/blob/master/docs/video/info.md#%E8%8E%B7%E5%8F%96%E8%A7%86%E9%A2%91%E8%AF%A6%E7%BB%86%E4%BF%A1%E6%81%AFweb%E7%AB%AF
 #[derive(Debug, Serialize, Deserialize)]
 pub struct VideoView {
     /// 稿件bvid
@@ -90,8 +91,8 @@ pub struct SubtitleItem {
     // author
 }
 
-
-
+///  视频页详细信息
+/// https://gitee.com/KimdowEin/bilibili-API-collect/blob/master/docs/video/info.md#%E8%8E%B7%E5%8F%96%E8%A7%86%E9%A2%91%E8%B6%85%E8%AF%A6%E7%BB%86%E4%BF%A1%E6%81%AFweb%E7%AB%AF
 #[derive(Debug, Serialize, Deserialize)]
 pub struct VideoInfo {
     /// 视频基本信息

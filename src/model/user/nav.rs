@@ -1,9 +1,14 @@
+use super::{
+    exp::LevelInfo,
+    official::{Official, OfficialVerify},
+    vip::Vip,
+};
 use crate::model::sign::wbi::Wbi;
 use serde::{Deserialize, Serialize};
+use serde_aux::field_attributes::deserialize_bool_from_anything;
 
-use super::{exp::LevelInfo, official::{Official, OfficialVerify}, vip::Vip};
-
-///导航栏
+///导航栏   
+/// https://gitee.com/KimdowEin/bilibili-API-collect/blob/master/docs/login/login_info.md#%E5%AF%BC%E8%88%AA%E6%A0%8F%E7%94%A8%E6%88%B7%E4%BF%A1%E6%81%AF
 #[derive(Debug, Deserialize, Serialize)]
 pub struct NavInfo {
     #[serde(rename = "isLogin")]
@@ -15,11 +20,11 @@ pub struct NavInfo {
     pub wbi_img: Wbi,
 }
 
-
 /// 导航栏用户信息
 #[derive(Debug, Deserialize, Serialize)]
 pub struct UserNav {
     /// 是否验证邮箱
+    #[serde(deserialize_with = "deserialize_bool_from_anything")]
     pub email_verified: bool,
     /// 头像
     pub face: String,
@@ -28,9 +33,10 @@ pub struct UserNav {
     /// 用户id
     pub mid: u64,
     /// 是否验证手机
+    #[serde(deserialize_with = "deserialize_bool_from_anything")]
     pub mobile_verified: bool,
     /// 硬币数
-    pub money: u64,
+    pub money: f64,
     /// 节操值
     /// 老古董了，就是信誉值，不确定现在还有没有用
     pub moral: i16,
@@ -41,11 +47,12 @@ pub struct UserNav {
     pub official_verify: OfficialVerify,
 
     // pendant: Pendant,
-
     /// 用户名
     pub uname: String,
+
+    /// 是否硬核会员
+    pub is_senior_member: u8,
     /// vip相关
-    #[serde(flatten, default)]
     pub vip: Vip,
     /// 钱包信息
     pub wallet: Wallet,
@@ -57,10 +64,127 @@ pub struct UserNav {
     pub is_jury: bool,
 }
 
-
 #[derive(Debug, Default, Deserialize, Serialize)]
 pub struct Wallet {
     pub mid: u64,
-    pub bcoin_balabce: u64,
+    pub bcoin_balance: u64,
     pub coupon_balance: u64,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_deserialize_nav_info() {
+        let json_str = r#"
+            {
+                "isLogin": true,
+                "email_verified": 0,
+                "face": "https://i2.hdslb.com/bfs/face/5119dcb5bdc7f65967bb5c714de199a9e2ea6c59.jpg",
+                "face_nft": 0,
+                "face_nft_type": 0,
+                "level_info": {
+                    "current_level": 5,
+                    "current_min": 10800,
+                    "current_exp": 23640,
+                    "next_exp": 28800
+                },
+                "mid": 200435669,
+                "mobile_verified": 1,
+                "money": 387.1,
+                "moral": 70,
+                "official": {
+                    "role": 0,
+                    "title": "",
+                    "desc": "",
+                    "type": -1
+                },
+                "officialVerify": {
+                    "type": -1,
+                    "desc": ""
+                },
+                "pendant": {
+                    "pid": 6335,
+                    "name": "HINA",
+                    "image": "https://i2.hdslb.com/bfs/garb/item/5d61ca63a09dbc6617ee980db7e45afec4ca4a6b.png",
+                    "expire": 0,
+                    "image_enhance": "https://i2.hdslb.com/bfs/garb/item/5d61ca63a09dbc6617ee980db7e45afec4ca4a6b.png",
+                    "image_enhance_frame": "",
+                    "n_pid": 6335
+                },
+                "scores": 0,
+                "uname": "弁鸴",
+                "vipDueDate": 1626451200000,
+                "vipStatus": 0,
+                "vipType": 1,
+                "vip_pay_type": 0,
+                "vip_theme_type": 0,
+                "vip_label": {
+                    "path": "",
+                    "text": "",
+                    "label_theme": "",
+                    "text_color": "",
+                    "bg_style": 0,
+                    "bg_color": "",
+                    "border_color": "",
+                    "use_img_label": true,
+                    "img_label_uri_hans": "",
+                    "img_label_uri_hant": "",
+                    "img_label_uri_hans_static": "https://i0.hdslb.com/bfs/vip/d7b702ef65a976b20ed854cbd04cb9e27341bb79.png",
+                    "img_label_uri_hant_static": "https://i0.hdslb.com/bfs/activity-plat/static/20220614/e369244d0b14644f5e1a06431e22a4d5/KJunwh19T5.png"
+                },
+                "vip_avatar_subscript": 0,
+                "vip_nickname_color": "",
+                "vip": {
+                    "type": 1,
+                    "status": 0,
+                    "due_date": 1626451200000,
+                    "vip_pay_type": 0,
+                    "theme_type": 0,
+                    "label": {
+                        "path": "",
+                        "text": "",
+                        "label_theme": "",
+                        "text_color": "",
+                        "bg_style": 0,
+                        "bg_color": "",
+                        "border_color": "",
+                        "use_img_label": true,
+                        "img_label_uri_hans": "",
+                        "img_label_uri_hant": "",
+                        "img_label_uri_hans_static": "https://i0.hdslb.com/bfs/vip/d7b702ef65a976b20ed854cbd04cb9e27341bb79.png",
+                        "img_label_uri_hant_static": "https://i0.hdslb.com/bfs/activity-plat/static/20220614/e369244d0b14644f5e1a06431e22a4d5/KJunwh19T5.png"
+                    },
+                    "avatar_subscript": 0,
+                    "nickname_color": "",
+                    "role": 0,
+                    "avatar_subscript_url": "",
+                    "tv_vip_status": 0,
+                    "tv_vip_pay_type": 0,
+                    "tv_due_date": 0,
+                    "avatar_icon": {
+                        "icon_resource": {}
+                    }
+                },
+                "wallet": {
+                    "mid": 200435669,
+                    "bcoin_balance": 0,
+                    "coupon_balance": 0,
+                    "coupon_due_time": 0
+                },
+                "has_shop": false,
+                "shop_url": "",
+                "answer_status": 0,
+                "is_senior_member": 0,
+                "wbi_img": {
+                    "img_url": "https://i0.hdslb.com/bfs/wbi/7cd084941338484aae1ad9425b84077c.png",
+                    "sub_url": "https://i0.hdslb.com/bfs/wbi/4932caff0ff746eab6f01bf08b70ac45.png"
+                },
+                "is_jury": false,
+                "name_render": null
+            }
+        "#;
+        serde_json::from_str::<NavInfo>(json_str).unwrap();
+    }
 }
