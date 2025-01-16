@@ -10,14 +10,14 @@ pub struct VideoQuery {
     bvid: Option<String>,
 }
 impl VideoQuery {
-    pub fn new<N, S>(aid: N, bvid: S) -> Self
+    pub fn new<N>(aid: N, bvid: Option<&str>) -> Self
     where
         N: Into<Option<u64>>,
-        S: Into<Option<String>>,
     {
+        let bvid = bvid.map(|x| x.to_string());
         Self {
             aid: aid.into(),
-            bvid: bvid.into(),
+            bvid,
         }
     }
 }

@@ -24,9 +24,9 @@ pub struct VideoStreamQuery {
 impl Query for VideoStreamQuery {}
 impl WbiSign for VideoStreamQuery {}
 impl VideoStreamQuery {
-    pub fn new<N, S>(
+    pub fn new<N>(
         avid: N,
-        bvid: S,
+        bvid: Option<&str>,
         cid: u64,
         qn: Option<Qn>,
         fnval: Option<Fnval>,
@@ -35,12 +35,12 @@ impl VideoStreamQuery {
     ) -> Self
     where
         N: Into<Option<u64>>,
-        S: Into<Option<String>>,
     {
         let fourk = fourk.map(|b| b as u8);
+        let bvid = bvid.map(|x| x.to_string());
         VideoStreamQuery {
-            avid: avid.into(),
-            bvid: bvid.into(),
+            avid:avid.into(),
+            bvid,
             cid,
             qn,
             fnval,

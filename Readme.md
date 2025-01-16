@@ -6,14 +6,14 @@
 1月下旬增加live模块，提供文档和示例，并提交到rustio
 
 ### 快速开始
-导入库
+#### 导入库
 ```toml
 # Cargo.toml
 [dependencies]
 bilibili-api-rs = {git = "https://github.com/KimdowEin/bilibili-api-rs",features = ["session","manual"]}
 ```
 
-登录(password)
+#### 登录(password)
 ```rust
 // src/main.rs
 use bilibili_api_rs::service::session::Session;
@@ -69,11 +69,77 @@ async fn main() {
 }
 ```
 
-下载视频
+#### 下载视频
 ```rust
+use bilibili_api_rs::{
+    model::video::stream::{Fnval, Qn}, query::video::{info::cids::VideoCidsQuery, stream::VideoStreamQuery}, service::session::Session
+};
+use futures_util::StreamExt;
+use tokio::{fs::File, io::AsyncWriteExt};
+
+#[tokio::test]
+async fn download_video() {
+    let bvid = "BV1Zs4y1p7zg";
+    let mut session = Session::new_with_path("./cookies.json").unwrap();
+    // 刷新ticket,减少疯狂风险
+    session.refresh_sign().await.unwrap();
+
+    let query = VideoCidsQuery::new(None, Some(bvid));
+    let cids = session.get_video_cids(query).await.unwrap();
+    let cid = cids[0].cid;
+
+    let query = VideoStreamQuery::new(None, Some(bvid), cid, Some(Qn::FHD), Some(Fnval::MP4), None, None);
+    let durl = session.get_video_stream(query)
+        .await
+        .unwrap()
+        .durl
+        .unwrap()[0]
+        .url
+        .clone();
+    let mut file = File::options().write(true).create(true).open("./test.mp4").await.unwrap();
+    let mut stream = session.get(durl).send().await.unwrap().bytes_stream();
+    while let Some(bytes) = stream.next().await {
+        file.write_all(&bytes.unwrap()).await.unwrap();
+    }
+
+}
 
 ```
+#### 放送请求
+常用的请求session有对应函数,如果没有,按照如下步骤
+1. 找到请求体(???Query),生成请求
+2. 和url(???_URL)拼接({}?{},url,query)
+3. 发起请求 
+4. 解释响应体(BiliResponse<???Model>)
+5. 获得数据(response.data())
+```rust
+use crate::{
+  model::{response::BiliResponse, video::info::desc::VideoDesc}, 
+  query::video::info::desc::{VideoDescQuery,VIDEO_DESC_URL}, service::session::Session, 
+  traits::Query
+};
 
+#[tokio::test]
+async fn get_video_desc() {
+  const BVID: &str = "BV1wDCwYfE2f";
+
+  let session = Session::new_with_path("./cookies.json").unwrap();
+
+  let query = VideoDescQuery::new(None,Some(BVID));
+  // 部分需要鉴权,将to_query()替换sign()
+  let url = format!("{}?{}",VIDEO_DESC_URL,query.to_query().unwrap());
+
+  let desc = session.get(url)
+      .send()
+      .await
+      .unwrap()
+      .json::<BiliResponse<VideoDesc>>()
+      .await
+      .unwrap()
+      .data()
+      .unwrap();
+}
+```
 ### 功能 feature
 - "session" 提供一个会话 一些常用请求模板代码 cookies的导入和保存 
 - "manual" 提供一个函数跳转到过人机验证的网站
@@ -146,13 +212,7 @@ async fn main() {
 - 命名
   - Query Model Url 前缀有app的是app端的api,没有的是web端或两者共用的api
   - 字段前缀有app的是app专属 Option是可选
-- 一般步骤
-  1. 找到请求体(???Query)
-  2. 生成请求
-  3. 和url(???_URL)拼接({}?{},url,query)
-  4. 发起请求 
-  5. 解释响应体(BiliResponse<???Model>)
-  6. 获得数据(response.data())
+
 
 
 ### 共同建设

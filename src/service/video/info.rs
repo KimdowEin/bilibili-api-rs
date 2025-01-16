@@ -9,7 +9,7 @@ use crate::{
         },
     },
     query::video::info::{
-        cids::{CidsQuery, CIDS_URL},
+        cids::{VideoCidsQuery, CIDS_URL},
         desc::{VideoDescQuery, VIDEO_DESC_URL},
         view::{VideoInfoQuery, VideoViewQuery, VIDEO_INFO_URL, VIDEO_VIEW_URL},
     },
@@ -45,7 +45,7 @@ impl Session {
     }
 
     /// 视频cid列表
-    pub async fn get_video_cids(&self, query: CidsQuery) -> Result<Vec<Cids>, Error> {
+    pub async fn get_video_cids(&self, query: VideoCidsQuery) -> Result<Vec<Cids>, Error> {
         let url = format!("{}?{}", CIDS_URL, query.to_query()?);
         self.get(url)
             .send()
@@ -77,7 +77,7 @@ mod tests {
     async fn test_get_video_info() {
         let mut session = Session::new_with_path("./cookies.json").unwrap();
         session.get_mixin_key().await.unwrap();
-        let query = VideoInfoQuery::new(None, BVID.to_string());
+        let query = VideoInfoQuery::new(None, Some(BVID));
 
         let video_info = session.get_video_info(query).await.unwrap();
 
@@ -89,7 +89,7 @@ mod tests {
         let mut session = Session::new_with_path("./cookies.json").unwrap();
         session.get_mixin_key().await.unwrap();
         
-        let query = VideoViewQuery::new(None, Some(BVID.to_string()));
+        let query = VideoViewQuery::new(None, Some(BVID));
         
         let video_info = session.get_video_view(query).await.unwrap();
         
@@ -99,7 +99,7 @@ mod tests {
     #[tokio::test]
     async fn test_get_video_cids(){
         let session = Session::new_with_path("./cookies.json").unwrap();
-        let query = CidsQuery::new(None,BVID.to_string());
+        let query = VideoCidsQuery::new(None,Some(BVID));
 
         let cids = session.get_video_cids(query).await.unwrap();
         assert_eq!("躁転彼女 / 香椎モイミ feat. 雪解",cids[0].part);
@@ -108,7 +108,7 @@ mod tests {
     #[tokio::test]
     async fn test_get_video_desc(){
         let session = Session::new_with_path("./cookies.json").unwrap();
-        let query = VideoDescQuery::new(None,BVID.to_string());
+        let query = VideoDescQuery::new(None,Some(BVID));
 
         let desc = session.get_video_desc(query).await.unwrap();
 
