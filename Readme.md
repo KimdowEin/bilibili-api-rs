@@ -106,7 +106,7 @@ async fn download_video() {
 
 ```
 #### 放送请求
-常用的请求session有对应函数,如果没有,按照如下步骤
+常用的请求session有对应函数减少模板代码,如果没有,按照如下步骤
 1. 找到请求体(???Query),生成请求
 2. 和url(???_URL)拼接({}?{},url,query)
 3. 发起请求 
@@ -119,9 +119,10 @@ use crate::{
   traits::Query
 };
 
+const BVID: &str = "BV1wDCwYfE2f";
+
 #[tokio::test]
 async fn get_video_desc() {
-  const BVID: &str = "BV1wDCwYfE2f";
 
   let session = Session::new_with_path("./cookies.json").unwrap();
 
@@ -148,10 +149,10 @@ async fn get_video_desc() {
 打x是完成并测试  
 打o是完成未测试
 - [ ] 接口签名与验证
-  - [ ] APP API 签名（appkey与sign）
+  - [ ] APP API 签名(appkey与sign)
   - [ ] 已知的 APPKey
-  - [x] Wbi 签名（wts与w_rid）
-  - [ ] bili_ticket
+  - [x] Wbi 签名(wts与w_rid)
+  - [o] bili_ticket
 - [ ] 登录
   - [x] 登录操作 (人机认证)
     - [ ] 短信登录

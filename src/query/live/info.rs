@@ -33,3 +33,9 @@ impl LiveRoomStatusQuery {
         }
     }
 }
+
+pub const LIVE_ROOM_INIT_URL: &str = "https://api.live.bilibili.com/room/v1/Room/room_init";
+
+pub struct LiveRoomInitQuery {
+    id: u64,
+}

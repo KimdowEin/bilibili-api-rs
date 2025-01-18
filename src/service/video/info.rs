@@ -55,7 +55,7 @@ impl Session {
             .data()
     }
 
-    /// 获取视频简洁
+    /// 获取视频简介
     pub async fn get_video_desc(&self, query: VideoDescQuery) -> Result<VideoDesc, Error> {
         let url = format!("{}?{}", VIDEO_DESC_URL, query.to_query()?);
         self.get(url)
