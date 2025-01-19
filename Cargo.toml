@@ -4,17 +4,21 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+rand = "0.8.5"
+
 base64 = "0.22.1"
 md5 = "0.7.0"
-rand = "0.8.5"
 rsa = "0.9.7"
 hmac = "0.12.1"
 sha2 = "0.10.8"
+hex = "0.4.3"
+
 
 serde = { version = "1.0.216", features = ["derive"] }
 serde_json = "1.0.133"
 serde_qs = "0.13.0"
 serde_repr = "0.1.19"
+serde-aux = "4.5.0"
 thiserror = "2.0.8"
 
 tokio = { version = "1.42.0", optional = true, features = ["full"] }
@@ -24,13 +28,14 @@ reqwest = { version = "0.12.9", optional = true, features = [
     "stream",
 ] }
 webbrowser = { version = "1.0.3", optional = true }
-futures-util = {version = "0.3.31",optional = true }
-hex = "0.4.3"
-serde-aux = "4.5.0"
+
+[dev-dependencies]
+futures-util = "0.3.31"
+indicatif = "0.16"
 
 [features]
-# default = []
-default = ["session"]
+default = ["test"]
+test = ["session"]
 # default = ["session", "manual"]
-session = ["reqwest", "tokio","futures-util"]
+session = ["reqwest", "tokio"]
 manual = ["webbrowser"]

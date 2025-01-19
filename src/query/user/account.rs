@@ -31,9 +31,3 @@ pub struct AccountSignUpdateQuery {
 }
 
 
-/// 主播信息
-#[derive(Debug,Default, Serialize, Deserialize)]
-pub struct AccountLiveInfoQuery {
-    uid: u64,
-}
-impl Query for AccountLiveInfoQuery {}

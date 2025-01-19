@@ -79,33 +79,46 @@ use tokio::{fs::File, io::AsyncWriteExt};
 
 #[tokio::test]
 async fn download_video() {
-    let bvid = "BV1Zs4y1p7zg";
-    let mut session = Session::new_with_path("./cookies.json").unwrap();
-    // 刷新ticket,减少疯狂风险
-    session.refresh_sign().await.unwrap();
+  let bvid = "BV1Zs4y1p7zg";
+  let mut session = Session::new_with_path("./cookies.json").unwrap();
+  session.refresh_sign().await.unwrap();
 
-    let query = VideoCidsQuery::new(None, Some(bvid));
-    let cids = session.get_video_cids(query).await.unwrap();
-    let cid = cids[0].cid;
+  let query = VideoCidsQuery::new(None, Some(bvid));
+  let cids = session.get_video_cids(query).await.unwrap();
+  let cid = cids[0].cid;
 
-    let query = VideoStreamQuery::new(None, Some(bvid), cid, Some(Qn::FHD), Some(Fnval::MP4), None, None);
-    let durl = session.get_video_stream(query)
-        .await
-        .unwrap()
-        .durl
-        .unwrap()[0]
-        .url
-        .clone();
-    let mut file = File::options().write(true).create(true).open("./test.mp4").await.unwrap();
-    let mut stream = session.get(durl).send().await.unwrap().bytes_stream();
-    while let Some(bytes) = stream.next().await {
-        file.write_all(&bytes.unwrap()).await.unwrap();
-    }
+  let query = VideoStreamQuery::new(None,Some(bvid),cid,Some(Qn::FHD),Some(Fnval::MP4),None,None,);
+  let durl = session.get_video_stream(query).await.unwrap().durl.unwrap()[0]
+      .url
+      .clone();
+  let mut file = File::options()
+      .write(true)
+      .create(true)
+      .open("./tests/res/test.mp4")
+      .await
+      .unwrap();
+  let response = session.get(durl).send().await.unwrap();
+  let pb = ProgressBar::new(response.content_length().unwrap_or_default());
+  pb.set_style(
+      ProgressStyle::default_bar()
+          .template("[{bar:40.cyan/blue}] {bytes}/{total_bytes} ({eta})")
+          .progress_chars("#>-"),
+  );
+  let mut stream = response.bytes_stream();
+  let mut downloaded = 0;
+  while let Some(item) = stream.next().await {
+      let bytes = item.unwrap();
+      file.write_all(&bytes).await.unwrap();
+      downloaded += bytes.len() as u64;
+      pb.set_position(downloaded);
+  }
 
+  pb.finish_with_message("下载完成");
 }
 
+
 ```
-#### 放送请求
+#### 发送请求
 常用的请求session有对应函数减少模板代码,如果没有,按照如下步骤
 1. 找到请求体(???Query),生成请求
 2. 和url(???_URL)拼接({}?{},url,query)

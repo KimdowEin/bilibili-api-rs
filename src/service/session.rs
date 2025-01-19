@@ -34,7 +34,7 @@ pub fn headers() -> header::HeaderMap {
 pub struct Session {
     pub state: Arc<SessionState>,
     pub client: Client,
-    pub mixin_key: RwLock<String>,
+    pub mixin_key: Arc<RwLock<String>>,
 }
 
 impl Deref for Session {
@@ -44,13 +44,21 @@ impl Deref for Session {
         &self.client
     }
 }
-
+impl Clone for Session {
+    fn clone(&self) -> Self {
+        Self {
+            client: self.client.clone(),
+            state: self.state.clone(),
+            mixin_key: self.mixin_key.clone(),
+        }
+    }
+}
 impl Session {
     pub fn new() -> Result<Self, Error> {
         let headers = headers();
 
         let state = Arc::new(SessionState::default());
-        let mixin_key = RwLock::new(String::new());
+        let mixin_key = Arc::new(RwLock::new(String::new()));
         let client = Client::builder()
             .default_headers(headers)
             .cookie_provider(state.jar.clone())
@@ -64,7 +72,7 @@ impl Session {
     }
 
     pub fn new_with_client(client: Client, state: Arc<SessionState>) -> Self {
-        let mixin_key = RwLock::new(String::new());
+        let mixin_key = Arc::new(RwLock::new(String::new()));
 
         Self {
             client,
@@ -85,7 +93,7 @@ impl Session {
             .cookie_provider(state.jar.clone())
             .build()?;
 
-        let mixin_key = RwLock::new(String::new());
+        let mixin_key = Arc::new(RwLock::new(String::new()));
 
         Ok(Self {
             client,

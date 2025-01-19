@@ -1,8 +1,7 @@
 use serde::{Deserialize, Serialize};
 use serde_aux::field_attributes::deserialize_number_from_string;
-use crate::model::live::info::LiveRoomNews;
 
-use super::{exp::{LevelView, MasterLevel}, official::{Official, OfficialVerify}, vip::Vip};
+use super::{exp::LevelView, official::{Official, OfficialVerify}, vip::Vip};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct AccountInfo {
@@ -17,7 +16,7 @@ pub struct AccountInfo {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct AccountInfo2 {
+pub struct LiveAccountInfo {
     pub uid:u64,
     pub uname:String,
     pub face:String,
@@ -36,19 +35,7 @@ pub struct Owner {
     pub face: String,
 }
 
-/// 用户直播间信息
-#[derive(Debug, Serialize, Deserialize)]
-pub struct AccountLiveInfo{
-    pub info: AccountInfo2,
-    pub exp:MasterLevel,
-    pub follower_num:u64,
-    pub room_id:u64,
-    pub medal_name:String,
-    pub glory_count:u64,
-    pub pendant:String,
-    pub link_group_num:u64,
-    pub room_news:LiveRoomNews,
-}
+
 
 /// 视频用户栏信息
 #[derive(Debug, Serialize, Deserialize)]
