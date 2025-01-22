@@ -1,7 +1,7 @@
 //! 视频基本信息
 use serde::{Deserialize, Serialize};
 
-use crate::traits::{Query, WbiSign};
+use crate::traits::{Query, Sign};
 
 
 #[derive(Debug, Default, Clone, Deserialize, Serialize)]
@@ -22,7 +22,7 @@ impl VideoQuery {
     }
 }
 impl Query for VideoQuery {}
-impl WbiSign for VideoQuery {}
+impl Sign for VideoQuery {}
 
 /// 获取视频概览
 pub const VIDEO_VIEW_URL: &str = "https://api.bilibili.com/x/web-interface/wbi/view";

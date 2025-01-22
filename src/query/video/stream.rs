@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::traits::{Query, WbiSign};
+use crate::traits::{Query, Sign};
 
 use crate::model::video::stream::{Fnval, Qn};
 
@@ -22,7 +22,7 @@ pub struct VideoStreamQuery {
     // high_quality: Option<u8>,
 }
 impl Query for VideoStreamQuery {}
-impl WbiSign for VideoStreamQuery {}
+impl Sign for VideoStreamQuery {}
 impl VideoStreamQuery {
     pub fn new<N>(
         avid: N,

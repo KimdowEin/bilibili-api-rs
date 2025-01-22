@@ -1,19 +1,25 @@
-### 介绍
+# bilibili-api-rs
+
+## 介绍
+
 对b站api的rust封装(建设中)，基于 [bilibili-API-collect](https://github.com/SocialSisterYi/bilibili-API-collect)
 
 会坚持弄完的
 
 1月下旬增加live模块，提供文档和示例，并提交到rustio
 
-### 快速开始
-#### 导入库
+## 快速开始
+
+### 导入库
+
 ```toml
 # Cargo.toml
 [dependencies]
 bilibili-api-rs = {git = "https://github.com/KimdowEin/bilibili-api-rs",features = ["session","manual"]}
 ```
 
-#### 登录(password)
+### 登录(password)
+
 ```rust
 // src/main.rs
 use bilibili_api_rs::service::session::Session;
@@ -48,8 +54,8 @@ async fn main() {
 }
 ```
 
-
 或者直接在浏览器复制cookies(推荐)
+
 ```json
 // ./cookies.json
 [
@@ -69,7 +75,8 @@ async fn main() {
 }
 ```
 
-#### 下载视频
+### 下载视频
+
 ```rust
 use bilibili_api_rs::{
     model::video::stream::{Fnval, Qn}, query::video::{info::cids::VideoCidsQuery, stream::VideoStreamQuery}, service::session::Session
@@ -118,13 +125,17 @@ async fn download_video() {
 
 
 ```
-#### 发送请求
+
+### 发送请求
+
 常用的请求session有对应函数减少模板代码,如果没有,按照如下步骤
+
 1. 找到请求体(???Query),生成请求
 2. 和url(???_URL)拼接({}?{},url,query)
-3. 发起请求 
+3. 发起请求
 4. 解释响应体(BiliResponse<???Model>)
 5. 获得数据(response.data())
+
 ```rust
 use crate::{
   model::{response::BiliResponse, video::info::desc::VideoDesc}, 
@@ -154,13 +165,18 @@ async fn get_video_desc() {
       .unwrap();
 }
 ```
-### 功能 feature
-- "session" 提供一个会话 一些常用请求模板代码 cookies的导入和保存 
+
+## 功能 feature
+
+- "session" 提供一个会话 一些常用请求模板代码 cookies的导入和保存
 - "manual" 提供一个函数跳转到过人机验证的网站
 
-### 进度
+## 进度
+
 打x是完成并测试  
 打o是完成未测试
+打v是部分完成
+
 - [ ] 接口签名与验证
   - [ ] APP API 签名(appkey与sign)
   - [ ] 已知的 APPKey
@@ -181,7 +197,7 @@ async fn get_video_desc() {
   - [ ] 基本信息
   - [ ] 状态数
   - [ ] 关系
-  - [ ] 个人空间 
+  - [ ] 个人空间
   - [ ] 检查昵称是否可注册
   - [ ] 用户注册
   - [ ] 用户认证类型一览
@@ -189,9 +205,9 @@ async fn get_video_desc() {
 - [ ] 视频
   - [o] 视频分区一览 (分区代码)
   - [x] 基本信息
-  - [ ] 快照   
+  - [ ] 快照
   - [o] 点赞 & 投币 & 收藏 & 分享
-  - [ ] TAG   
+  - [ ] TAG
   - [ ] 视频推荐
   - [x] 播放&下载地址 (视频流)
   - [ ] 互动视频
@@ -201,7 +217,7 @@ async fn get_video_desc() {
   - [ ] 视频在线人数
   - [ ] 视频AI摘要
   - [ ] 稿件投诉
-  - [ ] 视频合集
+  - [v] 视频合集
 - [ ] 直播
   - [o] 直播间基本信息
   - [ ] 直播分区
@@ -213,13 +229,14 @@ async fn get_video_desc() {
   - [ ] 直播间用户实用 API
   - [ ] 直播间禁言相关
   - [ ] 关注UP直播情况
-  - [ ] 直播心跳上报   
+  - [ ] 直播心跳上报
 
 初步测试  
 可以完成账号密码登录，获取视频信息并完成下载(对大部分人来说够用了)
 
-### 一些简单说明
-- 项目结构   
+## 一些简单说明
+
+- 项目结构
   - query 请求结构体
   - model 响应体
   - service 一些模板代码和session逻辑
@@ -227,8 +244,6 @@ async fn get_video_desc() {
   - Query Model Url 前缀有app的是app端的api,没有的是web端或两者共用的api
   - 字段前缀有app的是app专属 Option是可选
 
+## 共同建设
 
-
-### 共同建设
 存在一些封装不全,忘记pub,结构不合理的地方,欢迎提交pr或issue(去github提pr)
-

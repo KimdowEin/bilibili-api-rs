@@ -8,10 +8,16 @@ use super::{cids::Cids, desc::{VideoDesc, VideoDesc2}, state::{Dimension, Rights
 /// https://gitee.com/KimdowEin/bilibili-API-collect/blob/master/docs/video/info.md#%E8%8E%B7%E5%8F%96%E8%A7%86%E9%A2%91%E8%AF%A6%E7%BB%86%E4%BF%A1%E6%81%AFweb%E7%AB%AF
 #[derive(Debug, Serialize, Deserialize)]
 pub struct VideoView {
-    /// 稿件bvid
-    pub bvid: String,
     /// 稿件avid
     pub aid: u64,
+    /// 稿件bvid
+    pub bvid: String,
+    /// 投稿时间
+    pub ctime: u64,
+    /// 稿件总时长(所有分P)
+    pub duration: u64,
+    /// 封面图片url
+    pub pic: String,
     /// 稿件分P总数
     pub videos: u64,
     /// 分区tid
@@ -20,22 +26,16 @@ pub struct VideoView {
     pub tname: String,
     /// 稿件类型 1:原创 2:转载
     pub copyright: u8,
-    /// 封面图片url
-    pub pic: String,
     /// 稿件标题
     pub title: String,
     /// 发布时间
     pub pubdate: u64,
-    /// 投稿时间
-    pub ctime: u64,
     /// 视频简介
     pub desc: VideoDesc,
     /// 新版视频简介
     pub desc_v2: Vec<VideoDesc2>,
     /// 稿件状态
     pub state: VideoState,
-    /// 稿件总时长(所有分P)
-    pub duration: u64,
     /// 撞车视频跳转avid
     pub forward: Option<u64>,
     /// 稿件参加的活动id
