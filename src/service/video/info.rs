@@ -14,7 +14,7 @@ use crate::{
         view::{VideoInfoQuery, VideoViewQuery, VIDEO_INFO_URL, VIDEO_VIEW_URL},
     },
     service::session::Session,
-    traits::Query,
+    traits::{Query, Sign},
 };
 
 impl Session {

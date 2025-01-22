@@ -3,7 +3,7 @@ use crate::{
     model::{response::BiliResponse, video::stream::VideoStream},
     query::video::stream::{VideoStreamQuery, VIDEO_STREAM_URL},
     service::session::Session,
-    traits::Query,
+    traits::Sign,
 };
 
 impl Session {

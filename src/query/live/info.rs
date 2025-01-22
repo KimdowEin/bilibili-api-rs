@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    model::live::{info::{LiveProtocol, LiveStreamCodec, LiveStreamFormat}, stream::{LiveStream, LiveStreamQn}},
+    model::live::{info::{LiveProtocol, LiveStreamCodec, LiveStreamFormat}, stream::LiveStreamQn},
     traits::Query,
 };
 

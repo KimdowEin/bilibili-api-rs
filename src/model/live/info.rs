@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::model::user::{account::LiveAccountInfo, exp::MasterLevel, official::OfficialVerify};
+use crate::model::user::{account::LiveAccountInfo, exp::MasterLevel};
 use serde::{Deserialize, Serialize};
 use serde_aux::field_attributes::deserialize_bool_from_anything;
 use serde_repr::{Deserialize_repr, Serialize_repr};
