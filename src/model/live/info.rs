@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
-use crate::model::user::{account::LiveAccountInfo, exp::MasterLevel};
+use crate::model::user::{account::{GenderType, LiveAccountInfo}, exp::{LiveRoomLevel, MasterLevel}, official::OfficialVerify, vip::VipType};
 use serde::{Deserialize, Serialize};
-use serde_aux::field_attributes::deserialize_bool_from_anything;
+use serde_aux::field_attributes::{deserialize_bool_from_anything,deserialize_number_from_string};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
 use super::stream::LiveStreamQn;
@@ -246,6 +246,30 @@ pub enum LiveStreamCodec {
     HEVC = 1,
 }
 
+/// 获取直播间主播信息   
+/// https://gitee.com/KimdowEin/bilibili-API-collect/blob/master/docs/live/info.md#%E8%8E%B7%E5%8F%96%E7%9B%B4%E6%92%AD%E9%97%B4%E4%B8%BB%E6%92%AD%E4%BF%A1%E6%81%AF
+#[derive(Debug, Serialize, Deserialize)]
+pub struct LiveRoomOwner {
+    pub info:LiveRoomOwnerInfo,
+    pub level:LiveRoomLevel,
+    pub san:u8,
+}
+#[derive(Debug, Serialize, Deserialize)]
+pub struct LiveRoomOwnerInfo{
+    pub uid:u64,
+    pub uname:String,
+    pub face:String,
+    pub rank:String,
+    pub platform_user_level:u64,
+    #[serde(deserialize_with = "deserialize_bool_from_anything")]
+    pub mobile_verify:bool,
+    #[serde(deserialize_with = "deserialize_bool_from_anything")]
+    pub identification:bool,
+    pub official_verify:OfficialVerify,
+    pub vip_type:VipType,
+    pub gender:GenderType,
+}
+
 #[cfg(test)]
 mod tests {
 
@@ -303,4 +327,53 @@ mod tests {
 
 
     }
+
+    #[test]
+    fn test_deserialize_live_room_owner(){
+        let json = r#"{
+            "info": {
+            "uid": 9617619,
+            "uname": "哔哩哔哩直播",
+            "face": "https://i0.hdslb.com/bfs/face/8f6a614a48a3813d90da7a11894ae56a59396fcd.jpg",
+            "rank": "10000",
+            "platform_user_level": 6,
+            "mobile_verify": 1,
+            "identification": 1,
+            "official_verify": {
+                "type": 1,
+                "desc": "哔哩哔哩直播官方账号",
+                "role": 3
+            },
+            "vip_type": 2,
+            "gender": -1
+            },
+            "level": {
+            "uid": 9617619,
+            "cost": 7782673656,
+            "rcost": 20199200291,
+            "user_score": "0",
+            "vip": 0,
+            "vip_time": "0000-00-00 00:00:00",
+            "svip": 0,
+            "svip_time": "0000-00-00 00:00:00",
+            "update_time": "2024-08-08 17:13:12",
+            "master_level": {
+                "level": 40,
+                "color": 16746162,
+                "current": [0, 147013810],
+                "next": [0, 147013810],
+                "anchor_score": 201992002,
+                "upgrade_score": 0,
+                "master_level_color": 16746162,
+                "sort": "\u003E10000"
+            },
+            "user_level": 60,
+            "color": 16752445,
+            "anchor_score": 201992002
+            },
+            "san": 12
+        }"#;
+        serde_json::from_str::<LiveRoomOwner>(json).unwrap();
+    }
+
 }

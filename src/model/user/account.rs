@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 use serde_aux::field_attributes::deserialize_number_from_string;
+use serde_repr::{Deserialize_repr, Serialize_repr};
 
 use super::{exp::LevelView, official::{Official, OfficialVerify}, vip::Vip};
 
@@ -22,6 +23,13 @@ pub struct LiveAccountInfo {
     pub face:String,
     pub official_verify:OfficialVerify,
     pub gender:i8,
+}
+#[derive(Debug, Serialize_repr, Deserialize_repr)]
+#[repr(i8)]
+pub enum GenderType{
+    Secrecy = -1,
+    Female = 0, 
+    Male = 1,
 }
 
 #[derive(Debug, Default, Serialize, Deserialize, )]

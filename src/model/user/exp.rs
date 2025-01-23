@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 use serde_aux::field_attributes::deserialize_string_from_number;
+
+use super::vip::VipType;
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ExpReward {
     pub login: bool,
@@ -35,17 +37,39 @@ pub struct LevelInfo {
 
 #[derive(Debug, Default, Deserialize, Serialize)]
 pub struct MasterLevel {
-    master_level: LiveLevel,
+    pub master_level: LiveLevel,
 }
 
 #[derive(Debug, Default, Deserialize, Serialize)]
 pub struct LiveLevel {
-    level: u64,
-    color: u64,
-    current: (u64, u64),
-    next: (u64, u64),
+    pub level: u64,
+    pub color: u64,
+    pub current: (u64, u64),
+    pub next: (u64, u64),
+}
+#[derive(Debug, Default, Deserialize, Serialize)]
+pub struct LiveLevelEx {
+    #[serde(flatten)]
+    pub level:LiveLevel,
+    pub anchor_score:u64,
+    pub upgrade_score:u64,
+    pub master_level_color:i64,
+    pub sort:String,
 }
 
+#[derive(Debug, Deserialize,Serialize)]
+pub struct LiveRoomLevel{
+    pub uid:u64,
+    pub cost:u64,
+    pub rcost:u64,
+    pub user_score:String,
+    pub vip:VipType,
+    pub vip_time:String,
+    pub svip:VipType,
+    pub svip_time:String,
+    pub update_time:String,
+    pub master_level:LiveLevelEx,
+}
 
 
 impl ExpReward {
