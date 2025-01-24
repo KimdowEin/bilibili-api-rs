@@ -6,12 +6,12 @@ pub const WEB_DEAL_URL: &str = "https://api.bilibili.com/x/v3/fav/resource/deal"
 
 #[derive(Debug,Default, Serialize, Deserialize)]
 pub struct CollectVideoQuery {
-    access_key: Option<String>,
-    rid: u64,
+    pub access_key: Option<String>,
+    pub rid: u64,
     #[serde(rename = "type")]
-    type_: u8,
-    add_media_ids: Option<String>,
-    del_media_ids: Option<String>,
+    pub type_: u8,
+    pub add_media_ids: Option<String>,
+    pub del_media_ids: Option<String>,
     pub csrf: Option<String>,
 }
 impl Query for CollectVideoQuery {}

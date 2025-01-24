@@ -4,9 +4,9 @@ use crate::traits::Query;
 
 #[derive(Serialize, Deserialize, Debug,Default, Clone)]
 pub struct ShareVideoQuery{
-    aid: Option<u64>,
-    bvid: Option<String>,
-    csrf:Option<String>,
+    pub aid: Option<u64>,
+    pub bvid: Option<String>,
+    pub csrf:Option<String>,
 }
 impl Query for ShareVideoQuery{
 }

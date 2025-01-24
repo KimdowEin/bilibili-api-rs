@@ -1,8 +1,13 @@
 use std::collections::HashMap;
 
-use crate::model::user::{account::{GenderType, LiveAccountInfo}, exp::{LiveRoomLevel, MasterLevel}, official::OfficialVerify, vip::VipType};
+use crate::model::user::{
+    account::{GenderType, LiveAccountInfo},
+    exp::{LiveRoomLevel, MasterLevel},
+    official::OfficialVerify,
+    vip::VipType,
+};
 use serde::{Deserialize, Serialize};
-use serde_aux::field_attributes::{deserialize_bool_from_anything,deserialize_number_from_string};
+use serde_aux::field_attributes::deserialize_bool_from_anything;
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
 use super::stream::LiveStreamQn;
@@ -159,72 +164,70 @@ pub enum LiveStatus {
 /// https://gitee.com/KimdowEin/bilibili-API-collect/blob/master/docs/live/info.md#%E8%8E%B7%E5%8F%96%E7%9B%B4%E6%92%AD%E9%97%B4%E4%BF%A1%E6%81%AF-1
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LiveRoomInfo {
-    room_id: u64,
-    short_id: u64,
-    uid: u64,
-    is_hidden: bool,
-    is_locked: bool,
-    is_portrait: bool,
-    live_status: LiveStatus,
-    hidden_till: u64,
-    lock_till: u64,
-    encrypted: bool,
-    pwd_verified: bool,
-    live_time: u64,
-    room_shield: i64,
-    playurl_info: Option<PlayUrlInfo>,
+    pub room_id: u64,
+    pub short_id: u64,
+    pub uid: u64,
+    pub is_hidden: bool,
+    pub is_locked: bool,
+    pub is_portrait: bool,
+    pub live_status: LiveStatus,
+    pub hidden_till: u64,
+    pub lock_till: u64,
+    pub encrypted: bool,
+    pub pwd_verified: bool,
+    pub live_time: u64,
+    pub room_shield: i64,
+    pub playurl_info: Option<PlayUrlInfo>,
 }
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PlayUrlInfo {
-    conf_json: String,
-    playurl:PlayUrl,
+    pub conf_json: String,
+    pub playurl: PlayUrl,
 }
 #[derive(Debug, Serialize, Deserialize)]
 pub struct PlayUrl {
-    cid:u64,
-    g_qn_desc:Vec<QualityAndDesc>,
-    stream:LiveStreamInfo,
-    p2p_data:P2pData,
-    dolby_qn:Option<String>
+    pub cid: u64,
+    pub g_qn_desc: Vec<QualityAndDesc>,
+    pub stream: LiveStreamInfo,
+    pub p2p_data: P2pData,
+    pub dolby_qn: Option<String>,
 }
 #[derive(Debug, Serialize, Deserialize)]
-pub struct QualityAndDesc{
-    qn:LiveStreamQn,
-    desc:String,
+pub struct QualityAndDesc {
+    pub qn: LiveStreamQn,
+    pub desc: String,
 }
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LiveStreamInfo {
-    pub protocol_name:String,
-    pub format:Vec<LiveStreamFormatDeltail>
+    pub protocol_name: String,
+    pub format: Vec<LiveStreamFormatDeltail>,
 }
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LiveStreamFormatDeltail {
-    pub format_name:String,
-    pub codec:Vec<LiveStreamCodecDetail>,
+    pub format_name: String,
+    pub codec: Vec<LiveStreamCodecDetail>,
 }
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LiveStreamCodecDetail {
-    pub codec_name:String,
-    pub current_qn:LiveStreamQn,
-    pub accept_qn:Vec<LiveStreamQn>,
-    pub base_url:String,
-    pub url_info:Vec<LiveStreamUrlInfo>,
-    pub dolby_type:i64,
+    pub codec_name: String,
+    pub current_qn: LiveStreamQn,
+    pub accept_qn: Vec<LiveStreamQn>,
+    pub base_url: String,
+    pub url_info: Vec<LiveStreamUrlInfo>,
+    pub dolby_type: i64,
 }
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LiveStreamUrlInfo {
-    pub host:String,
-    pub extra:String,
+    pub host: String,
+    pub extra: String,
 }
 #[derive(Debug, Serialize, Deserialize)]
 pub struct P2pData {
-    pub p2p:bool,
-    pub p2p_type:i64,
-    pub m_p2p:bool,
-    pub m_servers:Option<String>
+    pub p2p: bool,
+    pub p2p_type: i64,
+    pub m_p2p: bool,
+    pub m_servers: Option<String>,
 }
-
-
 
 #[derive(Debug, Serialize_repr, Deserialize_repr)]
 #[repr(u8)]
@@ -250,24 +253,24 @@ pub enum LiveStreamCodec {
 /// https://gitee.com/KimdowEin/bilibili-API-collect/blob/master/docs/live/info.md#%E8%8E%B7%E5%8F%96%E7%9B%B4%E6%92%AD%E9%97%B4%E4%B8%BB%E6%92%AD%E4%BF%A1%E6%81%AF
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LiveRoomOwner {
-    pub info:LiveRoomOwnerInfo,
-    pub level:LiveRoomLevel,
-    pub san:u8,
+    pub info: LiveRoomOwnerInfo,
+    pub level: LiveRoomLevel,
+    pub san: u8,
 }
 #[derive(Debug, Serialize, Deserialize)]
-pub struct LiveRoomOwnerInfo{
-    pub uid:u64,
-    pub uname:String,
-    pub face:String,
-    pub rank:String,
-    pub platform_user_level:u64,
+pub struct LiveRoomOwnerInfo {
+    pub uid: u64,
+    pub uname: String,
+    pub face: String,
+    pub rank: String,
+    pub platform_user_level: u64,
     #[serde(deserialize_with = "deserialize_bool_from_anything")]
-    pub mobile_verify:bool,
+    pub mobile_verify: bool,
     #[serde(deserialize_with = "deserialize_bool_from_anything")]
-    pub identification:bool,
-    pub official_verify:OfficialVerify,
-    pub vip_type:VipType,
-    pub gender:GenderType,
+    pub identification: bool,
+    pub official_verify: OfficialVerify,
+    pub vip_type: VipType,
+    pub gender: GenderType,
 }
 
 #[cfg(test)]
@@ -324,12 +327,10 @@ mod tests {
             "degraded_playurl": null
         }"#;
         serde_json::from_str::<LiveRoomInfo>(json).unwrap();
-
-
     }
 
     #[test]
-    fn test_deserialize_live_room_owner(){
+    fn test_deserialize_live_room_owner() {
         let json = r#"{
             "info": {
             "uid": 9617619,
@@ -375,5 +376,4 @@ mod tests {
         }"#;
         serde_json::from_str::<LiveRoomOwner>(json).unwrap();
     }
-
 }

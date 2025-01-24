@@ -26,15 +26,15 @@ impl Query for LoginKeyQuery {}
 /// 登录操作(post)
 #[derive(Debug,Default, Serialize, Deserialize)]
 pub struct LoginQuery {
-    username: String,
-    password: String,
-    keep: u8,
-    token: String,
-    challenge: String,
-    validate: String,
-    seccode: String,
-    go_url: Option<String>,
-    source: Option<String>,
+    pub username: String,
+    pub password: String,
+    pub keep: u8,
+    pub token: String,
+    pub challenge: String,
+    pub validate: String,
+    pub seccode: String,
+    pub go_url: Option<String>,
+    pub source: Option<String>,
 }
 impl LoginQuery {
     pub fn new(

@@ -5,12 +5,12 @@ use serde::{Deserialize, Serialize};
 use crate::traits::Query;
 
 /// 个人账号基本信息
-pub const ACCOUNT_MES_URL: &str = "https://api.bilibili.com/x/member/web/account";
+pub const ACCOUNT_INFO_URL: &str = "https://api.bilibili.com/x/member/web/account";
 /// 账号基本信息
 #[derive(Debug,Default, Serialize, Deserialize)]
 pub struct AccountInfoQuery {
     #[serde(rename = "access_key")]
-    app_access_key: Option<String>,
+    pub app_access_key: Option<String>,
 }
 impl Query for AccountInfoQuery {}
 
@@ -25,9 +25,9 @@ pub const ACCOUNT_SIGN_UPDATE_URL: &str = "https://api.bilibili.com/x/member/web
 /// 修改个性签名
 #[derive(Debug, Serialize, Deserialize)]
 pub struct AccountSignUpdateQuery {
-    access_key: Option<String>,
-    user_sign: String,
-    csrf:Option<String>
+    pub access_key: Option<String>,
+    pub user_sign: String,
+    pub csrf:Option<String>
 }
 
 

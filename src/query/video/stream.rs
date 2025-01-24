@@ -8,17 +8,17 @@ pub const VIDEO_STREAM_URL: &str = "https://api.bilibili.com/x/player/wbi/playur
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct VideoStreamQuery {
-    avid: Option<u64>,
-    bvid: Option<String>,
-    cid: u64,
-    qn: Option<Qn>,
-    fnval: Option<Fnval>,
-    fourk: Option<u8>,
+    pub avid: Option<u64>,
+    pub bvid: Option<String>,
+    pub cid: u64,
+    pub qn: Option<Qn>,
+    pub fnval: Option<Fnval>,
+    pub fourk: Option<u8>,
     // session:String,
     // otype:String,
     // #[serde(rename="type")]
     // response_type:String,
-    platform: Option<String>,
+    pub platform: Option<String>,
     // high_quality: Option<u8>,
 }
 impl Query for VideoStreamQuery {}

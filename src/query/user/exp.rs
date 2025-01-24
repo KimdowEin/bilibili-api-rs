@@ -6,7 +6,7 @@ pub const EXP_REWARD_URL: &str = "https://api.bilibili.com/x/member/web/exp/rewa
 /// 查询每日奖励状态
 #[derive(Serialize, Deserialize, Debug,Default)]
 pub struct ExpRewardQuery {
-    access_key: Option<String>,
+    pub access_key: Option<String>,
 }
 impl Query for ExpRewardQuery {}
 

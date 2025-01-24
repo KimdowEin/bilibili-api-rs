@@ -16,7 +16,7 @@ pub const COIN_LOG_URL: &str = "https://api.bilibili.com/x/member/web/coin/log";
 /// 查询硬币使用记录
 #[derive(Debug,Default, Deserialize, Serialize)]
 pub struct CoinLogQuery {
-    access_key: Option<String>,
+    pub access_key: Option<String>,
 }
 impl Query for CoinLogQuery {}
 

@@ -6,8 +6,8 @@ use crate::traits::{Query, Sign};
 
 #[derive(Debug, Default, Clone, Deserialize, Serialize)]
 pub struct VideoQuery {
-    aid: Option<u64>,
-    bvid: Option<String>,
+    pub aid: Option<u64>,
+    pub bvid: Option<String>,
 }
 impl VideoQuery {
     pub fn new<N>(aid: N, bvid: Option<&str>) -> Self

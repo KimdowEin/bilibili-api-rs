@@ -47,9 +47,9 @@ pub struct  VideoArchiveMeta{
 
 #[derive(Debug,Serialize,Deserialize)]
 pub struct  VideoArchivesPage{
-    page_num:u64,
-    page_size:u64,
-    total:u64,
+    pub page_num:u64,
+    pub page_size:u64,
+    pub total:u64,
 }
 
 #[cfg(test)]

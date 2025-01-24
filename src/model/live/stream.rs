@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
+use super::info::QualityAndDesc;
+
 #[derive(Debug, Serialize_repr, Deserialize_repr)]
 #[repr(u8)]
 pub enum Quality {
@@ -28,11 +30,6 @@ pub struct LiveStream {
     pub current_qn: Quality,
     pub quality_description: Vec<QualityAndDesc>,
     pub durl: Vec<Durl>,
-}
-#[derive(Debug, Serialize, Deserialize)]
-pub struct QualityAndDesc {
-    qn: Quality,
-    desc: String,
 }
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Durl {

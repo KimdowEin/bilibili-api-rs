@@ -10,7 +10,7 @@ pub const CONTRIBUTE_VIEW: &str = "https://api.bilibili.com/x/space/upstat";
 // 查询用户播放量，阅读量，获赞数
 #[derive(Debug,Default, Deserialize, Serialize)]
 pub struct ContributeViewQuery {
-    mid: u32,
+    pub mid: u32,
 }
 impl ContributeViewQuery {
     pub fn new(mid: u32) -> Self {
@@ -26,7 +26,7 @@ pub const ALBUM_CONTRIBUTE_VIEW: &str = "https://api.vc.bilibili.com/link_draw/v
 // 查询用户投稿数
 #[derive(Debug,Default, Deserialize, Serialize)]
 pub struct AlbumContributeViewQuery {
-    uid: u32,
+    pub uid: u32,
 }
 impl Query for AlbumContributeViewQuery {
 }

@@ -7,7 +7,7 @@ pub const D_FOLLOW_STAT_URL: &str = "https://api.bilibili.com/x/web-interface/na
 /// 获得关注数，粉丝数，动态数
 #[derive(Debug,Default, Serialize, Deserialize)]
 pub struct FollowStatQuery {
-    access_key: Option<String>,
+    pub access_key: Option<String>,
 }
 impl Query for FollowStatQuery {}
 

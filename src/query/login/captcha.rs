@@ -16,7 +16,7 @@ pub const CAPTCHA_URL: &str =
 
 /// 申请captcha验证码
 #[derive(Debug,Default, Serialize, Deserialize)]
-pub struct CaptchaQuery {}
+pub struct CaptchaQuery;
 impl Query for CaptchaQuery {
 }
 

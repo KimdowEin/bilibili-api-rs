@@ -21,7 +21,7 @@ pub fn headers() -> header::HeaderMap {
     let mut headers = header::HeaderMap::new();
     headers.insert(
         "referer",
-        header::HeaderValue::from_static("https://www.bilibili.com"),
+        header::HeaderValue::from_static("https://live.bilibili.com"),
     );
 
     headers.insert(

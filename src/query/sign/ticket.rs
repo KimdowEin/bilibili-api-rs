@@ -12,11 +12,11 @@ pub const BILI_TICKET_URL:&str = "https://api.bilibili.com/bapis/bilibili.api.ti
 #[derive(Debug,Serialize,Deserialize)]
 pub struct BiliTicketQuery{
     // ec02
-    key_id:String,
-    hexsign:String,
+    pub key_id:String,
+    pub hexsign:String,
     #[serde(rename = "context[ts]")]
-    context:u64,
-    csrf:String,
+    pub context:u64,
+    pub csrf:String,
 }
 impl Query for BiliTicketQuery  {}
 impl BiliTicketQuery {

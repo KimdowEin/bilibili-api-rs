@@ -82,8 +82,8 @@ pub struct Audio {
 }
 #[derive(Debug, Serialize, Deserialize)]
 pub struct SegmentBase {
-    initialization: String,
-    index_range: String,
+    pub initialization: String,
+    pub index_range: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]

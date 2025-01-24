@@ -74,6 +74,7 @@ pub enum BiliResponseCode {
 
     RsaDecryptFail = 86000,
 
+    LiveRoomInfoNotFound = 19002003,
     ArgsError = 2001000,
 
 
@@ -129,6 +130,7 @@ impl Display for BiliResponseCode {
             BiliResponseCode::VideoNotFound2 => write!(f, "视频不存在"),
 
             BiliResponseCode::OtherError => write!(f, "其他错误"),
+            BiliResponseCode::LiveRoomInfoNotFound => write!(f, "房间信息不存在"),
         }
     }
 }

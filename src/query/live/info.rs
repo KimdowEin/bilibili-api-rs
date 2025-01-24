@@ -10,7 +10,7 @@ pub const LIVE_ROOM_VIEW_URL: &str = "https://api.live.bilibili.com/room/v1/Room
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LiveRoomViewQuery {
-    room_id: u64,
+    pub room_id: u64,
 }
 impl Query for LiveRoomViewQuery {}
 impl LiveRoomViewQuery {
@@ -23,7 +23,7 @@ impl LiveRoomViewQuery {
 pub const LIVE_ROOM_INIT_URL: &str = "https://api.live.bilibili.com/room/v1/Room/room_init";
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LiveRoomInitQuery {
-    id: u64,
+    pub id: u64,
 }
 impl Query for LiveRoomInitQuery {}
 impl LiveRoomInitQuery {
@@ -37,7 +37,7 @@ pub const LIVE_USER_INFO_URL: &str = "https://api.live.bilibili.com/live_user/v1
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LiveUserInfoQuery {
-    uid: u64,
+    pub uid: u64,
 }
 impl Query for LiveUserInfoQuery {}
 impl LiveUserInfoQuery {
@@ -52,8 +52,8 @@ pub const LIVE_ROOM_BASE_INFO_URL: &str =
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LiveRoomBaseInfoQuery {
-    req_biz: String,
-    room_ids: Option<Vec<u64>>,
+    pub req_biz: String,
+    pub room_ids: Option<Vec<u64>>,
 }
 impl Query for LiveRoomBaseInfoQuery {}
 impl LiveRoomBaseInfoQuery {
@@ -67,7 +67,7 @@ pub const LIVE_ROOM_STATUS_URL: &str =
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LiveRoomStatusQuery {
-    uids: Vec<u64>,
+    pub uids: Vec<u64>,
 }
 impl Query for LiveRoomStatusQuery {}
 impl LiveRoomStatusQuery {
@@ -85,15 +85,15 @@ pub const LIVE_ROOM_INFO_URL: &str =
 /// https://gitee.com/KimdowEin/bilibili-API-collect/blob/master/docs/live/info.md#%E8%8E%B7%E5%8F%96%E7%9B%B4%E6%92%AD%E9%97%B4%E4%BF%A1%E6%81%AF-1
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LiveRoomInfoQuery {
-    room_id: u64,
-    protocol: LiveProtocol,
-    format: LiveStreamFormat,
-    codec: LiveStreamCodec,
-    qn: LiveStreamQn,
-    platform: String,
-    ptype: u8,
-    dolby: u8,
-    panorama: u8,
+    pub room_id: u64,
+    pub protocol: LiveProtocol,
+    pub format: LiveStreamFormat,
+    pub codec: LiveStreamCodec,
+    pub qn: LiveStreamQn,
+    pub platform: String,
+    pub ptype: u8,
+    pub dolby: u8,
+    pub panorama: u8,
 }
 impl Query for LiveRoomInfoQuery {}
 impl LiveRoomInfoQuery {
@@ -124,13 +124,13 @@ impl LiveRoomInfoQuery {
 
 /// 获取直播间主播信息   
 /// https://gitee.com/KimdowEin/bilibili-API-collect/blob/master/docs/live/info.md#%E8%8E%B7%E5%8F%96%E7%9B%B4%E6%92%AD%E9%97%B4%E4%B8%BB%E6%92%AD%E4%BF%A1%E6%81%AF
-const LIVE_ROOM_OWNER_URL:&str="https://api.live.bilibili.com/live_user/v1/UserInfo/get_anchor_in_room";
+pub const LIVE_ROOM_OWNER_URL:&str="https://api.live.bilibili.com/live_user/v1/UserInfo/get_anchor_in_room";
 
 /// 获取直播间主播信息   
 /// https://gitee.com/KimdowEin/bilibili-API-collect/blob/master/docs/live/info.md#%E8%8E%B7%E5%8F%96%E7%9B%B4%E6%92%AD%E9%97%B4%E4%B8%BB%E6%92%AD%E4%BF%A1%E6%81%AF
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LiveRoomOwnerQuery {
-    roomid:u64
+    pub roomid:u64
 }
 impl Query for LiveRoomOwnerQuery {}
 impl LiveRoomOwnerQuery {
