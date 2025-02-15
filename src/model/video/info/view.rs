@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use serde_aux::field_attributes::deserialize_default_from_empty_object;
 
 use crate::model::{user::account::{Owner, OwnerCard, Staff}, video::zone::Zone};
 
@@ -33,6 +34,7 @@ pub struct VideoView {
     /// 视频简介
     pub desc: VideoDesc,
     /// 新版视频简介
+    #[serde(deserialize_with = "deserialize_default_from_empty_object")]
     pub desc_v2: Vec<VideoDesc2>,
     /// 稿件状态
     pub state: VideoState,
