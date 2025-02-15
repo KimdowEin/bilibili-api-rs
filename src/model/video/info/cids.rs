@@ -4,7 +4,7 @@ use super::state::Dimension;
 
 
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug,Clone,PartialEq, Serialize, Deserialize)]
 pub struct Cids {
     /// 视频分P的cid
     pub cid: u64,
@@ -22,8 +22,9 @@ pub struct Cids {
     pub weblink: String,
     /// 分P分辨率
     pub dimension: Dimension,
-    /// 封面,如果是view则空
-    pub first_frame: Option<String>,
+    
+    // /// 封面,如果是view则空
+    // pub first_frame: Option<String>,
 }
 
 

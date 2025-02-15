@@ -4,6 +4,13 @@ use serde::{de::DeserializeOwned, Serialize};
 
 use crate::error::Error;
 
+pub trait Query: Serialize + DeserializeOwned + Sized {
+    /// 生成原始query
+    fn to_query(&self) -> Result<String, Error> {
+        Ok(serde_qs::to_string(self)?)
+    }
+}
+
 pub trait Sign: Query {
     /// 生成需要签名的query
     fn sign(&self, mixin_key: &str) -> Result<String, Error> {
@@ -26,9 +33,5 @@ pub trait Sign: Query {
     }
 }
 
-pub trait Query: Serialize + DeserializeOwned + Sized {
-    /// 生成原始query
-    fn to_query(&self) -> Result<String, Error> {
-        Ok(serde_qs::to_string(self)?)
-    }
-}
+#[cfg(feature = "derive")]
+pub use macros::{Query, Sign};

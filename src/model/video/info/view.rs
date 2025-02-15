@@ -1,81 +1,125 @@
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use serde_aux::field_attributes::deserialize_default_from_empty_object;
+use serde_aux::field_attributes::{
+    deserialize_datetime_utc_from_seconds, deserialize_default_from_empty_object,
+};
 
-use crate::model::{user::account::{Owner, OwnerCard, Staff}, video::zone::Zone};
+use crate::model::{
+    user::account::{VideoOwner, OwnerCard, Staff},
+    video::zone::Zone,
+};
 
-use super::{cids::Cids, desc::{VideoDesc, VideoDesc2}, state::{Dimension, Rights, VideoStat, VideoState}};
+use super::{
+    cids::Cids,
+    desc::{VideoDesc, VideoDesc2},
+    state::{Dimension, Rights, VideoCopyRight, VideoStat, VideoState},
+};
 
 /// 视频信息概览
-/// https://gitee.com/KimdowEin/bilibili-API-collect/blob/master/docs/video/info.md#%E8%8E%B7%E5%8F%96%E8%A7%86%E9%A2%91%E8%AF%A6%E7%BB%86%E4%BF%A1%E6%81%AFweb%E7%AB%AF
-#[derive(Debug, Serialize, Deserialize)]
+///
+/// https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/video/info.md#视频基本信息
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct VideoView {
     /// 稿件avid
     pub aid: u64,
     /// 稿件bvid
     pub bvid: String,
-    /// 投稿时间
-    pub ctime: u64,
-    /// 稿件总时长(所有分P)
-    pub duration: u64,
-    /// 封面图片url
-    pub pic: String,
-    /// 稿件分P总数
-    pub videos: u64,
-    /// 分区tid
-    pub tid: Zone,
-    /// 子分区名称
-    pub tname: String,
+    /// 视频1P的cid
+    pub cid: u64,
     /// 稿件类型 1:原创 2:转载
-    pub copyright: u8,
-    /// 稿件标题
-    pub title: String,
-    /// 发布时间
-    pub pubdate: u64,
+    pub copyright: VideoCopyRight,
+    /// 投稿时间
+    #[serde(deserialize_with = "deserialize_datetime_utc_from_seconds")]
+    pub ctime: DateTime<Utc>,
     /// 视频简介
     pub desc: VideoDesc,
     /// 新版视频简介
     #[serde(deserialize_with = "deserialize_default_from_empty_object")]
     pub desc_v2: Vec<VideoDesc2>,
-    /// 稿件状态
-    pub state: VideoState,
-    /// 撞车视频跳转avid
-    pub forward: Option<u64>,
-    /// 稿件参加的活动id
-    pub mission_id: Option<u64>,
-    /// 重定向url
-    pub redirect_url: Option<String>,
-    /// 视频属性标志
-    pub rights: Rights,
-    /// UP主信息
-    pub owner: Owner,
-    /// 视频状态数
-    pub stat: VideoStat,
-    /// 视频同步发布的的动态的文字内容
-    pub dynamic: String,
-    /// 视频1P的cid
-    pub cid: u64,
     /// 视频1P的分辨率
     pub dimension: Dimension,
+    /// 未知
+    #[serde(default)]
+    pub disable_show_up_info: bool,
+    /// 稿件总时长(所有分P)
+    pub duration: u64,
+    /// 视频同步发布的的动态的文字内容
+    pub dynamic: String,
+    /// 撞车视频跳转avid
+    pub forward: Option<u64>,
+    // honor_reply todo
+    /// 未知
+    #[serde(default)]
+    pub is_chargeable_season: bool,
+    /// 未知
+    #[serde(default)]
+    pub is_season_display: bool,
+    /// 是否可以在 Story Mode 展示
+    #[serde(default)]
+    pub is_story: bool,
+    /// 未知
+    #[serde(default)]
+    pub is_story_play: bool,
+    /// 是否为充电专属
+    pub is_upower_exclusive: bool,
+    /// 未知
+    #[serde(default)]
+    pub is_upower_pay: bool,
+    /// 未知
+    #[serde(default)]
+    pub is_upower_show: bool,
+    /// 未知
+    #[serde(default)]
+    pub is_view_self: bool,
+    /// 稿件参加的活动id
+    pub mission_id: Option<u64>,
+    /// 未知
+    #[serde(default)]
+    pub need_jump_bv: bool,
+    /// UP主信息
+    pub owner: VideoOwner,
     /// 视频分P列表
     pub pages: Vec<Cids>,
-    /// 视频CC字幕信息
-    pub subtitle: Option<Subtitle>,
+    /// 封面图片url
+    pub pic: String,
+    /// 发布时间
+    #[serde(deserialize_with = "deserialize_datetime_utc_from_seconds")]
+    pub pubdate: DateTime<Utc>,
+    /// 视频属性标志
+    pub rights: Rights,
     /// 合作成员列表
     #[serde(default)]
     pub staff: Vec<Staff>,
+    /// 视频统计数据
+    pub stat: VideoStat,
+    /// 稿件状态
+    pub state: VideoState,
+    /// 视频CC字幕信息
+    pub subtitle: Option<Subtitle>,
+    /// 青少年模式(未知)
+    #[serde(default)]
+    pub teenage_mode: i64,
+    /// 分区tid
+    pub tid: Zone,
+    /// 稿件标题
+    pub title: String,
+    /// 子分区名称
+    pub tname: String,
+    // user_garb todo
+    /// 稿件分P总数
+    pub videos: u64,
 }
 
-
-
-#[derive(Debug, Default, Serialize, Deserialize, )]
+#[derive(Debug, Clone,PartialEq, Serialize, Deserialize)]
 pub struct Subtitle {
     ///是否允许提交字幕
     pub allow_submit: bool,
     /// 字幕列表
+    #[serde(deserialize_with="deserialize_default_from_empty_object")]
     pub list: Vec<SubtitleItem>,
 }
 
-#[derive(Debug, Default, Serialize, Deserialize, )]
+#[derive(Debug, Clone,PartialEq, Serialize, Deserialize)]
 pub struct SubtitleItem {
     /// 字幕id
     pub id: u64,
@@ -89,12 +133,11 @@ pub struct SubtitleItem {
     pub author_mid: Option<u64>,
     /// json格式字幕文件url
     pub subtitle_url: String,
-
-    // author
+    // author todo
 }
 
 /// 视频页详细信息   
-/// https://gitee.com/KimdowEin/bilibili-API-collect/blob/master/docs/video/info.md#%E8%8E%B7%E5%8F%96%E8%A7%86%E9%A2%91%E8%B6%85%E8%AF%A6%E7%BB%86%E4%BF%A1%E6%81%AFweb%E7%AB%AF
+/// https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/video/info.md#%E8%8E%B7%E5%8F%96%E8%A7%86%E9%A2%91%E8%B6%85%E8%AF%A6%E7%BB%86%E4%BF%A1%E6%81%AFweb%E7%AB%AF
 #[derive(Debug, Serialize, Deserialize)]
 pub struct VideoInfo {
     /// 视频基本信息
@@ -121,8 +164,6 @@ pub struct Tags {}
 pub struct Reply {}
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Related {}
-
-
 
 #[cfg(test)]
 mod tests {
@@ -262,6 +303,5 @@ mod tests {
         }
         "#;
         serde_json::from_str::<VideoView>(json).unwrap();
-
     }
 }

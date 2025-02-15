@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-use serde_aux::field_attributes::deserialize_number_from_string;
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
 use super::{exp::LevelView, official::{Official, OfficialVerify}, vip::Vip};
@@ -32,10 +31,9 @@ pub enum GenderType{
     Male = 1,
 }
 
-#[derive(Debug, Default, Serialize, Deserialize, )]
-pub struct Owner {
+#[derive(Debug,Clone,PartialEq, Serialize, Deserialize)]
+pub struct VideoOwner {
     /// UP mid
-    #[serde(deserialize_with = "deserialize_number_from_string")]
     pub mid: u64,
     /// UP昵称
     pub name: String,
@@ -60,7 +58,7 @@ pub struct OwnerCard {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct CardView {
     #[serde(flatten)]
-    pub owner:Owner,
+    pub owner:VideoOwner,
     pub sex: String,
     pub face_nft: u8,
     pub birthday: String,
@@ -99,11 +97,15 @@ pub struct Sapce {
     pub l_img: String,
 }
 
-#[derive(Debug, Default, Serialize, Deserialize, )]
+#[derive(Debug,Clone,PartialEq, Serialize, Deserialize)]
 pub struct Staff {
     #[serde(flatten)]
-    pub owner: Owner,
+    pub owner: VideoOwner,
     pub title: String, //名称
+
+    // vip todo
+    // official todo
+    // follower todo
 }
 
 

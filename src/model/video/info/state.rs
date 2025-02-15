@@ -1,8 +1,8 @@
 
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
-
-#[derive(Serialize, Deserialize, Debug)]
+use serde_aux::field_attributes::deserialize_bool_from_anything;
+#[derive(Debug,Clone,PartialEq,Serialize, Deserialize)]
 pub struct VideoStat {
     /// 稿件avid
     pub aid: u64,
@@ -27,56 +27,72 @@ pub struct VideoStat {
     /// 点踩数
     pub dislike: u64,
     /// 视频评分
-    pub evaluation: Option<String>,
-    /// 禁止转载
-    #[serde(default)]
-    pub no_reprint: u8,
-    /// 版权标志
-    #[serde(default)]
-    pub copyright: u8,
+    pub evaluation: String,
+
+    
+    // /// 禁止转载
+    // #[serde(default)]
+    // pub no_reprint: u8,
+    // /// 版权标志
+    // #[serde(default)]
+    // pub copyright: u8,
 }
 
-#[derive(Debug, Default, Serialize, Deserialize, )]
+/// 视频属性标志
+#[derive(Debug,Clone, PartialEq, Serialize, Deserialize, )]
 pub struct Rights {
     /// 是否允许承包
-    pub bp: u8,
+    #[serde(deserialize_with = "deserialize_bool_from_anything")]
+    pub bp: bool,
+    #[serde(deserialize_with = "deserialize_bool_from_anything")]
     /// 是否支持充电
-    pub elec: u8,
+    pub elec: bool,
     /// 是否支持下载
-    pub download: u8,
+    #[serde(deserialize_with = "deserialize_bool_from_anything")]
+    pub download: bool,
     /// 是否电影
-    pub movie: u8,
+    #[serde(deserialize_with = "deserialize_bool_from_anything")]
+    pub movie: bool,
     /// 是否PGC付费
-    pub pay: u8,
+    #[serde(deserialize_with = "deserialize_bool_from_anything")]
+    pub pay: bool,
     /// 是否有高码率
-    pub hd5: u8,
+    #[serde(deserialize_with = "deserialize_bool_from_anything")]
+    pub hd5: bool,
     /// 是否禁止转载
-    pub no_reprint: u8,
+    #[serde(deserialize_with = "deserialize_bool_from_anything")]
+    pub no_reprint: bool,
     /// 是否自动播放
-    pub autoplay: u8,
+    #[serde(deserialize_with = "deserialize_bool_from_anything")]
+    pub autoplay: bool,
     /// 是否UGC付费
-    pub ugc_pay: u8,
+    #[serde(deserialize_with = "deserialize_bool_from_anything")]
+    pub ugc_pay: bool,
     /// 是否合作视频
-    pub is_cooperation: u8,
+    #[serde(deserialize_with = "deserialize_bool_from_anything")]
+    pub is_cooperation: bool,
     /// 是否互动视频
-    pub is_stein_gate: u8,
+    #[serde(deserialize_with = "deserialize_bool_from_anything")]
+    pub is_stein_gate: bool,
     /// 是否全景视频
-    pub is_360: u8,
+    #[serde(deserialize_with = "deserialize_bool_from_anything")]
+    pub is_360: bool,
 }
 
-#[derive(Debug, Default, Serialize, Deserialize, )]
+/// 分辨率
+#[derive(Debug, Clone,PartialEq, Serialize, Deserialize, )]
 pub struct Dimension {
     pub width: u64,
     pub height: u64,
     /// 是否反转
-    pub rotate: u8,
+    #[serde(deserialize_with = "deserialize_bool_from_anything")]
+    pub rotate: bool,
 }
 
-#[derive(Debug, Default, Serialize_repr, Deserialize_repr, )]
+#[derive(Debug, Clone,PartialEq, Serialize_repr, Deserialize_repr, )]
 #[repr(i32)]
 pub enum VideoState {
     OrangePass = 1,
-    #[default]
     Open = 0,
     WaitReviewed=-1,
     Reject=-2,
@@ -99,4 +115,14 @@ pub enum VideoState {
     TimingSubmit = -40,
     OnlySelf = -50,
     Delecte = -100,
+}
+
+/// 视频类型,原创/转载
+#[derive(Debug,Clone,PartialEq,Serialize_repr,Deserialize_repr)]
+#[repr(u8)]
+pub enum VideoCopyRight {
+    /// 原创
+    Original,
+    /// 转载
+    RePrint,
 }

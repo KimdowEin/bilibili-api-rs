@@ -77,12 +77,12 @@ impl LiveRoomStatusQuery {
 }
 
 /// 获取直播间信息   
-/// https://gitee.com/KimdowEin/bilibili-API-collect/blob/master/docs/live/info.md#%E8%8E%B7%E5%8F%96%E7%9B%B4%E6%92%AD%E9%97%B4%E4%BF%A1%E6%81%AF-1
+/// https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/live/info.md#%E8%8E%B7%E5%8F%96%E7%9B%B4%E6%92%AD%E9%97%B4%E4%BF%A1%E6%81%AF-1
 pub const LIVE_ROOM_INFO_URL: &str =
 "https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo";
 
 /// 获取直播间信息   
-/// https://gitee.com/KimdowEin/bilibili-API-collect/blob/master/docs/live/info.md#%E8%8E%B7%E5%8F%96%E7%9B%B4%E6%92%AD%E9%97%B4%E4%BF%A1%E6%81%AF-1
+/// https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/live/info.md#%E8%8E%B7%E5%8F%96%E7%9B%B4%E6%92%AD%E9%97%B4%E4%BF%A1%E6%81%AF-1
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LiveRoomInfoQuery {
     pub room_id: u64,
@@ -123,11 +123,11 @@ impl LiveRoomInfoQuery {
 }
 
 /// 获取直播间主播信息   
-/// https://gitee.com/KimdowEin/bilibili-API-collect/blob/master/docs/live/info.md#%E8%8E%B7%E5%8F%96%E7%9B%B4%E6%92%AD%E9%97%B4%E4%B8%BB%E6%92%AD%E4%BF%A1%E6%81%AF
+/// https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/live/info.md#%E8%8E%B7%E5%8F%96%E7%9B%B4%E6%92%AD%E9%97%B4%E4%B8%BB%E6%92%AD%E4%BF%A1%E6%81%AF
 pub const LIVE_ROOM_OWNER_URL:&str="https://api.live.bilibili.com/live_user/v1/UserInfo/get_anchor_in_room";
 
 /// 获取直播间主播信息   
-/// https://gitee.com/KimdowEin/bilibili-API-collect/blob/master/docs/live/info.md#%E8%8E%B7%E5%8F%96%E7%9B%B4%E6%92%AD%E9%97%B4%E4%B8%BB%E6%92%AD%E4%BF%A1%E6%81%AF
+/// https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/live/info.md#%E8%8E%B7%E5%8F%96%E7%9B%B4%E6%92%AD%E9%97%B4%E4%B8%BB%E6%92%AD%E4%BF%A1%E6%81%AF
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LiveRoomOwnerQuery {
     pub roomid:u64

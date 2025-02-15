@@ -45,7 +45,7 @@ pub struct LiveRoomView {
     pub battle_id: i64,
 }
 
-/// https://gitee.com/KimdowEin/bilibili-API-collect/blob/master/docs/live/info.md#%E8%8E%B7%E5%8F%96%E6%88%BF%E9%97%B4%E9%A1%B5%E5%88%9D%E5%A7%8B%E5%8C%96%E4%BF%A1%E6%81%AF
+/// https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/live/info.md#%E8%8E%B7%E5%8F%96%E6%88%BF%E9%97%B4%E9%A1%B5%E5%88%9D%E5%A7%8B%E5%8C%96%E4%BF%A1%E6%81%AF
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LiveRoomInit {
     pub room_id: u64,
@@ -77,7 +77,7 @@ pub enum LiveRoomSpecialType {
 }
 
 /// 主播信息   
-/// https://gitee.com/KimdowEin/bilibili-API-collect/blob/master/docs/live/info.md#%E8%8E%B7%E5%8F%96%E4%B8%BB%E6%92%AD%E4%BF%A1%E6%81%AF   
+/// https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/live/info.md#%E8%8E%B7%E5%8F%96%E4%B8%BB%E6%92%AD%E4%BF%A1%E6%81%AF   
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LiveUserInfo {
     pub info: LiveAccountInfo,
@@ -128,7 +128,7 @@ pub struct LiveRoomBaseInfo {
 }
 
 /// 直播间状态   
-/// https://gitee.com/KimdowEin/bilibili-API-collect/blob/master/docs/live/info.md#%E6%89%B9%E9%87%8F%E6%9F%A5%E8%AF%A2%E7%9B%B4%E6%92%AD%E9%97%B4%E7%8A%B6%E6%80%81
+/// https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/live/info.md#%E6%89%B9%E9%87%8F%E6%9F%A5%E8%AF%A2%E7%9B%B4%E6%92%AD%E9%97%B4%E7%8A%B6%E6%80%81
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LiveRoomStatus {
     pub title: String,
@@ -161,7 +161,7 @@ pub enum LiveStatus {
 }
 
 /// 直播间信息
-/// https://gitee.com/KimdowEin/bilibili-API-collect/blob/master/docs/live/info.md#%E8%8E%B7%E5%8F%96%E7%9B%B4%E6%92%AD%E9%97%B4%E4%BF%A1%E6%81%AF-1
+/// https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/live/info.md#%E8%8E%B7%E5%8F%96%E7%9B%B4%E6%92%AD%E9%97%B4%E4%BF%A1%E6%81%AF-1
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LiveRoomInfo {
     pub room_id: u64,
@@ -250,7 +250,7 @@ pub enum LiveStreamCodec {
 }
 
 /// 获取直播间主播信息   
-/// https://gitee.com/KimdowEin/bilibili-API-collect/blob/master/docs/live/info.md#%E8%8E%B7%E5%8F%96%E7%9B%B4%E6%92%AD%E9%97%B4%E4%B8%BB%E6%92%AD%E4%BF%A1%E6%81%AF
+/// https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/live/info.md#%E8%8E%B7%E5%8F%96%E7%9B%B4%E6%92%AD%E9%97%B4%E4%B8%BB%E6%92%AD%E4%BF%A1%E6%81%AF
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LiveRoomOwner {
     pub info: LiveRoomOwnerInfo,

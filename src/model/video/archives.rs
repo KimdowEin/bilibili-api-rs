@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 /// 获取视频合集信息   
-/// https://gitee.com/KimdowEin/bilibili-API-collect/blob/master/docs/video/collection.md#%E8%8E%B7%E5%8F%96%E8%A7%86%E9%A2%91%E5%90%88%E9%9B%86%E4%BF%A1%E6%81%AF
+/// https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/video/collection.md#%E8%8E%B7%E5%8F%96%E8%A7%86%E9%A2%91%E5%90%88%E9%9B%86%E4%BF%A1%E6%81%AF
 #[derive(Debug, Serialize, Deserialize)]
 pub struct VideoArchive {
     pub aids:Vec<u64>,
