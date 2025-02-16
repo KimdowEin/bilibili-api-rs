@@ -38,7 +38,8 @@ futures-util = "0.3.31"
 indicatif = "0.17.9"
 
 [features]
-default = []
+# default = []
+default = ["session"]
 session = ["reqwest", "tokio"]
 manual = ["webbrowser"]
 test = ["session"]

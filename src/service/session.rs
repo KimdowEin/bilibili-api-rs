@@ -1,6 +1,6 @@
 use std::{
     fs::File,
-    io::{BufReader, Write},
+    io::{self, BufReader, Write},
     ops::Deref,
     path::{Path, PathBuf},
     sync::Arc,
@@ -81,6 +81,7 @@ impl Session {
         }
     }
 
+    /// 从文件中读取cookies,headers用的是本库的实现
     pub fn new_with_path<P>(path: P) -> Result<Self, Error>
     where
         P: AsRef<Path>,
@@ -103,22 +104,24 @@ impl Session {
     }
 
     pub fn save_cookies(&self) -> Result<(), Error> {
-        let mut file = File::create(&self.state.cookies_path)?;
-        let mut cookies = Vec::new();
-        let to_url = Url::parse(COOKIES_URL).unwrap();
-        let cookie = self.state.jar.cookies(&to_url);
-        if let Some(cookie) = cookie {
-            let cookie = cookie.to_str().unwrap();
+        if let Some(path) = &self.state.cookies_path {
+            let mut file = File::create(path)?;
+            let mut cookies = Vec::new();
+            let to_url = Url::parse(COOKIES_URL).unwrap();
+            let cookie = self.state.jar.cookies(&to_url);
+            if let Some(cookie) = cookie {
+                let cookie = cookie.to_str().unwrap();
 
-            let cookie_item = CookieItem {
-                url: COOKIES_URL.to_string(),
-                cookies: cookie.to_string(),
-            };
-            cookies.push(cookie_item);
+                let cookie_item = CookieItem {
+                    url: COOKIES_URL.to_string(),
+                    cookies: cookie.to_string(),
+                };
+                cookies.push(cookie_item);
+            }
+
+            let json = serde_json::to_string(&cookies)?;
+            file.write_all(json.as_bytes())?;
         }
-
-        let json = serde_json::to_string(&cookies)?;
-        file.write_all(json.as_bytes())?;
 
         Ok(())
     }
@@ -152,17 +155,18 @@ impl Session {
 
 #[derive(Debug)]
 pub struct SessionState {
-    pub cookies_path: PathBuf,
+    pub cookies_path: Option<PathBuf>,
     pub jar: Arc<Jar>,
 }
 impl Default for SessionState {
     fn default() -> Self {
         Self {
-            cookies_path: PathBuf::from("cookies.json"),
+            cookies_path: Some(PathBuf::from("cookies.json")),
             jar: Arc::new(Jar::default()),
         }
     }
 }
+
 impl SessionState {
     pub fn from_path<P>(path: P) -> Result<Self, Error>
     where
@@ -172,9 +176,11 @@ impl SessionState {
         let reader = BufReader::new(&mut file);
         let cookies: Vec<CookieItem> = serde_json::from_reader(reader)?;
 
+        let path = Some(path.as_ref().to_path_buf());
+
         let state = SessionState {
             jar: Arc::new(Jar::default()),
-            cookies_path: path.as_ref().to_path_buf(),
+            cookies_path: path,
         };
 
         cookies.into_iter().for_each(|cookie| {

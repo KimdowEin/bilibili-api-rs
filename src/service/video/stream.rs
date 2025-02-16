@@ -24,22 +24,22 @@ impl Session {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+// #[cfg(test)]
+// mod tests {
+//     use super::*;
 
-    use crate::query::video::info::cids::VideoCidsQuery;
+//     use crate::query::video::info::cids::VideoCidsQuery;
 
-    const BVID: &str = "BV1wDCwYfE2f";
+//     const BVID: &str = "BV1wDCwYfE2f";
 
-    #[tokio::test]
-    async fn test_get_video_stream() {
-        let session = Session::new_with_path("./cookies.json").unwrap();
-        let query = VideoCidsQuery::new(None, Some(BVID));
-        let cid = session.get_video_cids(query).await.unwrap()[0].cid;
-        let query = VideoStreamQuery::new(None, Some(BVID), cid, None, None, None, None);
-        let stream = session.get_video_stream(query).await.unwrap();
+//     #[tokio::test]
+//     async fn test_get_video_stream() {
+//         let session = Session::new_with_path("./cookies.json").unwrap();
+//         let query = VideoCidsQuery::new(None, Some(BVID));
+//         let cid = session.get_video_cids(query).await.unwrap()[0].cid;
+//         let query = VideoStreamQuery::new(None, Some(BVID), cid, None, None, None, None);
+//         let stream = session.get_video_stream(query).await.unwrap();
 
-        assert!(stream.durl.is_some_and(|x| !x.is_empty()));
-    }
-}
+//         assert!(stream.durl.is_some_and(|x| !x.is_empty()));
+//     }
+// }

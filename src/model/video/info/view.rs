@@ -1,11 +1,11 @@
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use serde_aux::field_attributes::{
-    deserialize_datetime_utc_from_seconds, deserialize_default_from_empty_object,
+    deserialize_bool_from_anything, deserialize_datetime_utc_from_seconds,
+    deserialize_default_from_empty_object,
 };
-
 use crate::model::{
-    user::account::{VideoOwner, OwnerCard, Staff},
+    user::account::{OwnerCard, Staff, VideoOwner},
     video::zone::Zone,
 };
 
@@ -13,6 +13,7 @@ use super::{
     cids::Cids,
     desc::{VideoDesc, VideoDesc2},
     state::{Dimension, Rights, VideoCopyRight, VideoStat, VideoState},
+    subtitle::Subtitle,
 };
 
 /// 视频信息概览
@@ -59,6 +60,7 @@ pub struct VideoView {
     pub is_story: bool,
     /// 未知
     #[serde(default)]
+    #[serde(deserialize_with = "deserialize_bool_from_anything")]
     pub is_story_play: bool,
     /// 是否为充电专属
     pub is_upower_exclusive: bool,
@@ -110,33 +112,8 @@ pub struct VideoView {
     pub videos: u64,
 }
 
-#[derive(Debug, Clone,PartialEq, Serialize, Deserialize)]
-pub struct Subtitle {
-    ///是否允许提交字幕
-    pub allow_submit: bool,
-    /// 字幕列表
-    #[serde(deserialize_with="deserialize_default_from_empty_object")]
-    pub list: Vec<SubtitleItem>,
-}
-
-#[derive(Debug, Clone,PartialEq, Serialize, Deserialize)]
-pub struct SubtitleItem {
-    /// 字幕id
-    pub id: u64,
-    /// 字幕语言
-    pub lan: String,
-    /// 字幕语言名称
-    pub lan_doc: String,
-    /// 是否锁定
-    pub is_lock: bool,
-    /// 作者mid
-    pub author_mid: Option<u64>,
-    /// json格式字幕文件url
-    pub subtitle_url: String,
-    // author todo
-}
-
-/// 视频页详细信息   
+/// 视频页详细信息 别用这个
+/// 
 /// https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/video/info.md#%E8%8E%B7%E5%8F%96%E8%A7%86%E9%A2%91%E8%B6%85%E8%AF%A6%E7%BB%86%E4%BF%A1%E6%81%AFweb%E7%AB%AF
 #[derive(Debug, Serialize, Deserialize)]
 pub struct VideoInfo {

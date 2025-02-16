@@ -1,3 +1,5 @@
+//! 视频唯一标识cid
+
 use serde::{Deserialize, Serialize};
 
 use super::state::Dimension;
@@ -16,15 +18,15 @@ pub struct Cids {
     pub part: String,
     /// 分P时长
     pub duration: u64,
-    // /// 站外视频vid
+    /// 站外视频vid
     pub vid: String,
-    // /// 站外视频跳转链接
+    /// 站外视频跳转链接
     pub weblink: String,
     /// 分P分辨率
     pub dimension: Dimension,
     
-    // /// 封面,如果是view则空
-    // pub first_frame: Option<String>,
+    /// 封面,如果是VideoView则空
+    pub first_frame: Option<String>,
 }
 
 

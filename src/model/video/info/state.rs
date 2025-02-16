@@ -1,8 +1,9 @@
+//! 视频状态/杂项
 
 use serde::{Deserialize, Serialize};
-use serde_repr::{Deserialize_repr, Serialize_repr};
 use serde_aux::field_attributes::deserialize_bool_from_anything;
-#[derive(Debug,Clone,PartialEq,Serialize, Deserialize)]
+use serde_repr::{Deserialize_repr, Serialize_repr};
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct VideoStat {
     /// 稿件avid
     pub aid: u64,
@@ -28,8 +29,6 @@ pub struct VideoStat {
     pub dislike: u64,
     /// 视频评分
     pub evaluation: String,
-
-    
     // /// 禁止转载
     // #[serde(default)]
     // pub no_reprint: u8,
@@ -39,7 +38,7 @@ pub struct VideoStat {
 }
 
 /// 视频属性标志
-#[derive(Debug,Clone, PartialEq, Serialize, Deserialize, )]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Rights {
     /// 是否允许承包
     #[serde(deserialize_with = "deserialize_bool_from_anything")]
@@ -80,7 +79,7 @@ pub struct Rights {
 }
 
 /// 分辨率
-#[derive(Debug, Clone,PartialEq, Serialize, Deserialize, )]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Dimension {
     pub width: u64,
     pub height: u64,
@@ -89,14 +88,14 @@ pub struct Dimension {
     pub rotate: bool,
 }
 
-#[derive(Debug, Clone,PartialEq, Serialize_repr, Deserialize_repr, )]
+#[derive(Debug, Clone, PartialEq, Serialize_repr, Deserialize_repr)]
 #[repr(i32)]
 pub enum VideoState {
     OrangePass = 1,
     Open = 0,
-    WaitReviewed=-1,
-    Reject=-2,
-    PoliceLock=-3,
+    WaitReviewed = -1,
+    Reject = -2,
+    PoliceLock = -3,
     Repeat = -4,
     Lock = -5,
     RejectReviewed = -6,
@@ -107,9 +106,9 @@ pub enum VideoState {
     ResouceBrocken = -11,
     SaveError = -12,
     CommentReviewed = -13,
-    GarbageStation=-14,
-    Distribute=-15,
-    FormatError=-16,
+    GarbageStation = -14,
+    Distribute = -15,
+    FormatError = -16,
     NotSubmit = -20,
     SubmitAgain = -30,
     TimingSubmit = -40,
@@ -118,7 +117,7 @@ pub enum VideoState {
 }
 
 /// 视频类型,原创/转载
-#[derive(Debug,Clone,PartialEq,Serialize_repr,Deserialize_repr)]
+#[derive(Debug, Clone, PartialEq, Serialize_repr, Deserialize_repr)]
 #[repr(u8)]
 pub enum VideoCopyRight {
     /// 原创

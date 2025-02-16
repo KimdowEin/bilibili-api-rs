@@ -11,8 +11,6 @@ impl Session {
             .json::<BiliResponse<_>>()
             .await?
             .data()
-
-
     }
     pub async fn refresh_sign(&mut self) -> Result<(), Error> {
         let csrf = if let Some(csrf) = self.get_cookie(COOKIES_URL, "bili_jct") {

@@ -1,6 +1,10 @@
+//! 视频简介
+
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
+
+/// V1简介
 pub type VideoDesc = String;
 
 
