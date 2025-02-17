@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 rand = "0.8.5"
+chrono = { version = "0.4.39", features = ["serde"] }
 
 base64 = "0.22.1"
 md5 = "0.7.0"
@@ -28,7 +29,6 @@ reqwest = { version = "0.12.9", optional = true, features = [
     "stream",
 ] }
 webbrowser = { version = "1.0.3", optional = true }
-chrono = { version = "0.4.39", features = ["serde"] }
 
 [dependencies.macros]
 path = "./macros"

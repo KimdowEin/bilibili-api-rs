@@ -1,15 +1,19 @@
+//! 获取视频流地址
+
+use crate::{model::video::format::{Fnval, Qn}, traits::{Query, Sign}};
+use macros::{Query, Sign};
 use serde::{Deserialize, Serialize};
 
-use crate::traits::{Query, Sign};
+use super::info::VideoQuery;
 
-use crate::model::video::stream::{Fnval, Qn};
-
+/// 获取视频流地址
 pub const VIDEO_STREAM_URL: &str = "https://api.bilibili.com/x/player/wbi/playurl";
 
-#[derive(Debug, Default, Serialize, Deserialize)]
+/// 获取视频流地址
+#[derive(Debug, Clone,PartialEq, Serialize, Deserialize, Query, Sign)]
 pub struct VideoStreamQuery {
-    pub avid: Option<u64>,
-    pub bvid: Option<String>,
+    #[serde(flatten)]
+    pub vid: VideoQuery,
     pub cid: u64,
     pub qn: Option<Qn>,
     pub fnval: Option<Fnval>,
@@ -21,26 +25,18 @@ pub struct VideoStreamQuery {
     pub platform: Option<String>,
     // high_quality: Option<u8>,
 }
-impl Query for VideoStreamQuery {}
-impl Sign for VideoStreamQuery {}
 impl VideoStreamQuery {
-    pub fn new<N>(
-        avid: N,
-        bvid: Option<&str>,
+    pub fn new(
+        vid: VideoQuery,
         cid: u64,
         qn: Option<Qn>,
         fnval: Option<Fnval>,
         fourk: Option<bool>,
         platform: Option<String>,
-    ) -> Self
-    where
-        N: Into<Option<u64>>,
-    {
+    ) -> Self {
         let fourk = fourk.map(|b| b as u8);
-        let bvid = bvid.map(|x| x.to_string());
         VideoStreamQuery {
-            avid:avid.into(),
-            bvid,
+            vid,
             cid,
             qn,
             fnval,

@@ -1,6 +1,6 @@
 use crate::{
     error::Error,
-    model::{response::BiliResponse, video::stream::VideoStream},
+    model::{response::BiliResponse, video::stream::VideoStreamOld},
     query::video::stream::{VideoStreamQuery, VIDEO_STREAM_URL},
     service::session::Session,
     traits::Sign,
@@ -8,7 +8,7 @@ use crate::{
 
 impl Session {
     /// 获取视频流地址
-    pub async fn get_video_stream(&self, query: VideoStreamQuery) -> Result<VideoStream, Error> {
+    pub async fn get_video_stream(&self, query: VideoStreamQuery) -> Result<VideoStreamOld, Error> {
         let url = format!(
             "{}?{}",
             VIDEO_STREAM_URL,

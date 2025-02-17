@@ -1,6 +1,6 @@
 use std::{
     fs::File,
-    io::{self, BufReader, Write},
+    io::{BufReader, Write},
     ops::Deref,
     path::{Path, PathBuf},
     sync::Arc,

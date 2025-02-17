@@ -7,7 +7,7 @@ use crate::{
     query::video::info::{
         cids::{VideoCidsQuery, CIDS_URL},
         desc::{VideoDescQuery, VIDEO_DESC_URL},
-        view::{VideoInfoQuery, VideoViewQuery, VIDEO_VIEW_URL},
+        view::{VideoInfoQuery, VIDEO_VIEW_URL},
     },
     service::session::Session,
     traits::Query,
@@ -73,6 +73,8 @@ pub async fn get_video_cids(session: &Session, query: VideoCidsQuery) -> Result<
 
 #[cfg(test)]
 mod tests {
+    use crate::query::video::info::view::VideoViewQuery;
+
     use super::*;
 
     const BVID: &str = "BV1wDCwYfE2f";

@@ -1,13 +1,17 @@
+//! 获取视频信息
+
+/// 获取视频cid
 pub mod cids;
+/// 获取视频简介
 pub mod desc;
+/// 视频基本信息
 pub mod view;
 
+use crate::traits::{Query, Sign};
 use macros::{Query, Sign};
 use serde::{Deserialize, Serialize};
 
-use crate::traits::{Query, Sign};
-
-#[derive(Debug, Clone, Deserialize, Serialize, Query, Sign)]
+#[derive(Debug, Clone,PartialEq, Deserialize, Serialize, Query, Sign)]
 pub struct VideoQuery {
     pub aid: Option<u64>,
     pub bvid: Option<String>,
@@ -32,6 +36,11 @@ impl From<u64> for VideoQuery {
 impl From<&str> for VideoQuery {
     fn from(value: &str) -> Self {
         VideoQuery::new(None, value.to_string())
+    }
+}
+impl From<String> for VideoQuery {
+    fn from(value: String) -> Self {
+        VideoQuery::new(None, value)
     }
 }
 
