@@ -1,5 +1,5 @@
 mod action;
 pub mod info;
-mod stream;
+pub mod stream;
 
 pub use info::*;

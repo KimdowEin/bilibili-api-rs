@@ -1,5 +1,6 @@
 //! 视频格式和元数据
 
+use bitflags::bitflags;
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
@@ -19,6 +20,8 @@ pub enum Qn {
     HDP = 74,
     ///1080p超清
     FHD = 80,
+    ///1080P高码率
+    FHDR = 112,
     ///1080P高帧率
     FHDP = 116,
     ///4K超清
@@ -31,18 +34,20 @@ pub enum Qn {
     SUHD = 127,
 }
 
-///视频流格式标识
-#[derive(Debug, Clone, PartialEq, Eq, Serialize_repr, Deserialize_repr)]
-#[repr(u32)]
-pub enum Fnval {
-    MP4 = 1,
-    DASH = 16,
-    HDR = 64,
-    K4 = 128,
-    DolbyAudio = 256,
-    DolbyVision = 512,
-    K8 = 1024,
-    AV1 = 2048,
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(transparent)]
+pub struct Fnval(u32);
+bitflags! {
+    impl Fnval:u32 {
+    const MP4 = 1;
+    const DASH = 16;
+    const HDR = 64;
+    const K4 = 128;
+    const DolbyAudio = 256;
+    const DolbyVision = 512;
+    const K8 = 1024;
+    const AV1 = 2048;
+    }
 }
 
 ///视频编码代码
@@ -66,8 +71,8 @@ pub enum AudioQn {
 }
 
 /// 支持格式的详细信息
-#[derive(Debug,Clone,PartialEq, Serialize, Deserialize)]
-pub struct SupportFormats{
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct SupportFormats {
     pub quality: Qn,
     pub format: String,
     pub new_description: String,

@@ -1,47 +1,50 @@
+use super::{
+    exp::LevelView,
+    official::{Official, OfficialVerify},
+    vip::Vip,
+};
 use serde::{Deserialize, Serialize};
+use serde_aux::field_attributes::deserialize_number_from_string;
 use serde_repr::{Deserialize_repr, Serialize_repr};
-
-use super::{exp::LevelView, official::{Official, OfficialVerify}, vip::Vip};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct AccountInfo {
     pub mid: u64,
     pub uname: String,
-    pub userid:String,
+    pub userid: String,
     pub sign: String,
     pub birthday: String,
     pub sex: String,
-    pub nick_free:bool,
-    pub rank:String,
+    pub nick_free: bool,
+    pub rank: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LiveAccountInfo {
-    pub uid:u64,
-    pub uname:String,
-    pub face:String,
-    pub official_verify:OfficialVerify,
-    pub gender:i8,
+    pub uid: u64,
+    pub uname: String,
+    pub face: String,
+    pub official_verify: OfficialVerify,
+    pub gender: i8,
 }
 #[derive(Debug, Serialize_repr, Deserialize_repr)]
 #[repr(i8)]
-pub enum GenderType{
+pub enum GenderType {
     Secrecy = -1,
-    Female = 0, 
+    Female = 0,
     Male = 1,
 }
 
-#[derive(Debug,Clone,PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct VideoOwner {
     /// UP mid
+    #[serde(deserialize_with = "deserialize_number_from_string")]
     pub mid: u64,
     /// UP昵称
     pub name: String,
     /// UP头像
     pub face: String,
 }
-
-
 
 /// 视频用户栏信息
 #[derive(Debug, Serialize, Deserialize)]
@@ -58,7 +61,7 @@ pub struct OwnerCard {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct CardView {
     #[serde(flatten)]
-    pub owner:VideoOwner,
+    pub owner: VideoOwner,
     pub sex: String,
     pub face_nft: u8,
     pub birthday: String,
@@ -97,25 +100,23 @@ pub struct Sapce {
     pub l_img: String,
 }
 
-#[derive(Debug,Clone,PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Staff {
     #[serde(flatten)]
     pub owner: VideoOwner,
     pub title: String, //名称
 
-    // vip todo
-    // official todo
-    // follower todo
+                       // vip todo
+                       // official todo
+                       // follower todo
 }
-
-
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    
+
     #[test]
-    fn test_deserialize_owner_card(){
+    fn test_deserialize_owner_card() {
         let json = r#"
         {
             "card":{
@@ -222,4 +223,4 @@ mod tests {
         "#;
         serde_json::from_str::<OwnerCard>(json).unwrap();
     }
-} 
+}

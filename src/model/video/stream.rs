@@ -1,3 +1,5 @@
+#![allow(deprecated)]
+
 use serde::{Deserialize, Serialize};
 use serde_aux::field_attributes::{
     deserialize_default_from_empty_object, deserialize_vec_from_string_or_vec,
