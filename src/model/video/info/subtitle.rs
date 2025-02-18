@@ -26,6 +26,5 @@ pub struct SubtitleItem {
     pub author_mid: Option<u64>,
     /// json格式字幕文件url
     pub subtitle_url: String,
-    
     // author todo
 }

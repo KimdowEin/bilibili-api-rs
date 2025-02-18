@@ -6,27 +6,30 @@ use sha2::Sha256;
 
 use crate::{error::Error, traits::Query};
 
-pub const BILI_TICKET_URL:&str = "https://api.bilibili.com/bapis/bilibili.api.ticket.v1.Ticket/GenWebTicket";
+pub const BILI_TICKET_URL: &str =
+    "https://api.bilibili.com/bapis/bilibili.api.ticket.v1.Ticket/GenWebTicket";
 
-
-#[derive(Debug,Serialize,Deserialize)]
-pub struct BiliTicketQuery{
+#[derive(Debug, Serialize, Deserialize)]
+pub struct BiliTicketQuery {
     // ec02
-    pub key_id:String,
-    pub hexsign:String,
+    pub key_id: String,
+    pub hexsign: String,
     #[serde(rename = "context[ts]")]
-    pub context:u64,
-    pub csrf:String,
+    pub context: u64,
+    pub csrf: String,
 }
-impl Query for BiliTicketQuery  {}
+impl Query for BiliTicketQuery {}
 impl BiliTicketQuery {
-    pub fn new(csrf:String)->Result<Self,Error>{
+    pub fn new(csrf: String) -> Result<Self, Error> {
         let key_id = "ec02".to_string();
-        let context = time::SystemTime::now().duration_since(UNIX_EPOCH)?.as_secs();
+        let context = time::SystemTime::now()
+            .duration_since(UNIX_EPOCH)?
+            .as_secs();
 
         let key = b"XgwSnGZ1p";
         let message = format!("ts{}", context);
-        let mut mac:Hmac<Sha256> = Hmac::new_from_slice(key).expect("HMAC can take key of any size");
+        let mut mac: Hmac<Sha256> =
+            Hmac::new_from_slice(key).expect("HMAC can take key of any size");
         mac.update(message.as_bytes());
         let result = mac.finalize();
 

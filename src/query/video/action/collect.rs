@@ -4,7 +4,7 @@ use crate::traits::Query;
 
 pub const WEB_DEAL_URL: &str = "https://api.bilibili.com/x/v3/fav/resource/deal";
 
-#[derive(Debug,Default, Serialize, Deserialize)]
+#[derive(Debug, Default, Serialize, Deserialize)]
 pub struct CollectVideoQuery {
     pub access_key: Option<String>,
     pub rid: u64,
@@ -88,4 +88,3 @@ impl CollectVideoQuery {
         };
     }
 }
-

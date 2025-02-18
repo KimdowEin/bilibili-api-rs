@@ -49,7 +49,6 @@ pub struct Vip {
     pub tv_vip_pay_type: u8,
 }
 
-
 #[derive(Debug, Serialize, Deserialize)]
 pub struct VipLabel {
     pub text: String,
@@ -99,6 +98,5 @@ mod tests {
         }"#;
 
         serde_json::from_str::<Vip>(s).unwrap();
-
     }
 }

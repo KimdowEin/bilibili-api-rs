@@ -14,7 +14,6 @@ const MIXIN_KEY_ENC_TAB: [u8; 64] = [
     54, 21, 56, 59, 6, 63, 57, 62, 11, 36, 20, 34, 44, 52,
 ];
 
-
 impl Wbi {
     /// 获取 wbi 签名
     pub fn mixin_key(&self) -> String {
@@ -31,16 +30,13 @@ impl Wbi {
     }
 }
 
-
-
 #[cfg(test)]
 mod test {
     use super::*;
 
-
     #[test]
     fn mixin_key_test() {
-        let wbi = Wbi{
+        let wbi = Wbi {
             img: "7cd084941338484aae1ad9425b84077c".to_owned(),
             sub: "4932caff0ff746eab6f01bf08b70ac45".to_owned(),
         };

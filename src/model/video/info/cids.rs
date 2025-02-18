@@ -4,9 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use super::state::Dimension;
 
-
-
-#[derive(Debug,Clone,PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Cids {
     /// 视频分P的cid
     pub cid: u64,
@@ -24,18 +22,16 @@ pub struct Cids {
     pub weblink: String,
     /// 分P分辨率
     pub dimension: Dimension,
-    
+
     /// 封面,如果是VideoView则空
     pub first_frame: Option<String>,
 }
 
-
-
 #[cfg(test)]
-mod tests{
+mod tests {
     use super::*;
     #[test]
-    fn test_deserize_cid(){
+    fn test_deserize_cid() {
         let json = r#"
             [
                 {
@@ -71,6 +67,5 @@ mod tests{
             ]
         "#;
         serde_json::from_str::<Vec<Cids>>(json).unwrap();
-
     }
 }

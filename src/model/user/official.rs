@@ -16,7 +16,7 @@ pub struct OfficialVerify {
     pub desc: String,
 }
 
-#[derive(Debug,Default, Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Default, Serialize_repr, Deserialize_repr)]
 #[repr(i8)]
 pub enum VerifiedType {
     // 未认证
@@ -27,4 +27,3 @@ pub enum VerifiedType {
     // 企业
     Enterprise = 1,
 }
-

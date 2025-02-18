@@ -1,12 +1,12 @@
+use crate::model::{
+    user::account::{OwnerCard, Staff, VideoOwner},
+    video::zone::Zone,
+};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use serde_aux::field_attributes::{
     deserialize_bool_from_anything, deserialize_datetime_utc_from_seconds,
     deserialize_default_from_empty_object,
-};
-use crate::model::{
-    user::account::{OwnerCard, Staff, VideoOwner},
-    video::zone::Zone,
 };
 
 use super::{
@@ -113,7 +113,7 @@ pub struct VideoView {
 }
 
 /// 视频页详细信息 别用这个
-/// 
+///
 /// https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/video/info.md#%E8%8E%B7%E5%8F%96%E8%A7%86%E9%A2%91%E8%B6%85%E8%AF%A6%E7%BB%86%E4%BF%A1%E6%81%AFweb%E7%AB%AF
 #[derive(Debug, Serialize, Deserialize)]
 pub struct VideoInfo {

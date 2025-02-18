@@ -12,4 +12,3 @@ pub struct Geetest {
     pub challenge: String,
     pub gt: String,
 }
-

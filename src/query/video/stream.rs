@@ -1,6 +1,9 @@
 //! 获取视频流地址
 
-use crate::{model::video::format::{Fnval, Qn}, traits::{Query, Sign}};
+use crate::{
+    model::video::format::{Fnval, Qn},
+    traits::{Query, Sign},
+};
 use macros::{Query, Sign};
 use serde::{Deserialize, Serialize};
 
@@ -10,7 +13,7 @@ use super::info::VideoQuery;
 pub const VIDEO_STREAM_URL: &str = "https://api.bilibili.com/x/player/wbi/playurl";
 
 /// 获取视频流地址
-#[derive(Debug, Clone,PartialEq, Serialize, Deserialize, Query, Sign)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Query, Sign)]
 pub struct VideoStreamQuery {
     #[serde(flatten)]
     pub vid: VideoQuery,

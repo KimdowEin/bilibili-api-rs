@@ -30,6 +30,22 @@ pub struct Dash {
     pub dolby: Dolby,
     pub flac: Option<Flac>,
 }
+impl Dash {
+    /// 提取对应qn的流信息(video,audio,flac_audio)
+    ///
+    /// 视频流同一清晰度有多个码流,谁顺序在前返回谁
+    pub fn get(
+        &self,
+        qn: Qn,
+        audio_qn: AudioQn,
+    ) -> (Option<&Video>, Option<&Audio>, Option<&Audio>) {
+        let video = self.video.iter().find(|x| x.id == qn);
+        let audio = self.audio.iter().find(|x| x.id == audio_qn);
+        let flac = self.flac.as_ref().map(|flac| &flac.audio);
+
+        (video, audio, flac)
+    }
+}
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Video {

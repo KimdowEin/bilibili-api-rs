@@ -1,10 +1,15 @@
-use crate::{error::Error, model::{response::BiliResponse, sign::ticket::BiliTicket}, query::sign::ticket::{BiliTicketQuery, BILI_TICKET_URL}, traits::Query};
+use crate::{
+    error::Error,
+    model::{response::BiliResponse, sign::ticket::BiliTicket},
+    query::sign::ticket::{BiliTicketQuery, BILI_TICKET_URL},
+    traits::Query,
+};
 
 use super::session::{Session, COOKIES_URL};
 
 impl Session {
-    pub async fn get_ticket(&self,query: BiliTicketQuery) -> Result<BiliTicket, Error> {
-        let url = format!("{}?{}",BILI_TICKET_URL, query.to_query()?);
+    pub async fn get_ticket(&self, query: BiliTicketQuery) -> Result<BiliTicket, Error> {
+        let url = format!("{}?{}", BILI_TICKET_URL, query.to_query()?);
         self.post(url)
             .send()
             .await?
@@ -21,7 +26,7 @@ impl Session {
 
         let query = BiliTicketQuery::new(csrf)?;
         let ticket = self.get_ticket(query).await?;
-        
+
         self.set_ticket(&ticket.ticket);
         self.set_mixin_key(ticket.wbi.mixin_key()).await;
 
@@ -48,10 +53,10 @@ impl Session {
 }
 
 #[cfg(test)]
-mod tests{
+mod tests {
     use super::*;
     #[tokio::test]
-    async fn test_refresh_sign(){
+    async fn test_refresh_sign() {
         let mut session = Session::new_with_path("cookies.json").unwrap();
         session.refresh_sign().await.unwrap();
 

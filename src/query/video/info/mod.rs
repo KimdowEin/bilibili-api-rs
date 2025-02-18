@@ -11,7 +11,7 @@ use crate::traits::{Query, Sign};
 use macros::{Query, Sign};
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone,PartialEq, Deserialize, Serialize, Query, Sign)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Query, Sign)]
 pub struct VideoQuery {
     pub aid: Option<u64>,
     pub bvid: Option<String>,

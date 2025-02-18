@@ -16,7 +16,6 @@ pub struct ExpReward {
 
 pub type ExpCoin = u32;
 
-
 #[derive(Debug, Serialize, Deserialize)]
 pub struct LevelView {
     pub current_level: u8,
@@ -50,27 +49,26 @@ pub struct LiveLevel {
 #[derive(Debug, Default, Deserialize, Serialize)]
 pub struct LiveLevelEx {
     #[serde(flatten)]
-    pub level:LiveLevel,
-    pub anchor_score:u64,
-    pub upgrade_score:u64,
-    pub master_level_color:i64,
-    pub sort:String,
+    pub level: LiveLevel,
+    pub anchor_score: u64,
+    pub upgrade_score: u64,
+    pub master_level_color: i64,
+    pub sort: String,
 }
 
-#[derive(Debug, Deserialize,Serialize)]
-pub struct LiveRoomLevel{
-    pub uid:u64,
-    pub cost:u64,
-    pub rcost:u64,
-    pub user_score:String,
-    pub vip:VipType,
-    pub vip_time:String,
-    pub svip:VipType,
-    pub svip_time:String,
-    pub update_time:String,
-    pub master_level:LiveLevelEx,
+#[derive(Debug, Deserialize, Serialize)]
+pub struct LiveRoomLevel {
+    pub uid: u64,
+    pub cost: u64,
+    pub rcost: u64,
+    pub user_score: String,
+    pub vip: VipType,
+    pub vip_time: String,
+    pub svip: VipType,
+    pub svip_time: String,
+    pub update_time: String,
+    pub master_level: LiveLevelEx,
 }
-
 
 impl ExpReward {
     pub fn sum_without_coin(&self) -> u32 {

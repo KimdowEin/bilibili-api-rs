@@ -9,7 +9,7 @@ use crate::error::Error;
 pub struct BiliResponse<T> {
     pub code: i32,
     pub message: String,
-    pub data:Option<T>,
+    pub data: Option<T>,
 }
 impl<T> BiliResponse<T> {
     pub fn is_success(&self) -> bool {
@@ -38,7 +38,7 @@ pub enum BiliResponseCode {
     CoinShortage = -104,
     CaptchaError = -105,
     CsrfError = -111,
-    
+
     DangerError = -352,
 
     RequestError = -400,
@@ -77,7 +77,6 @@ pub enum BiliResponseCode {
     LiveRoomInfoNotFound = 19002003,
     ArgsError = 2001000,
 
-
     #[serde(default)]
     OtherError,
 }
@@ -104,7 +103,6 @@ impl Display for BiliResponseCode {
             BiliResponseCode::DangerError => write!(f, "风控错误"),
             BiliResponseCode::GeetestError => write!(f, "极验服务出错"),
 
-            
             BiliResponseCode::LikeCancelFailed => write!(f, "取消点赞失败"),
             BiliResponseCode::LikeAgain => write!(f, "已经点赞过了"),
             BiliResponseCode::LiveRoomNotFound => write!(f, "直播间不存在"),

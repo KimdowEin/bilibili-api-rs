@@ -1,6 +1,6 @@
-use serde::{Deserialize, Serialize};
 use base64::{engine::general_purpose::URL_SAFE, Engine as _};
 use rsa::{pkcs8::DecodePublicKey, Pkcs1v15Encrypt, RsaPublicKey};
+use serde::{Deserialize, Serialize};
 
 use crate::error::Error;
 
@@ -21,7 +21,6 @@ pub struct LoginState {
     pub timestamp: u64,
     pub url: String,
 }
-
 
 /// 密码加密
 impl LoginKey {

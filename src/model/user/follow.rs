@@ -1,7 +1,5 @@
 use serde::{Deserialize, Serialize};
 
-
-
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FollowStat {
     // 关注
@@ -11,4 +9,3 @@ pub struct FollowStat {
     // 动态
     pub dynamic_count: u64,
 }
-

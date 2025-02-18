@@ -10,21 +10,19 @@ use serde::{Deserialize, Serialize};
 
 use crate::{model::login::captcha::Captcha, traits::Query};
 
-
 /// 获取公钥&盐(只有web端需要)
 pub const LOGIN_KEY_URL: &str = "https://passport.bilibili.com/x/passport-login/web/key";
 
 /// Web端登录操作(post)
 pub const LOGIN_URL: &str = "https://passport.bilibili.com/x/passport-login/web/login";
 
-
 /// 获取公钥&盐(只有web端需要)
-#[derive(Debug,Default, Serialize, Deserialize)]
+#[derive(Debug, Default, Serialize, Deserialize)]
 pub struct LoginKeyQuery;
 impl Query for LoginKeyQuery {}
 
 /// 登录操作(post)
-#[derive(Debug,Default, Serialize, Deserialize)]
+#[derive(Debug, Default, Serialize, Deserialize)]
 pub struct LoginQuery {
     pub username: String,
     pub password: String,
@@ -45,10 +43,7 @@ impl LoginQuery {
         go_url: Option<String>,
         source: Option<String>,
     ) -> Self {
-        let Captcha{
-            token,
-            geetest,
-        } = captcha;
+        let Captcha { token, geetest } = captcha;
         let challenge = geetest.challenge;
         let seccode = format!("{}|jordan", validate);
 
@@ -66,4 +61,3 @@ impl LoginQuery {
     }
 }
 impl Query for LoginQuery {}
-

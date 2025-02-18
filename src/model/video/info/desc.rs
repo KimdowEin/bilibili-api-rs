@@ -3,10 +3,8 @@
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
-
 /// V1简介
 pub type VideoDesc = String;
-
 
 /// V2简介
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -21,7 +19,7 @@ pub struct VideoDesc2 {
 }
 
 /// V2简介类型
-#[derive(Debug,Clone,Serialize_repr,Deserialize_repr,PartialEq)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
 #[repr(u8)]
 pub enum VideoDescType {
     /// 普通

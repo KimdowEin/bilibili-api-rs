@@ -9,4 +9,3 @@ pub type VideoViewQuery = VideoQuery;
 /// 视频超详细信息
 pub const VIDEO_INFO_URL: &str = "https://api.bilibili.com/x/web-interface/wbi/view/detail";
 pub type VideoInfoQuery = VideoQuery;
-

@@ -1,10 +1,7 @@
-pub mod traits;
 pub mod error;
+pub mod traits;
 
-pub mod query;
 pub mod model;
+pub mod query;
 #[cfg(feature = "session")]
 pub mod service;
-
-
-

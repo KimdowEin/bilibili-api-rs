@@ -31,5 +31,4 @@ impl From<&str> for Error {
     fn from(value: &str) -> Self {
         Error::OtherError(value.to_string())
     }
-    
 }

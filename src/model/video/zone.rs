@@ -1,6 +1,5 @@
 //! 视频分区
 
-
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
@@ -279,4 +278,3 @@ pub enum TV {
     Mainland = 185,
     Overseas = 187,
 }
-

@@ -15,7 +15,6 @@ pub struct Article {
     pub view: u32,
 }
 
-
 #[derive(Debug, Deserialize, Serialize)]
 pub struct AlbumContributeView {
     pub all_count: u32,

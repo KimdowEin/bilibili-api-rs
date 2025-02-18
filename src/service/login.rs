@@ -26,7 +26,6 @@ impl Session {
             .data()
     }
 
-   
     /// 获取登录秘钥
     pub async fn get_login_key(&self) -> Result<LoginKey, Error> {
         self.get(LOGIN_KEY_URL)
@@ -36,7 +35,6 @@ impl Session {
             .await?
             .data()
     }
-
 
     pub async fn login_by_password(&self, query: LoginQuery) -> Result<LoginState, Error> {
         let url = format!("{}?{}", LOGIN_URL, query.to_query()?);
@@ -65,35 +63,23 @@ mod tests {
     use super::*;
 
     #[tokio::test]
-    async fn test_captcha(){
-        let captcha = Session::new()
-            .unwrap()
-            .captcha()
-            .await
-            .unwrap();
+    async fn test_captcha() {
+        let captcha = Session::new().unwrap().captcha().await.unwrap();
 
         assert!(!captcha.token.is_empty())
     }
 
     #[tokio::test]
     async fn test_get_login_key() {
-        let key = Session::new()
-            .unwrap()
-            .get_login_key()
-            .await
-            .unwrap();
+        let key = Session::new().unwrap().get_login_key().await.unwrap();
 
         assert!(!key.salt.is_empty())
     }
 
-
     #[tokio::test]
-    async fn test_login_by_password(){
+    async fn test_login_by_password() {
         let session = Session::new().unwrap();
-        let captcha = session
-            .captcha()
-            .await
-            .unwrap();
+        let captcha = session.captcha().await.unwrap();
         let query = LoginQuery::new(
             "testuser".to_string(),
             "testpassword".to_string(),
@@ -102,9 +88,7 @@ mod tests {
             None,
             None,
         );
-        let err = session
-            .login_by_password(query)
-            .await;
+        let err = session.login_by_password(query).await;
 
         assert!(err.is_err());
     }

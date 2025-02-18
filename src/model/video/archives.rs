@@ -4,60 +4,60 @@ use serde::{Deserialize, Serialize};
 /// https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/video/collection.md#%E8%8E%B7%E5%8F%96%E8%A7%86%E9%A2%91%E5%90%88%E9%9B%86%E4%BF%A1%E6%81%AF
 #[derive(Debug, Serialize, Deserialize)]
 pub struct VideoArchive {
-    pub aids:Vec<u64>,
-    pub archives:Vec<VideoArchiveItem>,
-    pub meta:VideoArchiveMeta,
-    pub page:VideoArchivesPage,
+    pub aids: Vec<u64>,
+    pub archives: Vec<VideoArchiveItem>,
+    pub meta: VideoArchiveMeta,
+    pub page: VideoArchivesPage,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct VideoArchiveItem{
-    pub aid:u64,
-    pub bvid:String,
-    pub ctime:u64,
-    pub duration:u64,
-    pub enable_vt:bool,
-    pub interactive_video:bool,
-    pub pic:String,
-    pub playback_position:u64,
-    pub pubdate:u64,
-    pub stat:VideoArchiveItemStat,
-    pub title:String ,
-    pub ugc_pay:u8,
-    pub vt_display:String,
+pub struct VideoArchiveItem {
+    pub aid: u64,
+    pub bvid: String,
+    pub ctime: u64,
+    pub duration: u64,
+    pub enable_vt: bool,
+    pub interactive_video: bool,
+    pub pic: String,
+    pub playback_position: u64,
+    pub pubdate: u64,
+    pub stat: VideoArchiveItemStat,
+    pub title: String,
+    pub ugc_pay: u8,
+    pub vt_display: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct VideoArchiveItemStat{
-    pub view:u64,
-    pub vt:u64,
+pub struct VideoArchiveItemStat {
+    pub view: u64,
+    pub vt: u64,
 }
 
-#[derive(Debug,Serialize,Deserialize)]
-pub struct  VideoArchiveMeta{
-    pub category:u64,
-    pub cover:String,
-    pub description:String,
-    pub mid:u64,
-    pub name:String,
-    pub ptime:u64,
-    pub season_id:u64,
-    pub total:u64,
+#[derive(Debug, Serialize, Deserialize)]
+pub struct VideoArchiveMeta {
+    pub category: u64,
+    pub cover: String,
+    pub description: String,
+    pub mid: u64,
+    pub name: String,
+    pub ptime: u64,
+    pub season_id: u64,
+    pub total: u64,
 }
 
-#[derive(Debug,Serialize,Deserialize)]
-pub struct  VideoArchivesPage{
-    pub page_num:u64,
-    pub page_size:u64,
-    pub total:u64,
+#[derive(Debug, Serialize, Deserialize)]
+pub struct VideoArchivesPage {
+    pub page_num: u64,
+    pub page_size: u64,
+    pub total: u64,
 }
 
 #[cfg(test)]
-mod tests{
+mod tests {
     use super::*;
 
     #[test]
-    fn test_deserilize_video_archive(){
+    fn test_deserilize_video_archive() {
         let json = r#"{
             "aids": [
                 113868625940323,
