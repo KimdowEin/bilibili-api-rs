@@ -4,3 +4,8 @@ use serde::{Deserialize, Serialize};
 pub struct CollectVideo {
     pub prompt: bool,
 }
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct IsCollect {
+    pub favoured: bool,
+}

@@ -36,14 +36,26 @@ impl Dash {
     /// 视频流同一清晰度有多个码流,谁顺序在前返回谁
     pub fn get(
         &self,
-        qn: Qn,
-        audio_qn: AudioQn,
+        qn: &Qn,
+        audio_qn: &AudioQn,
     ) -> (Option<&Video>, Option<&Audio>, Option<&Audio>) {
-        let video = self.video.iter().find(|x| x.id == qn);
-        let audio = self.audio.iter().find(|x| x.id == audio_qn);
+        let video = self.video.iter().find(|x| &x.id == qn);
+        let audio = self.audio.iter().find(|x| &x.id == audio_qn);
         let flac = self.flac.as_ref().map(|flac| &flac.audio);
 
         (video, audio, flac)
+    }
+
+    pub fn get_best(&self) -> (Option<&Video>, Option<&Audio>) {
+        let video = self.video.iter().max_by_key(|x| x.id.clone());
+        let audio = self.audio.iter().max_by_key(|x| x.id.clone());
+        let flac = self.flac.as_ref().map(|flac| &flac.audio);
+
+        if flac.is_some() {
+            return (video, flac);
+        } else {
+            return (video, audio);
+        }
     }
 }
 

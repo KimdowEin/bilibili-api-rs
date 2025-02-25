@@ -36,8 +36,6 @@ use crate::{
 pub async fn get_video_view(session: &Session, query: VideoInfoQuery) -> Result<VideoView, Error> {
     let query = query.to_query()?;
     let url = format!("{}?{}", VIDEO_VIEW_URL, query);
-    let response = session.get(&url).send().await?.text().await?;
-    println!("{:?}", response);
     session
         .get(url)
         .send()

@@ -1,15 +1,30 @@
+use super::VideoQuery;
+use crate::traits::Query;
+use macros::Query;
 use serde::{Deserialize, Serialize};
 
-use crate::traits::Query;
+pub const COIN_VIDEO_URL: &str = "https://api.bilibili.com/x/web-interface/coin/add";
 
-pub const SEND_COIN_URL: &str = "https://api.bilibili.com/x/web-interface/coin/add";
-
-#[derive(Debug, Default, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Query)]
 pub struct CoinVideoQuery {
-    pub aid: Option<u64>,
-    pub bvid: Option<String>,
+    #[serde(flatten)]
+    pub vid: VideoQuery,
     pub multiply: u8,
     pub select_like: u8,
     pub csrf: String,
 }
-impl Query for CoinVideoQuery {}
+impl CoinVideoQuery {
+    pub fn new(vid: VideoQuery, multiply: u8, select_like: bool, csrf: String) -> Self {
+        let select_like = if select_like { 1 } else { 0 };
+        Self {
+            vid,
+            multiply,
+            select_like,
+            csrf,
+        }
+    }
+}
+
+pub const IS_COIN_URL: &str = "https://api.bilibili.com/x/web-interface/archive/coins";
+
+pub type IsCoinQuery = VideoQuery;

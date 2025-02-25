@@ -1,50 +1,46 @@
+use macros::Query;
 use serde::{Deserialize, Serialize};
 
 use crate::traits::Query;
 
-pub const WEB_DEAL_URL: &str = "https://api.bilibili.com/x/v3/fav/resource/deal";
+pub const COLLECT_VIDEO_URL: &str = "https://api.bilibili.com/x/v3/fav/resource/deal";
 
-#[derive(Debug, Default, Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Serialize, Deserialize, Query)]
 pub struct CollectVideoQuery {
-    pub access_key: Option<String>,
+    // pub access_key: Option<String>,
     pub rid: u64,
     #[serde(rename = "type")]
     pub type_: u8,
     pub add_media_ids: Option<String>,
     pub del_media_ids: Option<String>,
-    pub csrf: Option<String>,
+    pub csrf: String,
 }
-impl Query for CollectVideoQuery {}
 impl CollectVideoQuery {
     pub fn new(
-        access_key: Option<String>,
         rid: u64,
         add_media_ids: Option<Vec<u64>>,
         del_media_ids: Option<Vec<u64>>,
-        csrf: Option<String>,
+        csrf: String,
     ) -> Self {
-        let add_media_ids = if let Some(add_media_ids) = add_media_ids {
-            let add_media_ids = add_media_ids
-                .iter()
+        let add_media_ids = add_media_ids.and_then(|ids| {
+            let s = ids
+                .into_iter()
                 .map(|id| id.to_string())
                 .collect::<Vec<_>>()
                 .join(",");
-            Some(add_media_ids)
-        } else {
-            None
-        };
-        let del_media_ids = if let Some(del_media_ids) = del_media_ids {
-            let del_media_ids = del_media_ids
-                .iter()
+            Some(s)
+        });
+
+        let del_media_ids = del_media_ids.and_then(|ids| {
+            let s = ids
+                .into_iter()
                 .map(|id| id.to_string())
-                .collect::<Vec<_>>()
+                .collect::<Vec<String>>()
                 .join(",");
-            Some(del_media_ids)
-        } else {
-            None
-        };
+            Some(s)
+        });
+
         Self {
-            access_key,
             rid,
             add_media_ids,
             del_media_ids,
@@ -86,5 +82,17 @@ impl CollectVideoQuery {
                 .join(",");
             Some(media_ids)
         };
+    }
+}
+
+pub const IS_COLLECT_URL: &str = "https://api.bilibili.com/x/v2/fav/video/favoured";
+
+#[derive(Debug, PartialEq, Serialize, Deserialize, Query)]
+pub struct IsCollectQuery {
+    pub aid: u64,
+}
+impl IsCollectQuery {
+    pub fn new(aid: u64) -> Self {
+        Self { aid }
     }
 }

@@ -1,15 +1,17 @@
-use crate::traits::Query;
+use crate::{query::video::VideoQuery, traits::Query};
+use macros::Query;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug, Default, Clone)]
+pub const SHARE_VIDEO_URL: &str = "https://api.bilibili.com/x/web-interface/share/add";
+
+#[derive(Debug, PartialEq, Serialize, Deserialize, Query)]
 pub struct ShareVideoQuery {
-    pub aid: Option<u64>,
-    pub bvid: Option<String>,
+    #[serde(flatten)]
+    pub vid: VideoQuery,
     pub csrf: Option<String>,
 }
-impl Query for ShareVideoQuery {}
 impl ShareVideoQuery {
-    pub fn new(aid: Option<u64>, bvid: Option<String>, csrf: Option<String>) -> Self {
-        Self { aid, bvid, csrf }
+    pub fn new(vid: VideoQuery, csrf: Option<String>) -> Self {
+        Self { vid, csrf }
     }
 }

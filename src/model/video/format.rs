@@ -1,11 +1,13 @@
 //! 视频格式和元数据
 
+use std::cmp::Ordering;
+
 use bitflags::bitflags;
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
 ///视频清晰度标识
-#[derive(Debug, Clone, PartialEq, Eq, Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize_repr, Deserialize_repr)]
 #[repr(u32)]
 pub enum Qn {
     /// 240p急速
@@ -60,7 +62,7 @@ pub enum VideoCodeCid {
 }
 
 ///视频伴音音质代码
-#[derive(Debug, Clone, PartialEq, Eq, Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, PartialEq, Eq, Ord, Serialize_repr, Deserialize_repr)]
 #[repr(u32)]
 pub enum AudioQn {
     K64 = 30216,
@@ -68,6 +70,25 @@ pub enum AudioQn {
     K192 = 30280,
     Dolby = 30250,
     HiRes = 30251,
+}
+impl PartialOrd for AudioQn {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        match (self, other) {
+            (Self::HiRes, Self::HiRes) => Some(Ordering::Equal),
+            (Self::HiRes, _) => Some(Ordering::Greater),
+            (_, Self::HiRes) => Some(Ordering::Less),
+            (Self::Dolby, Self::Dolby) => Some(Ordering::Equal),
+            (Self::Dolby, _) => Some(Ordering::Greater),
+            (_, Self::Dolby) => Some(Ordering::Less),
+            (Self::K192, Self::K192) => Some(Ordering::Equal),
+            (Self::K192, _) => Some(Ordering::Greater),
+            (_, Self::K192) => Some(Ordering::Less),
+            (Self::K132, Self::K132) => Some(Ordering::Equal),
+            (Self::K132, _) => Some(Ordering::Greater),
+            (_, Self::K132) => Some(Ordering::Less),
+            (Self::K64, Self::K64) => Some(Ordering::Equal),
+        }
+    }
 }
 
 /// 支持格式的详细信息

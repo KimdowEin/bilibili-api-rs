@@ -4,8 +4,8 @@
 
 - [x] 构建请求宏
 - [x] 重构video info
-- [] 重构video stream
-- [] 重构video action
+- [x] 重构video stream
+- [x] 重构video action
 - [] 补完video
 
 ## 2.0目标

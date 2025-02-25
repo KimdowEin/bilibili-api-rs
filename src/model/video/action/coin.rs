@@ -5,3 +5,8 @@ use serde::{Deserialize, Serialize};
 pub struct CoinVideo {
     pub like: bool,
 }
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct IsCoin {
+    pub multiply: u8,
+}

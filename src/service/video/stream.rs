@@ -4,10 +4,7 @@ use crate::{
     error::Error,
     model::{
         response::BiliResponse,
-        video::{
-            format::{AudioQn, Qn},
-            stream::{VideoStream, VideoStreamOld},
-        },
+        video::stream::{VideoStream, VideoStreamOld},
     },
     query::video::stream::{VideoStreamQuery, VIDEO_STREAM_URL},
     service::session::Session,
@@ -61,9 +58,8 @@ mod tests {
 
     use crate::{
         model::video::format::{Fnval, Qn},
-        query::video::info::VideoQuery,
+        query::video::VideoQuery,
         service::video::get_video_cids,
-        traits::Query,
     };
 
     const BVID: &str = "BV1wDCwYfE2f";
@@ -83,7 +79,6 @@ mod tests {
         );
         let stream = get_video_stream(&session, query).await.unwrap();
         let dash = stream.dash;
-        println!("{:?}", dash);
         let video1 = dash.video[0].clone();
         let url1 = video1.base_url;
         assert!(!url1.is_empty());

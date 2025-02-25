@@ -7,7 +7,7 @@ use crate::{
 use macros::{Query, Sign};
 use serde::{Deserialize, Serialize};
 
-use super::info::VideoQuery;
+use super::VideoQuery;
 
 /// 获取视频流地址
 pub const VIDEO_STREAM_URL: &str = "https://api.bilibili.com/x/player/wbi/playurl";
