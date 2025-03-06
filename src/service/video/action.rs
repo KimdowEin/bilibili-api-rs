@@ -15,13 +15,13 @@ use crate::{
         share::{ShareVideoQuery, SHARE_VIDEO_URL},
     },
     service::session::Session,
-    traits::Query,
+    traits::{Csrf, Query},
 };
 
 pub async fn like_video(session: &Session, query: LikeVideoQuery) -> Result<bool, Error> {
-    let url = format!("{}?{}", LIKE_VIDEO_URL, query.to_query()?);
+    let url = format!("{}?{}", LIKE_VIDEO_URL, query.csrf(&session.bili_jct().await)?);
     let response = session
-        .get(url)
+        .post(url)
         .send()
         .await?
         .json::<BiliResponse<()>>()
@@ -85,4 +85,23 @@ pub async fn share_video(session: &Session, query: ShareVideoQuery) -> Result<Sh
         .json::<BiliResponse<_>>()
         .await?
         .data()
+}
+
+
+#[cfg(test)]
+mod test{
+    use crate::query::video::VideoQuery;
+
+    const BVID:&str="BV1AC98YeEM7";
+
+    use super::*;
+
+    #[tokio::test]
+    async fn test_like_video(){
+        let session = Session::new_with_path("./cookies.json").unwrap();
+        let query = VideoQuery::from(BVID);
+        let query = LikeVideoQuery::new(query, true);
+
+        like_video(&session, query).await.unwrap();
+    }
 }

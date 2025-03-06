@@ -31,10 +31,12 @@ pub fn headers() -> header::HeaderMap {
     headers
 }
 
+#[derive(Debug, Clone)]
 pub struct Session {
     pub state: Arc<SessionState>,
     pub client: Client,
     pub mixin_key: Arc<RwLock<String>>,
+    pub bili_jct: Arc<RwLock<String>>,
 }
 
 impl Deref for Session {
@@ -44,21 +46,14 @@ impl Deref for Session {
         &self.client
     }
 }
-impl Clone for Session {
-    fn clone(&self) -> Self {
-        Self {
-            client: self.client.clone(),
-            state: self.state.clone(),
-            mixin_key: self.mixin_key.clone(),
-        }
-    }
-}
+
 impl Session {
     pub fn new() -> Result<Self, Error> {
         let headers = headers();
 
         let state = Arc::new(SessionState::default());
         let mixin_key = Arc::new(RwLock::new(String::new()));
+        let bili_jct = Arc::new(RwLock::new(String::new()));
         let client = Client::builder()
             .default_headers(headers)
             .cookie_provider(state.jar.clone())
@@ -68,16 +63,19 @@ impl Session {
             client,
             state,
             mixin_key,
+            bili_jct,
         })
     }
 
     pub fn new_with_client(client: Client, state: Arc<SessionState>) -> Self {
         let mixin_key = Arc::new(RwLock::new(String::new()));
+        let bili_jct = Arc::new(RwLock::new(String::new()));
 
         Self {
             client,
             state,
             mixin_key,
+            bili_jct,
         }
     }
 
@@ -95,56 +93,27 @@ impl Session {
             .build()?;
 
         let mixin_key = Arc::new(RwLock::new(String::new()));
+        let bili_jct = state.get_cookie(COOKIES_URL, "bili_jct");
+        let bili_jct = if let Some(bili_jct) = bili_jct {
+            Arc::new(RwLock::new(bili_jct))
+        }else{
+            Arc::new(RwLock::new(String::new()))
+        };
 
         Ok(Self {
             client,
             state,
             mixin_key,
+            bili_jct
         })
     }
 
     pub fn save_cookies(&self) -> Result<(), Error> {
-        if let Some(path) = &self.state.cookies_path {
-            let mut file = File::create(path)?;
-            let mut cookies = Vec::new();
-            let to_url = Url::parse(COOKIES_URL).unwrap();
-            let cookie = self.state.jar.cookies(&to_url);
-            if let Some(cookie) = cookie {
-                let cookie = cookie.to_str().unwrap();
-
-                let cookie_item = CookieItem {
-                    url: COOKIES_URL.to_string(),
-                    cookies: cookie.to_string(),
-                };
-                cookies.push(cookie_item);
-            }
-
-            let json = serde_json::to_string(&cookies)?;
-            file.write_all(json.as_bytes())?;
-        }
-
-        Ok(())
+        self.state.save_cookies()
     }
 
     pub fn get_cookie(&self, url: &str, key: &str) -> Option<String> {
-        let url = Url::parse(url).unwrap();
-        let cookies = self.state.jar.cookies(&url);
-        let cookies = if let Some(cookies) = cookies {
-            cookies
-        } else {
-            return None;
-        };
-
-        let cookies = cookies.to_str().unwrap();
-        for c in cookies.split(';') {
-            let mut parts = c.splitn(2, '=');
-            if let (Some(c_key), Some(value)) = (parts.next(), parts.next()) {
-                if c_key.trim() == key.trim() {
-                    return Some(value.to_string());
-                }
-            }
-        }
-        None
+        self.state.get_cookie(url, key)
     }
 
     pub fn set_ticket(&self, ticket: &str) {
@@ -178,7 +147,7 @@ impl SessionState {
 
         let path = Some(path.as_ref().to_path_buf());
 
-        let state = SessionState {
+        let state = Self {
             jar: Arc::new(Jar::default()),
             cookies_path: path,
         };
@@ -193,6 +162,51 @@ impl SessionState {
         });
         Ok(state)
     }
+
+    pub fn get_cookie(&self, url: &str, key: &str) -> Option<String> {
+        let url = Url::parse(url).unwrap();
+        let cookies = self.jar.cookies(&url);
+        let cookies = if let Some(cookies) = cookies {
+            cookies
+        } else {
+            return None;
+        };
+
+        let cookies = cookies.to_str().unwrap();
+        for c in cookies.split(';') {
+            let mut parts = c.splitn(2, '=');
+            if let (Some(c_key), Some(value)) = (parts.next(), parts.next()) {
+                if c_key.trim() == key.trim() {
+                    return Some(value.to_string());
+                }
+            }
+        }
+        None
+    }
+
+    pub fn save_cookies(&self) -> Result<(), Error>{
+        if let Some(path) = &self.cookies_path {
+            let mut file = File::create(path)?;
+            let mut cookies = Vec::new();
+            let to_url = Url::parse(COOKIES_URL).unwrap();
+            let cookie = self.jar.cookies(&to_url);
+            if let Some(cookie) = cookie {
+                let cookie = cookie.to_str().unwrap();
+
+                let cookie_item = CookieItem {
+                    url: COOKIES_URL.to_string(),
+                    cookies: cookie.to_string(),
+                };
+                cookies.push(cookie_item);
+            }
+
+            let json = serde_json::to_string(&cookies)?;
+            file.write_all(json.as_bytes())?;
+        }
+
+        Ok(())
+    }
+
 }
 
 #[derive(Debug, Default, Deserialize, Serialize)]

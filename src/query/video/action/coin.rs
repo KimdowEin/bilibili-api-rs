@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 pub const COIN_VIDEO_URL: &str = "https://api.bilibili.com/x/web-interface/coin/add";
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, Query)]
+#[derive(Debug,Clone, PartialEq, Serialize, Deserialize, Query)]
 pub struct CoinVideoQuery {
     #[serde(flatten)]
     pub vid: VideoQuery,

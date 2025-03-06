@@ -5,7 +5,7 @@ use crate::traits::Query;
 
 pub const COLLECT_VIDEO_URL: &str = "https://api.bilibili.com/x/v3/fav/resource/deal";
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, Query)]
+#[derive(Debug,Clone, PartialEq, Serialize, Deserialize, Query)]
 pub struct CollectVideoQuery {
     // pub access_key: Option<String>,
     pub rid: u64,
@@ -87,7 +87,7 @@ impl CollectVideoQuery {
 
 pub const IS_COLLECT_URL: &str = "https://api.bilibili.com/x/v2/fav/video/favoured";
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, Query)]
+#[derive(Debug,Clone, PartialEq, Serialize, Deserialize, Query)]
 pub struct IsCollectQuery {
     pub aid: u64,
 }

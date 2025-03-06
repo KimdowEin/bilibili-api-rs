@@ -1,26 +1,25 @@
 use std::time::{self, UNIX_EPOCH};
 
 use hmac::{Hmac, Mac};
+use macros::{Csrf, Query};
 use serde::{Deserialize, Serialize};
 use sha2::Sha256;
 
-use crate::{error::Error, traits::Query};
+use crate::{error::Error, traits::{Query,Csrf}};
 
 pub const BILI_TICKET_URL: &str =
     "https://api.bilibili.com/bapis/bilibili.api.ticket.v1.Ticket/GenWebTicket";
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize,Query,Csrf)]
 pub struct BiliTicketQuery {
     // ec02
     pub key_id: String,
     pub hexsign: String,
     #[serde(rename = "context[ts]")]
     pub context: u64,
-    pub csrf: String,
 }
-impl Query for BiliTicketQuery {}
 impl BiliTicketQuery {
-    pub fn new(csrf: String) -> Result<Self, Error> {
+    pub fn new() -> Result<Self, Error> {
         let key_id = "ec02".to_string();
         let context = time::SystemTime::now()
             .duration_since(UNIX_EPOCH)?
@@ -38,7 +37,6 @@ impl BiliTicketQuery {
             key_id,
             hexsign,
             context,
-            csrf,
         })
     }
 }

@@ -7,6 +7,8 @@
 - [x] 重构video stream
 - [x] 重构video action
 - [] 补完video
+- [] 用户信息
+- [] 直播信息
 
 ## 2.0目标
 

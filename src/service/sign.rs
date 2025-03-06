@@ -2,14 +2,15 @@ use crate::{
     error::Error,
     model::{response::BiliResponse, sign::ticket::BiliTicket},
     query::sign::ticket::{BiliTicketQuery, BILI_TICKET_URL},
-    traits::Query,
+    traits::{Csrf, Query},
 };
 
 use super::session::{Session, COOKIES_URL};
 
 impl Session {
+    /// 获得ticket
     pub async fn get_ticket(&self, query: BiliTicketQuery) -> Result<BiliTicket, Error> {
-        let url = format!("{}?{}", BILI_TICKET_URL, query.to_query()?);
+        let url = format!("{}?{}", BILI_TICKET_URL, query.csrf(&self.bili_jct().await)?);
         self.post(url)
             .send()
             .await?
@@ -17,18 +18,22 @@ impl Session {
             .await?
             .data()
     }
+
+    /// 刷新 获得ticket 获得wbi key 从cookies获取csrf(bili_jct)
     pub async fn refresh_sign(&mut self) -> Result<(), Error> {
-        let csrf = if let Some(csrf) = self.get_cookie(COOKIES_URL, "bili_jct") {
-            csrf
+        if let Some(bili_jct) = self.get_cookie(COOKIES_URL, "bili_jct") {
+            self.set_bili_jct(&bili_jct).await;
         } else {
             Err(Error::OtherError("未登录".to_string()))?
         };
 
-        let query = BiliTicketQuery::new(csrf)?;
+        let query = BiliTicketQuery::new()?;
         let ticket = self.get_ticket(query).await?;
 
         self.set_ticket(&ticket.ticket);
-        self.set_mixin_key(ticket.wbi.mixin_key()).await;
+
+        let mixin_key = ticket.wbi.mixin_key();
+        self.set_mixin_key(&mixin_key).await;
 
         Ok(())
     }
@@ -37,18 +42,29 @@ impl Session {
     pub async fn get_mixin_key(&mut self) -> Result<(), Error> {
         let wbi = self.get_nav().await?.wbi_img;
         let mixin_key = wbi.mixin_key();
-        self.set_mixin_key(mixin_key).await;
+        self.set_mixin_key(&mixin_key).await;
         Ok(())
     }
 
     /// 设置 wbi 签名
-    pub async fn set_mixin_key(&mut self, mixin_key: String) {
+    pub async fn set_mixin_key(&mut self, mixin_key: &str) {
         let mut m = self.mixin_key.write().await;
-        *m = mixin_key;
+        *m = mixin_key.to_string();
     }
-    /// 获取 wbi key
+    /// 访问 wbi key
     pub async fn mixin_key(&self) -> String {
         self.mixin_key.read().await.clone()
+    }
+
+    /// 设置bili_jct
+    pub async fn set_bili_jct(&self,bili_jct:&str){
+        let mut m = self.bili_jct.write().await;
+        *m = bili_jct.to_string();
+    }
+    
+    /// 访问csrf(bili_jct)
+    pub async fn bili_jct(&self)->String{
+        self.bili_jct.read().await.clone()
     }
 }
 

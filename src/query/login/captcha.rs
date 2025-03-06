@@ -6,6 +6,7 @@
 //! '''
 //!
 //! '''
+use macros::Query;
 use serde::{Deserialize, Serialize};
 
 use crate::traits::Query;
@@ -15,6 +16,5 @@ pub const CAPTCHA_URL: &str =
     "https://passport.bilibili.com/x/passport-login/captcha?source=main_web";
 
 /// 申请captcha验证码
-#[derive(Debug, Default, Serialize, Deserialize)]
+#[derive(Debug,Clone,PartialEq, Serialize, Deserialize, Query)]
 pub struct CaptchaQuery;
-impl Query for CaptchaQuery {}

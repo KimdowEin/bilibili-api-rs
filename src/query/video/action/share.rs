@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 pub const SHARE_VIDEO_URL: &str = "https://api.bilibili.com/x/web-interface/share/add";
 
-#[derive(Debug, PartialEq, Serialize, Deserialize, Query)]
+#[derive(Debug,Clone, PartialEq, Serialize, Deserialize, Query)]
 pub struct ShareVideoQuery {
     #[serde(flatten)]
     pub vid: VideoQuery,

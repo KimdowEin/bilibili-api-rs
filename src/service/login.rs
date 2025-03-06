@@ -16,35 +16,36 @@ use crate::{
 
 use super::session::Session;
 
-impl Session {
-    pub async fn captcha(&self) -> Result<Captcha, Error> {
-        self.get(CAPTCHA_URL)
-            .send()
-            .await?
-            .json::<BiliResponse<_>>()
-            .await?
-            .data()
-    }
+pub async fn captcha(session: &Session) -> Result<Captcha, Error> {
+    session
+        .get(CAPTCHA_URL)
+        .send()
+        .await?
+        .json::<BiliResponse<_>>()
+        .await?
+        .data()
+}
 
-    /// 获取登录秘钥
-    pub async fn get_login_key(&self) -> Result<LoginKey, Error> {
-        self.get(LOGIN_KEY_URL)
-            .send()
-            .await?
-            .json::<BiliResponse<_>>()
-            .await?
-            .data()
-    }
+/// 获取登录秘钥
+pub async fn get_login_key(session: &Session) -> Result<LoginKey, Error> {
+    session
+        .get(LOGIN_KEY_URL)
+        .send()
+        .await?
+        .json::<BiliResponse<_>>()
+        .await?
+        .data()
+}
 
-    pub async fn login_by_password(&self, query: LoginQuery) -> Result<LoginState, Error> {
-        let url = format!("{}?{}", LOGIN_URL, query.to_query()?);
-        self.post(url)
-            .send()
-            .await?
-            .json::<BiliResponse<_>>()
-            .await?
-            .data()
-    }
+pub async fn login_by_password(session: &Session, query: LoginQuery) -> Result<LoginState, Error> {
+    let url = format!("{}?{}", LOGIN_URL, query.to_query()?);
+    session
+        .post(url)
+        .send()
+        .await?
+        .json::<BiliResponse<_>>()
+        .await?
+        .data()
 }
 
 /// 跳转人工认证页面
@@ -64,14 +65,16 @@ mod tests {
 
     #[tokio::test]
     async fn test_captcha() {
-        let captcha = Session::new().unwrap().captcha().await.unwrap();
+        let session = Session::new().unwrap();
+        let captcha = captcha(&session).await.unwrap();
 
         assert!(!captcha.token.is_empty())
     }
 
     #[tokio::test]
     async fn test_get_login_key() {
-        let key = Session::new().unwrap().get_login_key().await.unwrap();
+        let session = Session::new().unwrap();
+        let key = get_login_key(&session).await.unwrap();
 
         assert!(!key.salt.is_empty())
     }
@@ -79,7 +82,7 @@ mod tests {
     #[tokio::test]
     async fn test_login_by_password() {
         let session = Session::new().unwrap();
-        let captcha = session.captcha().await.unwrap();
+        let captcha = captcha(&session).await.unwrap();
         let query = LoginQuery::new(
             "testuser".to_string(),
             "testpassword".to_string(),
@@ -88,7 +91,7 @@ mod tests {
             None,
             None,
         );
-        let err = session.login_by_password(query).await;
+        let err = login_by_password(&session, query).await;
 
         assert!(err.is_err());
     }

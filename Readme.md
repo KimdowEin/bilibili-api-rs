@@ -6,7 +6,7 @@
 
 会坚持弄完的
 
-2.0建设中,会重构大部分api,并重构部分模块
+v0.2.0建设中,会重构大部分api,并重构部分模块
 
 后续会逐步完成其他不常用的模块,并补充文档
 
@@ -16,9 +16,13 @@
 
 ```toml
 # Cargo.toml
-[dependencies]
-bilibili-api-rs = {git = "https://github.com/KimdowEin/bilibili-api-rs",features = ["session","manual"]}
+[dependencies.bilibili-api-rs]
+git = "https://github.com/KimdowEin/bilibili-api-rs"
+brance = "night"
+features = ["session","manual"]
 ```
+
+以下是v0.1.0的示例,还没改,但流程差不多
 
 ### 登录(password)
 
@@ -125,7 +129,6 @@ async fn download_video() {
   pb.finish_with_message("下载完成");
 }
 
-
 ```
 
 ### 一般流程
@@ -178,38 +181,9 @@ async fn get_video_desc() {
 打x是完成并测试  
 打o是未测试或部分完成
 
-- [ ] 接口签名与验证
-  - [ ] APP API 签名(appkey与sign)
-  - [ ] 已知的 APPKey
-  - [x] Wbi 签名(wts与w_rid)
-  - [o] bili_ticket
-- [ ] 登录
-  - [x] 登录操作 (人机认证)
-    - [ ] 短信登录
-    - [x] 密码登录
-    - [ ] 二维码登录
-    - [ ] SNS 登录 (QQ & 微信 & 微博)
-  - [x] 登录基本信息
-  - [o] 个人中心
-  - [ ] 注销登录
-  - [ ] 登录记录
-  - [ ] Web 端 Cookie 刷新
-- [ ] 视频
-  - [o] 视频分区一览 (分区代码)
-  - [x] 基本信息
-  - [ ] 快照
-  - [o] 点赞 & 投币 & 收藏 & 分享
-  - [ ] TAG
-  - [ ] 视频推荐
-  - [x] 播放&下载地址 (视频流)
-  - [ ] 互动视频
-  - [ ] 高能进度条
-  - [ ] 信息上报 (心跳及记录历史)
-  - [o] 视频属性数据
-  - [ ] 视频在线人数
-  - [ ] 视频AI摘要
-  - [ ] 稿件投诉
-  - [v] 视频合集
+todo
+
+写文档真的好麻烦
 
 ## 一些简单说明
 

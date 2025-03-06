@@ -4,8 +4,80 @@ use super::{
     vip::Vip,
 };
 use serde::{Deserialize, Serialize};
-use serde_aux::field_attributes::deserialize_number_from_string;
+use serde_aux::field_attributes::{deserialize_bool_from_anything, deserialize_number_from_string};
 use serde_repr::{Deserialize_repr, Serialize_repr};
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct AccountSpaceInfo {
+    pub mid: u64,
+    pub name: String,
+    pub sex: String,
+    pub face: String,
+    #[serde(deserialize_with = "deserialize_bool_from_anything")]
+    pub face_nft: bool,
+    pub sign: String,
+    pub rank: AccountPowerRank,
+    pub level: u8,
+    pub jointime: u64,
+    pub moral: u64,
+    #[serde(deserialize_with = "deserialize_bool_from_anything")]
+    pub silence: bool,
+    pub coins: u64,
+    pub fans_badge: bool,
+    // pub fans_medal:todo,
+    // pub official: Official,
+    // pub vip: Vip,
+    // pub pendant: todo,
+    // pub nameplate: todo,
+    pub is_followed: bool,
+    pub top_photo: String,
+    // pub sys_notice:Option<String>,
+    // pub live_room: LiveRoom,
+    pub birthday: String,
+    // pub school:todo,
+    #[serde(deserialize_with = "deserialize_bool_from_anything")]
+    pub is_senior_member:bool,
+    // todo
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[repr(u32)]
+pub enum AccountPowerRank {
+    NewUser = 5000,
+    Normal = 10000,
+    SubtitleMan = 20000,
+    VIP = 25000,
+    Official = 30000,
+    Admin = 32000,
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct AccountInfo {

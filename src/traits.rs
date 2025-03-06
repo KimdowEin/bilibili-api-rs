@@ -33,5 +33,13 @@ pub trait Sign: Query {
     }
 }
 
+pub trait Csrf: Query {
+    fn csrf(&self, bili_jct: &str) -> Result<String, Error> {
+        let ori_query = self.to_query()?;
+        let query = format!("{}&csrf={}", ori_query, bili_jct);
+        Ok(query)
+    }
+}
+
 #[cfg(feature = "derive")]
 pub use macros::{Query, Sign};
