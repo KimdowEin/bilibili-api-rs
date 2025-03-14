@@ -2,7 +2,7 @@ use crate::{
     error::Error,
     model::{response::BiliResponse, sign::ticket::BiliTicket},
     query::sign::ticket::{BiliTicketQuery, BILI_TICKET_URL},
-    traits::{Csrf, Query},
+    traits::Csrf,
 };
 
 use super::session::{Session, COOKIES_URL};
@@ -20,7 +20,7 @@ impl Session {
     }
 
     /// 刷新 获得ticket 获得wbi key 从cookies获取csrf(bili_jct)
-    pub async fn refresh_sign(&mut self) -> Result<(), Error> {
+    pub async fn refresh_sign(&self) -> Result<(), Error> {
         if let Some(bili_jct) = self.get_cookie(COOKIES_URL, "bili_jct") {
             self.set_bili_jct(&bili_jct).await;
         } else {
@@ -39,7 +39,7 @@ impl Session {
     }
 
     /// 获取 wbi 签名，每日更新
-    pub async fn get_mixin_key(&mut self) -> Result<(), Error> {
+    pub async fn get_mixin_key(&self) -> Result<(), Error> {
         let wbi = self.get_nav().await?.wbi_img;
         let mixin_key = wbi.mixin_key();
         self.set_mixin_key(&mixin_key).await;
@@ -47,7 +47,7 @@ impl Session {
     }
 
     /// 设置 wbi 签名
-    pub async fn set_mixin_key(&mut self, mixin_key: &str) {
+    pub async fn set_mixin_key(&self, mixin_key: &str) {
         let mut m = self.mixin_key.write().await;
         *m = mixin_key.to_string();
     }
@@ -73,7 +73,7 @@ mod tests {
     use super::*;
     #[tokio::test]
     async fn test_refresh_sign() {
-        let mut session = Session::new_with_path("cookies.json").unwrap();
+        let session = Session::new_with_path("cookies.json").unwrap();
         session.refresh_sign().await.unwrap();
 
         session.get_nav().await.unwrap();

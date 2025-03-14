@@ -42,4 +42,4 @@ pub trait Csrf: Query {
 }
 
 #[cfg(feature = "derive")]
-pub use macros::{Query, Sign};
+pub use macros::{Query, Sign,Csrf};
