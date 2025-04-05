@@ -21,9 +21,10 @@ pub enum Error {
     #[error(transparent)]
     SystemTimeError(#[from] time::SystemTimeError),
 
-    #[error("{0}")]
+    #[error("query error: {0}")]
     QueryError(String),
-    #[error("{0}")]
+
+    #[error("other error: {0}")]
     OtherError(String),
 }
 
