@@ -26,4 +26,7 @@ pub enum VerifiedType {
     Personal = 0,
     // 企业
     Enterprise = 1,
+    
+    #[serde(other)]
+    Unknown,
 }

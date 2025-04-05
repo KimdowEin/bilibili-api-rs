@@ -5,20 +5,20 @@ use thiserror::Error;
 #[derive(Error, Debug)]
 pub enum Error {
     #[cfg(feature = "session")]
-    #[error("{0}")]
+    #[error(transparent)]
     RequestError(#[from] reqwest::Error),
 
-    #[error("{0}")]
+    #[error(transparent)]
     IoError(#[from] std::io::Error),
-    #[error("{0}")]
+    #[error(transparent)]
     SerdeQsError(#[from] serde_qs::Error),
-    #[error("{0}")]
+    #[error(transparent)]
     SerdeJsonError(#[from] serde_json::Error),
-    #[error("{0}")]
+    #[error(transparent)]
     RsaError1(#[from] rsa::Error),
-    #[error("{0}")]
+    #[error(transparent)]
     RsaError2(#[from] rsa::pkcs8::spki::Error),
-    #[error("{0}")]
+    #[error(transparent)]
     SystemTimeError(#[from] time::SystemTimeError),
 
     #[error("{0}")]

@@ -74,6 +74,9 @@ pub enum LiveRoomSpecialType {
     Pay = 1,
     // 拜年祭特殊直播间
     NewYear = 2,
+    
+    #[serde(other)]
+    Unknown,
 }
 
 /// 主播信息   
@@ -158,6 +161,9 @@ pub enum LiveStatus {
     Close = 0,
     Live = 1,
     Round = 2,
+
+    #[serde(other)]
+    Unknown,
 }
 
 /// 直播间信息
@@ -234,6 +240,9 @@ pub struct P2pData {
 pub enum LiveProtocol {
     Stream = 0,
     Hls = 1,
+
+    #[serde(other)]
+    Unknown,
 }
 #[derive(Debug, Serialize_repr, Deserialize_repr)]
 #[repr(u8)]
@@ -241,12 +250,18 @@ pub enum LiveStreamFormat {
     Flv = 0,
     M3u8 = 1,
     Fmp4 = 2,
+
+    #[serde(other)]
+    Unknown,
 }
 #[derive(Debug, Serialize_repr, Deserialize_repr)]
 #[repr(u8)]
 pub enum LiveStreamCodec {
     AVC = 0,
     HEVC = 1,
+
+    #[serde(other)]
+    Unknown,
 }
 
 /// 获取直播间主播信息   

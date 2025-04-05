@@ -9,6 +9,9 @@ pub enum VipType {
     Normal = 0,
     Moon = 1,
     Year = 2,
+
+    #[serde(other)]
+    Unknown,
 }
 #[derive(Debug, Default, Deserialize, Serialize)]
 pub struct VipView {

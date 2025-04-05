@@ -1,7 +1,5 @@
 //! 视频格式和元数据
 
-use std::cmp::Ordering;
-
 use bitflags::bitflags;
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
@@ -34,6 +32,9 @@ pub enum Qn {
     Dolby = 126,
     ///8k超高清
     SUHD = 127,
+
+    #[serde(other)]
+    Unknown,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -59,10 +60,13 @@ pub enum VideoCodeCid {
     AVC = 7,
     HEVC = 12,
     AV1 = 13,
+
+    #[serde(other)]
+    Unknown,
 }
 
 ///视频伴音音质代码
-#[derive(Debug, Clone, PartialEq, Eq, Ord, Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize_repr, Deserialize_repr)]
 #[repr(u32)]
 pub enum AudioQn {
     K64 = 30216,
@@ -70,29 +74,34 @@ pub enum AudioQn {
     K192 = 30280,
     Dolby = 30250,
     HiRes = 30251,
+
+    #[serde(other)]
+    Unknown,
 }
 impl PartialOrd for AudioQn {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        match (self, other) {
-            (Self::HiRes, Self::HiRes) => Some(Ordering::Equal),
-            (Self::HiRes, _) => Some(Ordering::Greater),
-            (_, Self::HiRes) => Some(Ordering::Less),
-            (Self::Dolby, Self::Dolby) => Some(Ordering::Equal),
-            (Self::Dolby, _) => Some(Ordering::Greater),
-            (_, Self::Dolby) => Some(Ordering::Less),
-            (Self::K192, Self::K192) => Some(Ordering::Equal),
-            (Self::K192, _) => Some(Ordering::Greater),
-            (_, Self::K192) => Some(Ordering::Less),
-            (Self::K132, Self::K132) => Some(Ordering::Equal),
-            (Self::K132, _) => Some(Ordering::Greater),
-            (_, Self::K132) => Some(Ordering::Less),
-            (Self::K64, Self::K64) => Some(Ordering::Equal),
-        }
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for AudioQn {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        // 按照预定义的顺序排列
+        let order = |value: &AudioQn| match value {
+            AudioQn::K64 => 0,
+            AudioQn::K132 => 1,
+            AudioQn::K192 => 2,
+            AudioQn::Dolby => 3,
+            AudioQn::HiRes => 4,
+            AudioQn::Unknown => 5,
+        };
+
+        order(self).cmp(&order(other))
     }
 }
 
 /// 支持格式的详细信息
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq,Eq, Serialize, Deserialize)]
 pub struct SupportFormats {
     pub quality: Qn,
     pub format: String,

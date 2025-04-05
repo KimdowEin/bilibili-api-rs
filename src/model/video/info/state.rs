@@ -114,6 +114,9 @@ pub enum VideoState {
     TimingSubmit = -40,
     OnlySelf = -50,
     Delecte = -100,
+
+    #[serde(other)]
+    Unknown,
 }
 
 /// 视频类型,原创/转载
@@ -124,4 +127,7 @@ pub enum VideoCopyRight {
     Original,
     /// 转载
     RePrint,
+
+    #[serde(other)]
+    Unknown,
 }

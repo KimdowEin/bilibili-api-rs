@@ -102,7 +102,8 @@ pub struct VideoView {
     #[serde(default)]
     pub teenage_mode: i64,
     /// 分区tid
-    pub tid: Zone,
+    // pub tid: Zone,
+    pub tid: i64,
     /// 稿件标题
     pub title: String,
     /// 子分区名称

@@ -42,6 +42,9 @@ pub enum Douga {
     Tokusatsu = 86,
     Acgntalks = 253,
     Other = 27,
+
+    #[serde(other)]
+    Unknown,
 }
 
 #[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
@@ -52,6 +55,9 @@ pub enum Anime {
     Offical = 152,
     Finish = 32,
     Serial = 33,
+
+    #[serde(other)]
+    Unknown,
 }
 
 #[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
@@ -63,6 +69,9 @@ pub enum Guochuang {
     Puppetry = 169,
     Information = 170,
     Motioncomic = 195,
+
+    #[serde(other)]
+    Unknown,
 }
 
 #[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
@@ -79,6 +88,9 @@ pub enum Music {
     Commentary = 243,
     Tutorial = 244,
     EleMusic = 194,
+
+    #[serde(other)]
+    Unknown,
 }
 
 #[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
@@ -92,6 +104,9 @@ pub enum Dance {
     Star = 199,
     China = 200,
     Gestures = 255,
+
+    #[serde(other)]
+    Unknown,
 }
 
 #[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
@@ -106,6 +121,9 @@ pub enum Game {
     Gmv = 121,
     Music = 136,
     Mugen = 19,
+
+    #[serde(other)]
+    Unknown,
 }
 
 #[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
@@ -123,6 +141,9 @@ pub enum Knowledge {
     Speech = 39,
     War = 96,
     Machine = 98,
+
+    #[serde(other)]
+    Unknown,
 }
 
 #[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
@@ -134,6 +155,9 @@ pub enum Tech {
     ComputerTech = 231,
     Industry = 232,
     Diy = 233,
+
+    #[serde(other)]
+    Unknown,
 }
 
 #[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
@@ -146,6 +170,9 @@ pub enum Sports {
     Athletic = 236,
     Culture = 237,
     Comprehensive = 238,
+
+    #[serde(other)]
+    Unknown,
 }
 
 #[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
@@ -160,6 +187,9 @@ pub enum Car {
     Motorcycle = 240,
     Strategy = 227,
     Life = 176,
+
+    #[serde(other)]
+    Unknown,
 }
 
 #[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
@@ -174,6 +204,9 @@ pub enum Life {
     Painting = 162,
     Daily = 21,
     Parenting = 254,
+
+    #[serde(other)]
+    Unknown,
 }
 
 #[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
@@ -185,6 +218,9 @@ pub enum Food {
     Measurement = 213,
     Rural = 214,
     Record = 215,
+
+    #[serde(other)]
+    Unknown,
 }
 
 #[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
@@ -197,6 +233,9 @@ pub enum Animal {
     WildAnimal = 221,
     Reptiles = 222,
     AnimalComposite = 75,
+
+    #[serde(other)]
+    Unknown,
 }
 
 #[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
@@ -208,6 +247,9 @@ pub enum Kichiku {
     ManualVocaloid = 126,
     Theatre = 216,
     Course = 127,
+
+    #[serde(other)]
+    Unknown,
 }
 
 #[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
@@ -218,6 +260,9 @@ pub enum Fashion {
     Cos = 252,
     Clothing = 158,
     Catwalk = 159,
+
+    #[serde(other)]
+    Unknown,
 }
 
 #[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
@@ -228,6 +273,9 @@ pub enum Information {
     Global = 204,
     Social = 205,
     Multiple = 206,
+
+    #[serde(other)]
+    Unknown,
 }
 
 #[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
@@ -238,6 +286,9 @@ pub enum Ent {
     Talker = 241,
     Fans = 242,
     Celebrity = 137,
+
+    #[serde(other)]
+    Unknown,
 }
 
 #[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
@@ -249,6 +300,9 @@ pub enum Cinephile {
     Shortfilm = 85,
     TrailerInfo = 184,
     Shortfilm2 = 256,
+
+    #[serde(other)]
+    Unknown,
 }
 
 #[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
@@ -259,6 +313,9 @@ pub enum Documentary {
     Science = 178,
     Military = 179,
     Travel = 180,
+
+    #[serde(other)]
+    Unknown,
 }
 
 #[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
@@ -269,6 +326,9 @@ pub enum Movie {
     West = 145,
     Japan = 146,
     Other = 83,
+
+    #[serde(other)]
+    Unknown,
 }
 
 #[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
@@ -277,4 +337,7 @@ pub enum TV {
     TV = 11,
     Mainland = 185,
     Overseas = 187,
+
+    #[serde(other)]
+    Unknown,
 }

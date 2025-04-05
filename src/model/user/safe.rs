@@ -61,4 +61,7 @@ pub enum CardType {
     Passport = 4,
     PermanentResidence = 5,
     Other = 6,
+
+    #[serde(other)]
+    Unknown,
 }

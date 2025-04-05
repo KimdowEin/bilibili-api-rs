@@ -7,14 +7,13 @@ use crate::error::Error;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct BiliResponse<T> {
-    pub code: i32,
+    pub code: BiliResponseCode,
     pub message: String,
     pub data: Option<T>,
 }
 impl<T> BiliResponse<T> {
     pub fn is_success(&self) -> bool {
-        self.code == 0
-        // self.code == BiliResponseCode::Success
+        self.code == BiliResponseCode::Success
     }
 
     pub fn data(self) -> Result<T, Error> {
@@ -26,7 +25,7 @@ impl<T> BiliResponse<T> {
     }
 }
 
-#[derive(Debug, Serialize_repr, Deserialize_repr, PartialEq)]
+#[derive(Debug, Serialize_repr, Deserialize_repr, PartialEq,Eq)]
 #[repr(i32)]
 pub enum BiliResponseCode {
     Success = 0,
@@ -77,8 +76,8 @@ pub enum BiliResponseCode {
     LiveRoomInfoNotFound = 19002003,
     ArgsError = 2001000,
 
-    #[serde(default)]
-    OtherError,
+    #[serde(other)]
+    Unknown,
 }
 
 impl Display for BiliResponseCode {
@@ -102,9 +101,10 @@ impl Display for BiliResponseCode {
 
             BiliResponseCode::DangerError => write!(f, "风控错误"),
             BiliResponseCode::GeetestError => write!(f, "极验服务出错"),
-
+            
             BiliResponseCode::LikeCancelFailed => write!(f, "取消点赞失败"),
             BiliResponseCode::LikeAgain => write!(f, "已经点赞过了"),
+            BiliResponseCode::LiveRoomInfoNotFound => write!(f, "房间信息不存在"),
             BiliResponseCode::LiveRoomNotFound => write!(f, "直播间不存在"),
             BiliResponseCode::LoginKeyError => write!(f, "登录密匙错误"),
 
@@ -127,8 +127,7 @@ impl Display for BiliResponseCode {
             BiliResponseCode::VideoNotFound => write!(f, "视频不存在"),
             BiliResponseCode::VideoNotFound2 => write!(f, "视频不存在"),
 
-            BiliResponseCode::OtherError => write!(f, "其他错误"),
-            BiliResponseCode::LiveRoomInfoNotFound => write!(f, "房间信息不存在"),
+            BiliResponseCode::Unknown => write!(f, "其他错误"),
         }
     }
 }

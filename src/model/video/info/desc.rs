@@ -26,4 +26,7 @@ pub enum VideoDescType {
     Nomal = 1,
     /// 他人
     Human = 2,
+
+    #[serde(other)]
+    Unknown,
 }

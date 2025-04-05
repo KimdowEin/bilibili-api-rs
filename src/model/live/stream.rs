@@ -9,6 +9,9 @@ pub enum Quality {
     FL = 2,
     HD = 3,
     ART = 4,
+
+    #[serde(other)]
+    Unknown,
 }
 
 #[derive(Debug, Serialize_repr, Deserialize_repr)]
@@ -21,6 +24,9 @@ pub enum LiveStreamQn {
     ART = 10000,
     K4 = 20000,
     Dolby = 30000,
+
+    #[serde(other)]
+    Unknown,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
