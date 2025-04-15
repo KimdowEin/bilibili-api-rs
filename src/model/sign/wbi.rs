@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug,Clone,PartialEq, Eq, Deserialize, Serialize)]
 pub struct Wbi {
     #[serde(alias = "img_url")]
     img: String,

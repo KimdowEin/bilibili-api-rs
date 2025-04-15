@@ -1,10 +1,9 @@
-//! 视频唯一标识cid
-
+use crate::Data;
 use serde::{Deserialize, Serialize};
 
 use super::state::Dimension;
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Data)]
 pub struct Cids {
     /// 视频分P的cid
     pub cid: u64,
@@ -22,9 +21,10 @@ pub struct Cids {
     pub weblink: String,
     /// 分P分辨率
     pub dimension: Dimension,
-
     /// 封面,如果是VideoView则空
     pub first_frame: Option<String>,
+    /// 上传时间
+    pub ctime: u64,
 }
 
 #[cfg(test)]
@@ -35,34 +35,36 @@ mod tests {
         let json = r#"
             [
                 {
-                    "cid": 993004511,
-                    "page": 1,
-                    "from": "vupload",
-                    "part": "あるふぁ_可不",
-                    "duration": 206,
-                    "vid": "",
-                    "weblink": "",
-                    "dimension": {
-                        "width": 1920,
-                        "height": 1080,
-                        "rotate": 0
-                    },
-                    "first_frame": "http://i1.hdslb.com/bfs/storyff/n230204a2sbv2kc5ydvkx3j069df5uco_firsti.jpg"
+                "cid": 993004511,
+                "page": 1,
+                "from": "vupload",
+                "part": "あるふぁ_可不",
+                "duration": 206,
+                "vid": "",
+                "weblink": "",
+                "dimension": {
+                    "width": 1920,
+                    "height": 1080,
+                    "rotate": 0
+                },
+                "first_frame": "http://i1.hdslb.com/bfs/storyff/n230204a2sbv2kc5ydvkx3j069df5uco_firsti.jpg",
+                "ctime": 1675502850
                 },
                 {
-                    "cid": 993074945,
-                    "page": 2,
-                    "from": "vupload",
-                    "part": "カンザキイオリ short ver.",
-                    "duration": 41,
-                    "vid": "",
-                    "weblink": "",
-                    "dimension": {
-                        "width": 1280,
-                        "height": 720,
-                        "rotate": 0
-                    },
-                    "first_frame": "http://i1.hdslb.com/bfs/storyff/n230204a23v9nzyfoy1gwz1p4ej2x9t0_firsti.jpg"
+                "cid": 993074945,
+                "page": 2,
+                "from": "vupload",
+                "part": "カンザキイオリ short ver.",
+                "duration": 41,
+                "vid": "",
+                "weblink": "",
+                "dimension": {
+                    "width": 1280,
+                    "height": 720,
+                    "rotate": 0
+                },
+                "first_frame": "http://i1.hdslb.com/bfs/storyff/n230204a23v9nzyfoy1gwz1p4ej2x9t0_firsti.jpg",
+                "ctime": 1675505170
                 }
             ]
         "#;

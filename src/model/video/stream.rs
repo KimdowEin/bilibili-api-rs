@@ -1,5 +1,6 @@
 #![allow(deprecated)]
 
+use crate::Data;
 use serde::{Deserialize, Serialize};
 use serde_aux::field_attributes::{
     deserialize_default_from_empty_object, deserialize_vec_from_string_or_vec,
@@ -8,7 +9,7 @@ use serde_aux::field_attributes::{
 use super::format::{AudioQn, Qn, SupportFormats, VideoCodeCid};
 
 /// Mp4格式视频流信息
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq,Eq, Serialize, Deserialize)]
 pub struct Durl {
     pub length: u64,
     pub size: u64,
@@ -19,7 +20,7 @@ pub struct Durl {
 }
 
 /// Dash格式视频流信息
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq,Eq, Serialize, Deserialize)]
 pub struct Dash {
     /// 视频长度
     pub duration: u64,
@@ -59,7 +60,7 @@ impl Dash {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq,Eq, Serialize, Deserialize)]
 pub struct Video {
     pub id: Qn,
     /// 有效时间为 120min
@@ -76,7 +77,7 @@ pub struct Video {
     pub height: i64,
     pub frame_rate: String,
 }
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq,Eq, Serialize, Deserialize)]
 pub struct Audio {
     pub id: AudioQn,
     pub base_url: String,
@@ -89,13 +90,13 @@ pub struct Audio {
     pub segment_base: SegmentBase,
     pub codecid: i64,
 }
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq,Eq, Serialize, Deserialize)]
 pub struct SegmentBase {
     pub initialization: String,
     pub index_range: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq,Eq, Serialize, Deserialize)]
 pub struct Dolby {
     #[serde(rename = "type")]
     pub dolby_type: u8,
@@ -103,14 +104,14 @@ pub struct Dolby {
     pub audio: Vec<Audio>,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq,Eq, Serialize, Deserialize)]
 pub struct Flac {
     pub display: bool,
     pub audio: Audio,
 }
 
 #[deprecated(since = "1.0.0", note = "mp4是旧格式,b站计划废弃,切换到dash")]
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq,Eq, Serialize, Deserialize,Data)]
 pub struct VideoStreamOld {
     pub quality: Qn,
     pub timelength: u64,
@@ -126,7 +127,7 @@ pub struct VideoStreamOld {
     pub last_play_cid: i64,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq,Eq, Serialize, Deserialize,Data)]
 pub struct VideoStream {
     pub quality: Qn,
     pub timelength: u64,

@@ -1,11 +1,13 @@
+
 use super::VideoQuery;
-use crate::traits::{Query,Csrf};
-use macros::{Csrf, Query};
+use crate::{Query,Csrf};
 use serde::{Deserialize, Serialize};
 
+/// 投币视频（web端）
 pub const COIN_VIDEO_URL: &str = "https://api.bilibili.com/x/web-interface/coin/add";
 
-#[derive(Debug,Clone, PartialEq, Serialize, Deserialize, Query,Csrf)]
+/// 投币视频（web端）
+#[derive(Debug,Clone, PartialEq,Eq, Serialize, Deserialize, Query,Csrf)]
 pub struct CoinVideoQuery {
     #[serde(flatten)]
     pub vid: VideoQuery,
@@ -26,6 +28,8 @@ impl CoinVideoQuery {
     }
 }
 
+/// 查询是否投币
 pub const IS_COIN_URL: &str = "https://api.bilibili.com/x/web-interface/archive/coins";
 
+/// 查询是否投币
 pub type IsCoinQuery = VideoQuery;

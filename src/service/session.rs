@@ -6,6 +6,7 @@ use std::{
     sync::Arc,
 };
 
+use bili_core::Data;
 use reqwest::{
     cookie::{CookieStore, Jar},
     header, Client, Url,
@@ -13,7 +14,7 @@ use reqwest::{
 use serde::{Deserialize, Serialize};
 use tokio::sync::RwLock;
 
-use crate::error::Error;
+use crate::{error::Error, model::response::BiliResponse};
 
 pub const COOKIES_URL: &str = "https://api.bilibili.com";
 
@@ -96,7 +97,7 @@ impl Session {
         let bili_jct = state.get_cookie(COOKIES_URL, "bili_jct");
         let bili_jct = if let Some(bili_jct) = bili_jct {
             Arc::new(RwLock::new(bili_jct))
-        }else{
+        } else {
             Arc::new(RwLock::new(String::new()))
         };
 
@@ -104,7 +105,7 @@ impl Session {
             client,
             state,
             mixin_key,
-            bili_jct
+            bili_jct,
         })
     }
 
@@ -184,7 +185,7 @@ impl SessionState {
         None
     }
 
-    pub fn save_cookies(&self) -> Result<(), Error>{
+    pub fn save_cookies(&self) -> Result<(), Error> {
         if let Some(path) = &self.cookies_path {
             let mut file = File::create(path)?;
             let mut cookies = Vec::new();
@@ -206,11 +207,23 @@ impl SessionState {
 
         Ok(())
     }
-
 }
 
 #[derive(Debug, Default, Deserialize, Serialize)]
 struct CookieItem {
     url: String,
     cookies: String,
+}
+
+pub async fn bili_get<T>(session: &Session, url: &str) -> Result<T, Error>
+where
+    T: Data,
+{
+    session
+        .get(url)
+        .send()
+        .await?
+        .json::<BiliResponse<_>>()
+        .await?
+        .data()
 }

@@ -1,5 +1,13 @@
 # bilibili-api-rs
 
+## 声明
+
+本库仅用于学习和测试,禁止用于任何非法用途,灰产或其他恶劣行为.不当使用产生的所有后果与作者无关.
+
+如果你对此库的存在有任何不满,我立马删库致歉,官方打过来我第一个投降.
+
+![投降](投降.jpg)
+
 ## 介绍
 
 对b站api的rust封装(建设中)，基于 [bilibili-API-collect](https://github.com/SocialSisterYi/bilibili-API-collect)
@@ -176,27 +184,45 @@ async fn get_video_desc() {
 - "session" 提供一个会话 一些常用请求模板代码 cookies的导入和保存
 - "manual" 提供一个函数跳转到过人机验证的网站
 
-## 提供的模块
+## 进度
+
+以下为重置进度
 
 打x是完成并测试  
 打o是未测试或部分完成
 
-todo
-
-写文档真的好麻烦
-
-## 一些简单说明
-
-- 项目结构
-  - query 请求结构体
-  - model 响应体
-  - service 一些模板代码和request逻辑
-- 命名
-  - Query Model Url 前缀有app的是app端的api,没有的是web端或两者共用的api
-  - 字段前缀有app的是app专属 Option是可选
+- [] 登录
+  - [x] 人机认证
+  - [] 短信登录
+  - [x] 密码登录
+  - [] 二维码登录
+  - [] SNS 登录 (QQ & 微信 & 微博)
+  - [o] 登录基本信息
+  - [] 个人中心
+  - [] 注销登录
+  - [] 登录记录
+  - [] Web 端 Cookie 刷新
+- [] 视频
+  - [] 视频分区一览 (分区代码)
+  - [o] 基本信息
+  - [] 点赞 & 投币 & 收藏 & 分享
+  - [] TAG
+  - [] 视频推荐
+  - [] 播放 & 下载地址 (视频流)
+  - [] 视频合集
 
 ## 共同建设
 
 需要大量测试用例
 
-存在一些封装不全,忘记pub,结构不合理的地方,欢迎提交pr或issue(去github提pr)
+将仓库clone下来,配置好cookies.json,
+在tests/tests.toml中添加测试用例,
+然后执行cargo test.
+
+将失败的用例提交issue,或者自己修bug
+
+测试代码以后会逐渐变得复杂且耗时
+
+api的更新是很迅速的,如观测到变化,
+请提交到[bilibili-API-collect](https://github.com/SocialSisterYi/bilibili-API-collect).
+然后@我,我再更新到这个仓库中.

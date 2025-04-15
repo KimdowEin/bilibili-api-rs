@@ -1,11 +1,10 @@
 use std::time::{self, UNIX_EPOCH};
 
 use hmac::{Hmac, Mac};
-use macros::{Csrf, Query};
 use serde::{Deserialize, Serialize};
 use sha2::Sha256;
 
-use crate::{error::Error, traits::{Query,Csrf}};
+use crate::{error::Error, {Query,Csrf}};
 
 pub const BILI_TICKET_URL: &str =
     "https://api.bilibili.com/bapis/bilibili.api.ticket.v1.Ticket/GenWebTicket";

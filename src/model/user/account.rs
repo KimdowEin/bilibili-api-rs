@@ -1,7 +1,5 @@
 use super::{
-    exp::LevelView,
-    official::{Official, OfficialVerify},
-    vip::Vip,
+    exp::LevelView, nameplate::{FansMedal, NamePlate}, notice::AccountNotice, official::{Official, OfficialVerify}, pendant::Pendant, vip::Vip
 };
 use serde::{Deserialize, Serialize};
 use serde_aux::field_attributes::{deserialize_bool_from_anything, deserialize_number_from_string};
@@ -22,19 +20,19 @@ pub struct AccountSpaceInfo {
     pub moral: u64,
     #[serde(deserialize_with = "deserialize_bool_from_anything")]
     pub silence: bool,
-    pub coins: Option<u64>,
+    pub coins: u64,
     pub fans_badge: bool,
 
-    // pub fans_medal:todo,
-    // pub official: Official,
-    // pub vip: Vip,
-    // pub pendant: todo,
-    // pub nameplate: todo,
+    pub official: Official,
+    pub vip: Vip,
+    pub pendant: Pendant,
+    pub nameplate: NamePlate,
+    pub fans_medal:FansMedal,
 
     // pub is_followed: bool,
     // pub top_photo: String,
 
-    // pub sys_notice:Option<String>,
+    pub sys_notice:Option<AccountNotice>,
     // pub live_room: LiveRoom,
 
     pub birthday: String,
@@ -47,7 +45,7 @@ pub struct AccountSpaceInfo {
     // todo
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, PartialEq,Eq, Serialize_repr, Deserialize_repr)]
 #[repr(u32)]
 pub enum AccountPowerRank {
     NewUser = 5000,
@@ -117,7 +115,7 @@ pub enum GenderType {
     Male = 1,
 
     #[serde(other)]
-    Unknown,
+    Unknown
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -163,21 +161,7 @@ pub struct CardView {
     pub is_senior_member: u8,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Pendant {
-    pub pid: u64,
-    pub name: String,
-    pub image: String,
-}
-#[derive(Debug, Serialize, Deserialize)]
-pub struct NamePlate {
-    pub nid: u64,
-    pub name: String,
-    pub image: String,
-    pub image_small: String,
-    pub level: String,
-    pub condition: String,
-}
+
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Sapce {
@@ -189,11 +173,12 @@ pub struct Sapce {
 pub struct Staff {
     #[serde(flatten)]
     pub owner: VideoOwner,
-    pub title: String, //名称
+    pub title: String, 
+    //名称
 
-                       // vip todo
-                       // official todo
-                       // follower todo
+    // vip todo
+    // official todo
+    // follower todo
 }
 
 // #[cfg(test)]

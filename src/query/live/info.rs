@@ -1,21 +1,18 @@
+use core_derive::Query;
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    model::live::{
+use crate::model::live::{
         info::{LiveProtocol, LiveStreamCodec, LiveStreamFormat},
         stream::LiveStreamQn,
-    },
-    traits::Query,
-};
+    };
 
 /// 获取直播间信息
 pub const LIVE_ROOM_VIEW_URL: &str = "https://api.live.bilibili.com/room/v1/Room/get_info";
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize,Query)]
 pub struct LiveRoomViewQuery {
     pub room_id: u64,
 }
-impl Query for LiveRoomViewQuery {}
 impl LiveRoomViewQuery {
     pub fn new(room_id: u64) -> Self {
         Self { room_id }
@@ -24,11 +21,10 @@ impl LiveRoomViewQuery {
 
 /// 获取房间页初始化信息
 pub const LIVE_ROOM_INIT_URL: &str = "https://api.live.bilibili.com/room/v1/Room/room_init";
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize,Query)]
 pub struct LiveRoomInitQuery {
     pub id: u64,
 }
-impl Query for LiveRoomInitQuery {}
 impl LiveRoomInitQuery {
     pub fn new(id: u64) -> Self {
         Self { id }

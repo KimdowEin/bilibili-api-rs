@@ -1,54 +1,84 @@
 use serde::{Deserialize, Serialize};
 
+use crate::Data;
+
 /// 获取视频合集信息   
+/// 
 /// https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/video/collection.md#%E8%8E%B7%E5%8F%96%E8%A7%86%E9%A2%91%E5%90%88%E9%9B%86%E4%BF%A1%E6%81%AF
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Data)]
 pub struct VideoArchive {
+    /// 稿件avid
     pub aids: Vec<u64>,
+    /// 合集视频
     pub archives: Vec<VideoArchiveItem>,
+    /// 合集元数据
     pub meta: VideoArchiveMeta,
+    /// 分页信息
     pub page: VideoArchivesPage,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct VideoArchiveItem {
     pub aid: u64,
     pub bvid: String,
+    /// 视频的创建时间戳
     pub ctime: u64,
+    /// 视频的时长，单位为秒
     pub duration: u64,
+    /// 是否启用虚拟剧场模式
     pub enable_vt: bool,
+    /// 是否为互动视频
     pub interactive_video: bool,
+    /// 视频封面图片的URL
     pub pic: String,
+    /// 视频的播放位置，用于记录用户上次观看的位置
     pub playback_position: u64,
+    /// 视频的发布日期
     pub pubdate: u64,
+    /// 视频的统计信息
     pub stat: VideoArchiveItemStat,
+    /// 视频的标题
     pub title: String,
+    /// 用户生成内容的付费类型
     pub ugc_pay: u8,
+    /// 虚拟剧场模式的显示信息
     pub vt_display: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct VideoArchiveItemStat {
+    /// 观看次数
     pub view: u64,
     pub vt: u64,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+/// 视频合集元数据结构体
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct VideoArchiveMeta {
     pub category: u64,
+    /// 视频封面图片的URL地址
     pub cover: String,
+    /// 视频的描述信息
     pub description: String,
+    /// up主id
     pub mid: u64,
+    /// 合集标题
     pub name: String,
+    /// 上传时间戳
     pub ptime: u64,
+    /// 合集id
     pub season_id: u64,
+    /// 该合集中视频的总数
     pub total: u64,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct VideoArchivesPage {
+    /// 页码
     pub page_num: u64,
+    /// 每页大小
     pub page_size: u64,
+    /// 总数量
     pub total: u64,
 }
 

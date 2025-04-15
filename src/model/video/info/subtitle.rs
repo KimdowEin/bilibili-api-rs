@@ -1,14 +1,10 @@
-//! 字幕
-
 use serde::{Deserialize, Serialize};
-use serde_aux::field_attributes::deserialize_default_from_empty_object;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Subtitle {
     ///是否允许提交字幕
     pub allow_submit: bool,
     /// 字幕列表
-    #[serde(deserialize_with = "deserialize_default_from_empty_object")]
     pub list: Vec<SubtitleItem>,
 }
 

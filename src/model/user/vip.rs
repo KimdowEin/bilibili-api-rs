@@ -2,10 +2,9 @@ use serde::{Deserialize, Serialize};
 use serde_aux::field_attributes::deserialize_bool_from_anything;
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
-#[derive(Debug, Default, Deserialize_repr, Serialize_repr)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize_repr, Serialize_repr)]
 #[repr(u8)]
 pub enum VipType {
-    #[default]
     Normal = 0,
     Moon = 1,
     Year = 2,
@@ -13,7 +12,7 @@ pub enum VipType {
     #[serde(other)]
     Unknown,
 }
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
 pub struct VipView {
     /// 有无大会员
     #[serde(deserialize_with = "deserialize_bool_from_anything")]
@@ -28,6 +27,7 @@ pub struct VipView {
     #[serde(rename = "vip_pay_type")]
     #[serde(deserialize_with = "deserialize_bool_from_anything")]
     pub pay_type: bool,
+
     ///是否显示会员图标
     #[serde(alias = "vip_avatar_subscript")]
     #[serde(deserialize_with = "deserialize_bool_from_anything")]
@@ -40,26 +40,54 @@ pub struct VipView {
     pub theme_type: i32,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug,Clone,PartialEq,Eq, Serialize, Deserialize)]
 pub struct Vip {
     #[serde(flatten)]
     pub view: VipView,
 
+    /// 大会员类型
+    pub role: VipRole,
+    /// 大会员标签
     pub label: VipLabel,
-    pub role: u8,
+    /// 大会员角标地址
     pub avatar_subscript_url: String,
+    /// 电视大会员开通状态
     pub tv_vip_status: u8,
+    /// 电视大会员支付类型
     pub tv_vip_pay_type: u8,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+/// 大会员类型
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize_repr, Serialize_repr)]
+#[repr(u8)]
+pub enum VipRole {
+    /// 月度
+    Month,
+    /// 年度
+    Year,
+    /// 十年大会员
+    TenYear,
+    /// 百年大会员
+    HundredYear,
+    #[serde(other)]
+    Unknown,
+}
+
+#[derive(Debug,Clone,PartialEq, Eq, Serialize, Deserialize)]
 pub struct VipLabel {
+    /// 会员类型文案
     pub text: String,
+    /// 会员标签
     pub label_theme: String,
+    /// 会员标签
     pub text_color: String,
+    /// 会员标签背景颜色
     pub bg_color: String,
+    /// 会员标签边框颜色
     pub border_color: String,
+    /// 会员牌子图片简体
     pub img_label_uri_hans_static: String,
+    /// 会员牌子图片繁体
     pub img_label_uri_hant_static: String,
 }
 

@@ -1,4 +1,3 @@
-//! 投稿
 
 use serde::{Deserialize, Serialize};
 

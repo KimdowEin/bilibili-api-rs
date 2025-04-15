@@ -79,7 +79,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_get_video_view() {
-        let mut session = Session::new_with_path("./cookies.json").unwrap();
+        let session = Session::new_with_path("./cookies.json").unwrap();
         session.get_mixin_key().await.unwrap();
 
         let query = VideoViewQuery::from(BVID);

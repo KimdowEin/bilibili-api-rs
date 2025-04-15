@@ -1,0 +1,18 @@
+[package]
+name = "bili_core"
+version = "0.1.0"
+edition = "2021"
+
+
+[dependencies]
+md5 = "0.7.0"
+serde = "1.0.219"
+serde_qs = "0.14.0"
+
+[dependencies.bili_core_derive]
+path = "./bili_core_derive"
+optional = true
+
+[features]
+default = []
+derive = ["bili_core_derive"]

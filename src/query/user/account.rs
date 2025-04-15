@@ -1,13 +1,11 @@
-//! 账号信息
 
-use macros::{Query, Sign};
 use serde::{Deserialize, Serialize};
 
-use crate::traits::{Query,Sign};
+use crate::{Query,Sign};
 
 
 
-
+/// 用户空间详细信息
 pub const ACCOUNT_SPACE_INFO_URL: &str = "https://api.bilibili.com/x/space/wbi/acc/info";
 
 #[derive(Debug,Clone,PartialEq, Serialize, Deserialize, Query,Sign)]

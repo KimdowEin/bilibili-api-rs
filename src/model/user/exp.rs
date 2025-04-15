@@ -21,7 +21,7 @@ pub struct LevelView {
     pub current_level: u8,
 }
 
-#[derive(Debug, Default, Deserialize, Serialize)]
+#[derive(Debug,Clone,PartialEq, Deserialize, Serialize)]
 pub struct LevelInfo {
     /// 当前等级
     pub current_level: u8,
@@ -29,7 +29,7 @@ pub struct LevelInfo {
     pub current_min: u64,
     /// 当前经验
     pub current_exp: u64,
-    /// 下级等级经验
+    /// 下级等级经验,满级为'-'
     #[serde(deserialize_with = "deserialize_string_from_number")]
     pub next_exp: String,
 }

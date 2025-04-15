@@ -17,3 +17,19 @@
 3. 完成user模块
 4. api脱离session
 5. 请求体使用derive
+
+
+## 规定
+
+直接响应体
+
+ #[derive(Debug,Clone,PartialEq, Deserialize, Serialize,Data)]
+
+间接响应体
+
+ #[derive(Debug,Clone,PartialEq, Deserialize, Serialize)]
+
+请求体
+
+ #[derive(Debug,Clone,PartialEq, Deserialize, Serialize,Query)]
+ impl new()

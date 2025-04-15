@@ -2,9 +2,9 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 use serde::{de::DeserializeOwned, Serialize};
 
-use crate::error::Error;
+use serde_qs::Error;
 
-pub trait Query: Serialize + DeserializeOwned + Sized {
+pub trait Query: Serialize + Sized {
     /// 生成原始query
     fn to_query(&self) -> Result<String, Error> {
         Ok(serde_qs::to_string(self)?)
@@ -41,5 +41,4 @@ pub trait Csrf: Query {
     }
 }
 
-#[cfg(feature = "derive")]
-pub use macros::{Query, Sign,Csrf};
+pub trait Data: DeserializeOwned {}

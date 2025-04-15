@@ -1,4 +1,3 @@
-//! 视频状态/杂项
 
 use serde::{Deserialize, Serialize};
 use serde_aux::field_attributes::deserialize_bool_from_anything;
@@ -67,6 +66,9 @@ pub struct Rights {
     /// 是否UGC付费
     #[serde(deserialize_with = "deserialize_bool_from_anything")]
     pub ugc_pay: bool,
+    /// 是否UGC付费预览
+    #[serde(deserialize_with = "deserialize_bool_from_anything")]
+    pub ugc_pay_preview:bool,
     /// 是否合作视频
     #[serde(deserialize_with = "deserialize_bool_from_anything")]
     pub is_cooperation: bool,
@@ -76,10 +78,20 @@ pub struct Rights {
     /// 是否全景视频
     #[serde(deserialize_with = "deserialize_bool_from_anything")]
     pub is_360: bool,
+    #[serde(deserialize_with = "deserialize_bool_from_anything")]
+    pub no_background: bool,
+    #[serde(deserialize_with = "deserialize_bool_from_anything")]
+    pub clean_mode: bool,
+    #[serde(deserialize_with = "deserialize_bool_from_anything")]
+    pub no_share:bool,
+    #[serde(deserialize_with = "deserialize_bool_from_anything")]
+    pub arc_pay:bool,
+    #[serde(deserialize_with = "deserialize_bool_from_anything")]
+    pub free_watch:bool,
 }
 
 /// 分辨率
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq,Eq, Serialize, Deserialize)]
 pub struct Dimension {
     pub width: u64,
     pub height: u64,
@@ -88,7 +100,7 @@ pub struct Dimension {
     pub rotate: bool,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, PartialEq,Eq, Serialize_repr, Deserialize_repr)]
 #[repr(i32)]
 pub enum VideoState {
     OrangePass = 1,
@@ -120,7 +132,7 @@ pub enum VideoState {
 }
 
 /// 视频类型,原创/转载
-#[derive(Debug, Clone, PartialEq, Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, PartialEq, Serialize_repr, Deserialize_repr,Eq)]
 #[repr(u8)]
 pub enum VideoCopyRight {
     /// 原创
@@ -130,4 +142,15 @@ pub enum VideoCopyRight {
 
     #[serde(other)]
     Unknown,
+}
+
+/// 充电状态
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct UpowerState {
+    /// 是否为充电专属
+    pub is_upower_exclusive: bool,
+    /// 未知
+    pub is_upower_play: bool,
+    /// 未知
+    pub is_upower_preview: bool,
 }

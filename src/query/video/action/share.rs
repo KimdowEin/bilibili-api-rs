@@ -1,12 +1,13 @@
 use crate::{
-    error::Error,
     query::video::VideoQuery,
     traits::{Csrf, Query},
 };
+use serde_qs::Error;
 
-
+/// 分享视频 （Web端）
 pub const SHARE_VIDEO_URL: &str = "https://api.bilibili.com/x/web-interface/share/add";
 
+/// 分享视频 （Web端）
 pub type ShareVideoQuery = VideoQuery;
 
 impl Csrf for ShareVideoQuery {

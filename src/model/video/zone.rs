@@ -1,9 +1,8 @@
-//! 视频分区
 
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq,Eq)]
 #[serde(untagged)]
 pub enum Zone {
     Douga(Douga),
@@ -30,7 +29,7 @@ pub enum Zone {
     Unknown,
 }
 
-#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq,Eq)]
 #[repr(i32)]
 pub enum Douga {
     Douga = 1,
@@ -47,7 +46,7 @@ pub enum Douga {
     Unknown,
 }
 
-#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq,Eq)]
 #[repr(i32)]
 pub enum Anime {
     Anime = 13,
@@ -60,7 +59,7 @@ pub enum Anime {
     Unknown,
 }
 
-#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq,Eq)]
 #[repr(i32)]
 pub enum Guochuang {
     Guochuang = 167,
@@ -74,7 +73,7 @@ pub enum Guochuang {
     Unknown,
 }
 
-#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq,Eq)]
 #[repr(i32)]
 pub enum Music {
     Music = 3,
@@ -93,7 +92,7 @@ pub enum Music {
     Unknown,
 }
 
-#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq,Eq)]
 #[repr(i32)]
 pub enum Dance {
     Dance = 129,
@@ -109,7 +108,7 @@ pub enum Dance {
     Unknown,
 }
 
-#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq,Eq)]
 #[repr(i32)]
 pub enum Game {
     Game = 4,
@@ -126,7 +125,7 @@ pub enum Game {
     Unknown,
 }
 
-#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq,Eq)]
 #[repr(i32)]
 pub enum Knowledge {
     Knowledge = 36,
@@ -146,7 +145,7 @@ pub enum Knowledge {
     Unknown,
 }
 
-#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq,Eq)]
 #[repr(i32)]
 pub enum Tech {
     Tech = 188,
@@ -160,7 +159,7 @@ pub enum Tech {
     Unknown,
 }
 
-#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq,Eq)]
 #[repr(i32)]
 pub enum Sports {
     Sports = 234,
@@ -175,7 +174,7 @@ pub enum Sports {
     Unknown,
 }
 
-#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq,Eq)]
 #[repr(i32)]
 pub enum Car {
     Car = 223,
@@ -192,7 +191,7 @@ pub enum Car {
     Unknown,
 }
 
-#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq,Eq)]
 #[repr(i32)]
 pub enum Life {
     Life = 160,
@@ -209,7 +208,7 @@ pub enum Life {
     Unknown,
 }
 
-#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq,Eq)]
 #[repr(i32)]
 pub enum Food {
     Food = 211,
@@ -223,7 +222,7 @@ pub enum Food {
     Unknown,
 }
 
-#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq,Eq)]
 #[repr(i32)]
 pub enum Animal {
     Animal = 217,
@@ -238,7 +237,7 @@ pub enum Animal {
     Unknown,
 }
 
-#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq,Eq)]
 #[repr(i32)]
 pub enum Kichiku {
     Kichiku = 119,
@@ -252,7 +251,7 @@ pub enum Kichiku {
     Unknown,
 }
 
-#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq,Eq)]
 #[repr(i32)]
 pub enum Fashion {
     Fashion = 155,
@@ -265,7 +264,7 @@ pub enum Fashion {
     Unknown,
 }
 
-#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq,Eq)]
 #[repr(i32)]
 pub enum Information {
     Information = 202,
@@ -278,7 +277,7 @@ pub enum Information {
     Unknown,
 }
 
-#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq,Eq)]
 #[repr(i32)]
 pub enum Ent {
     Ent = 5,
@@ -291,7 +290,7 @@ pub enum Ent {
     Unknown,
 }
 
-#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq,Eq)]
 #[repr(i32)]
 pub enum Cinephile {
     Cinephile = 181,
@@ -305,7 +304,7 @@ pub enum Cinephile {
     Unknown,
 }
 
-#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq,Eq)]
 #[repr(i32)]
 pub enum Documentary {
     Documentary = 177,
@@ -318,7 +317,7 @@ pub enum Documentary {
     Unknown,
 }
 
-#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq,Eq)]
 #[repr(i32)]
 pub enum Movie {
     Movie = 23,
@@ -331,7 +330,7 @@ pub enum Movie {
     Unknown,
 }
 
-#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq)]
+#[derive(Debug, Clone, Serialize_repr, Deserialize_repr, PartialEq,Eq)]
 #[repr(i32)]
 pub enum TV {
     TV = 11,

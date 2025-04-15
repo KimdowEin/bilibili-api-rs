@@ -1,4 +1,3 @@
-//! 单个视频信息
 
 /// 视频cid信息
 pub mod cids;
@@ -10,3 +9,9 @@ pub mod state;
 pub mod subtitle;
 /// 视频信息总览
 pub mod view;
+
+pub use cids::*;
+pub use desc::*;
+pub use state::*;
+pub use subtitle::*;
+pub use view::*;

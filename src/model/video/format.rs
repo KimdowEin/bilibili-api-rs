@@ -1,11 +1,11 @@
-//! 视频格式和元数据
 
+use bili_core::Data;
 use bitflags::bitflags;
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
 ///视频清晰度标识
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize_repr, Deserialize_repr)]
+#[derive(Debug,Clone,PartialEq, Eq, PartialOrd, Ord, Serialize_repr, Deserialize_repr,Data)]
 #[repr(u32)]
 pub enum Qn {
     /// 240p急速
