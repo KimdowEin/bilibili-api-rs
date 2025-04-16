@@ -1,9 +1,38 @@
 use super::{
-    exp::LevelView, nameplate::{FansMedal, NamePlate}, notice::AccountNotice, official::{Official, OfficialVerify}, pendant::Pendant, vip::Vip
+    exp::LevelView,
+    nameplate::{FansMedal, NamePlate},
+    notice::AccountNotice,
+    official::{Official, OfficialVerify},
+    pendant::Pendant,
+    vip::Vip,
 };
 use serde::{Deserialize, Serialize};
 use serde_aux::field_attributes::{deserialize_bool_from_anything, deserialize_number_from_string};
 use serde_repr::{Deserialize_repr, Serialize_repr};
+
+/// UP基本信息
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct UserInfoBase {
+    /// UP mid
+    #[serde(deserialize_with = "deserialize_number_from_string")]
+    pub mid: u64,
+    /// UP昵称
+    pub name: String,
+    /// UP头像
+    pub face: String,
+}
+
+/// 合作视频成员
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct Staff {
+    #[serde(flatten)]
+    pub base_info: UserInfoBase,
+    pub title: String,
+    pub vip: Vip,
+    pub official: Official,
+    pub follower: u64,
+    pub label_style: u8,
+}
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct AccountSpaceInfo {
@@ -27,25 +56,21 @@ pub struct AccountSpaceInfo {
     pub vip: Vip,
     pub pendant: Pendant,
     pub nameplate: NamePlate,
-    pub fans_medal:FansMedal,
+    pub fans_medal: FansMedal,
 
     // pub is_followed: bool,
     // pub top_photo: String,
-
-    pub sys_notice:Option<AccountNotice>,
+    pub sys_notice: Option<AccountNotice>,
     // pub live_room: LiveRoom,
-
     pub birthday: String,
-    
+
     // pub school:todo,
-
     #[serde(deserialize_with = "deserialize_bool_from_anything")]
-    pub is_senior_member:bool,
-
+    pub is_senior_member: bool,
     // todo
 }
 
-#[derive(Debug, Clone, PartialEq,Eq, Serialize_repr, Deserialize_repr)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize_repr, Deserialize_repr)]
 #[repr(u32)]
 pub enum AccountPowerRank {
     NewUser = 5000,
@@ -58,34 +83,6 @@ pub enum AccountPowerRank {
     #[serde(other)]
     Unknown,
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct AccountInfo {
@@ -115,18 +112,7 @@ pub enum GenderType {
     Male = 1,
 
     #[serde(other)]
-    Unknown
-}
-
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct VideoOwner {
-    /// UP mid
-    #[serde(deserialize_with = "deserialize_number_from_string")]
-    pub mid: u64,
-    /// UP昵称
-    pub name: String,
-    /// UP头像
-    pub face: String,
+    Unknown,
 }
 
 /// 视频用户栏信息
@@ -144,7 +130,7 @@ pub struct OwnerCard {
 #[derive(Debug, Serialize, Deserialize)]
 pub struct CardView {
     #[serde(flatten)]
-    pub owner: VideoOwner,
+    pub owner: UserInfoBase,
     pub sex: String,
     pub face_nft: u8,
     pub birthday: String,
@@ -161,31 +147,18 @@ pub struct CardView {
     pub is_senior_member: u8,
 }
 
-
-
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Sapce {
     pub s_img: String,
     pub l_img: String,
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct Staff {
-    #[serde(flatten)]
-    pub owner: VideoOwner,
-    pub title: String, 
-    //名称
 
-    // vip todo
-    // official todo
-    // follower todo
-}
 
 // #[cfg(test)]
 // mod tests {
 //     use super::*;
 
-    
 //     #[test]
 //     fn test_deserialize_owner_card() {
 //         let json = r#"

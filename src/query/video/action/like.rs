@@ -1,3 +1,5 @@
+//! 点赞
+
 use serde::{Deserialize, Serialize};
 
 use super::VideoQuery;
@@ -7,7 +9,7 @@ use crate::{Csrf, Query};
 pub const LIKE_VIDEO_URL: &str = "https://api.bilibili.com/x/web-interface/archive/like";
 
 // Web端点赞接口
-#[derive(Debug, Clone, PartialEq,Eq, Serialize, Deserialize, Query, Csrf)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Query, Csrf)]
 pub struct LikeVideoQuery {
     #[serde(flatten)]
     pub vid: VideoQuery,
@@ -20,3 +22,7 @@ impl LikeVideoQuery {
         Self { vid, like }
     }
 }
+
+pub const IS_LIKE_VIDEO_URL: &str = "https://api.bilibili.com/x/web-interface/archive/has/like";
+
+pub type IsLikeVideoQuery = VideoQuery;

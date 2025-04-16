@@ -1,9 +1,11 @@
+//! 视频信息
 
-/// 获取视频cid
+
+/// 视频cid
 pub mod cids;
-/// 获取视频简介
+/// 视频简介
 pub mod desc;
-/// 视频基本信息
+/// 视频信息总览
 pub mod view;
 
 use super::VideoQuery;

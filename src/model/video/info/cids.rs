@@ -1,3 +1,5 @@
+//! 视频分P
+
 use crate::Data;
 use serde::{Deserialize, Serialize};
 
@@ -32,14 +34,13 @@ mod tests {
     use super::*;
     #[test]
     fn test_deserize_cid() {
-        let json = r#"
-            [
-                {
-                "cid": 993004511,
+        let json = r#"[
+            {
+                "cid": 29193274957,
                 "page": 1,
                 "from": "vupload",
-                "part": "あるふぁ_可不",
-                "duration": 206,
+                "part": "DECO*27 - 弱虫モンブラン (Reloaded) feat. 初音ミク",
+                "duration": 233,
                 "vid": "",
                 "weblink": "",
                 "dimension": {
@@ -47,27 +48,10 @@ mod tests {
                     "height": 1080,
                     "rotate": 0
                 },
-                "first_frame": "http://i1.hdslb.com/bfs/storyff/n230204a2sbv2kc5ydvkx3j069df5uco_firsti.jpg",
-                "ctime": 1675502850
-                },
-                {
-                "cid": 993074945,
-                "page": 2,
-                "from": "vupload",
-                "part": "カンザキイオリ short ver.",
-                "duration": 41,
-                "vid": "",
-                "weblink": "",
-                "dimension": {
-                    "width": 1280,
-                    "height": 720,
-                    "rotate": 0
-                },
-                "first_frame": "http://i1.hdslb.com/bfs/storyff/n230204a23v9nzyfoy1gwz1p4ej2x9t0_firsti.jpg",
-                "ctime": 1675505170
-                }
-            ]
-        "#;
+                "first_frame": "http://i1.hdslb.com/bfs/storyff/n250402ad7b92buy6pu3l1fkdd2ctydl_firsti.jpg",
+                "ctime": 1743565693
+            }
+        ]"#;
         serde_json::from_str::<Vec<Cids>>(json).unwrap();
     }
 }

@@ -1,3 +1,4 @@
+//! 收藏
 
 use serde::{Deserialize, Serialize};
 
@@ -7,7 +8,7 @@ use crate::{Csrf, Query};
 pub const COLLECT_VIDEO_URL: &str = "https://api.bilibili.com/x/v3/fav/resource/deal";
 
 /// 收藏视频（Web端）
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Query, Csrf)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Query, Csrf)]
 pub struct CollectVideoQuery {
     pub rid: u64,
     #[serde(rename = "type")]

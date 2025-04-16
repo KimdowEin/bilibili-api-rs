@@ -7,7 +7,7 @@ use super::{
     subtitle::Subtitle, UpowerState,
 };
 use crate::model::{
-    user::account::{OwnerCard, Staff, VideoOwner},
+    user::account::{OwnerCard, Staff, UserInfoBase},
     video::zone::Zone,
 };
 use crate::Data;
@@ -68,7 +68,7 @@ pub struct VideoView {
     /// 未知
     pub need_jump_bv: bool,
     /// UP主信息
-    pub owner: VideoOwner,
+    pub owner: UserInfoBase,
     /// 视频分P列表
     pub pages: Vec<Cids>,
     /// 封面图片url
@@ -79,6 +79,7 @@ pub struct VideoView {
     /// 视频属性标志
     pub rights: Rights,
     /// 合作成员列表
+    /// todo
     #[serde(default)]
     pub staff: Vec<Staff>,
     /// 视频统计数据

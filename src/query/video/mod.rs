@@ -9,11 +9,11 @@ pub mod info;
 /// 视频流
 pub mod stream;
 
-use crate::{Query, Sign};
+use crate::{Query, Sign,Csrf};
 use serde::{Deserialize, Serialize};
 
 /// 通用视频查询
-#[derive(Debug, Clone, PartialEq,Eq, Deserialize, Serialize, Query, Sign)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Query, Sign,Csrf)]
 pub struct VideoQuery {
     pub aid: Option<u64>,
     pub bvid: Option<String>,
