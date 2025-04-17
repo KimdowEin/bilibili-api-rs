@@ -4,7 +4,6 @@ use crate::Data;
 
 /// 获取视频合集信息   
 /// 
-/// https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/video/collection.md#%E8%8E%B7%E5%8F%96%E8%A7%86%E9%A2%91%E5%90%88%E9%9B%86%E4%BF%A1%E6%81%AF
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Data)]
 pub struct VideoArchive {
     /// 稿件avid

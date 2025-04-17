@@ -30,8 +30,6 @@ brance = "night"
 features = ["session","manual"]
 ```
 
-以下是v0.1.0的示例,还没改,但流程差不多
-
 ### 登录(password)
 
 ```rust
@@ -42,27 +40,31 @@ use bilibili_api_rs::service::login::manual_verification;
 #[tokio::main]
 async fn main() {
   let (username, password) = ("username", "password");
-
   let session = Session::new().unwrap();
 
-  let captcha = session.captcha().await.unwrap();
+  let captcha = get_captcha(&session).await.unwrap();
 
   // 需要启用 manual
   // 这里会使用默认浏览器跳转到一个过captcha的页面，需要手动验证
-  // 将得到的结果 verify 输入到控制台
   manual_verification(&captcha.geetest).unwrap();
 
+  // 将得到的结果 verify 输入到控制台
   let mut buf = Vec::new();
   tokio::io::stdin().read_buf(&mut buf).await.unwrap();
   let validate= String::from_utf8(buf).unwrap().trim();
-  
-  let key = session.get_login_key().await.unwrap();
+
+  let key = get_login_key(&session).await.unwrap();
   let password = key.decode_password(password).unwrap();
-
-  let query = LoginQuery::new(username.to_string(), password.to_string(), captcha, validate.to_string(), None, None);
+  let query = LoginQuery::new(
+    username.to_string(), 
+    password.to_string(),
+    captcha, 
+    validate.to_string(), 
+    None, None
+  );
+  
   let response = session.login_by_password(query).await.unwrap();
-  println!("登录成功: {:?}", response);
-
+  println!("登录状态: {}", response.message);
   // 保存 cookies 到文件
   session.save_cookies().unwrap();
 }
@@ -88,6 +90,8 @@ async fn main() {
   let session = Session::new_with_path("cookies.json").unwrap();
 }
 ```
+
+以下是v0.1.0的示例,还没改,但流程差不多
 
 ### 下载视频
 
@@ -191,6 +195,12 @@ async fn get_video_desc() {
 打x是完成并测试  
 打o是未测试或部分完成
 
+- [x]接口签名与验证
+  - [] APP API 签名（appkey 与 sign）
+  - [] 已知的 APPKey
+  - [x] Wbi 签名（wts与w_rid）
+  - [x] bili_ticket
+  - [] v_voucher 验证
 - [] 登录
   - [x] 人机认证
   - [] 短信登录
@@ -203,12 +213,12 @@ async fn get_video_desc() {
   - [] 登录记录
   - [] Web 端 Cookie 刷新
 - [] 视频
-  - [] 视频分区一览 (分区代码)
+  - [x] 视频分区一览 (分区代码)
   - [o] 基本信息
-  - [] 点赞 & 投币 & 收藏 & 分享
+  - [x] 点赞 & 投币 & 收藏 & 分享
   - [] TAG
   - [] 视频推荐
-  - [] 播放 & 下载地址 (视频流)
+  - [x] 播放 & 下载地址 (视频流)
   - [] 视频合集
 
 ## 共同建设

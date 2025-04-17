@@ -1,3 +1,5 @@
+//! 获取视频信息
+
 use crate::{
     error::Error,
     model::{
@@ -9,40 +11,13 @@ use crate::{
         desc::{VideoDescQuery, VIDEO_DESC_URL},
         view::{VideoInfoQuery, VIDEO_VIEW_URL},
     },
-    service::session::Session,
+    service::{bili_query_get, session::Session},
     traits::Query,
 };
 
-// impl Session {
-//     /// 视频超详细信息
-//     #[deprecated]
-//     pub async fn get_video_info(&self, query: VideoInfoQuery) -> Result<VideoInfo, Error> {
-//         let url = format!(
-//             "{}?{}",
-//             VIDEO_INFO_URL,
-//             query.sign(&*self.mixin_key.read().await)?
-//         );
-//         self.get(url)
-//             .send()
-//             .await?
-//             .json::<BiliResponse<_>>()
-//             .await?
-//             .data()
-//     }
-
-// }
-
 /// 视频概览
 pub async fn get_video_view(session: &Session, query: VideoInfoQuery) -> Result<VideoView, Error> {
-    let query = query.to_query()?;
-    let url = format!("{}?{}", VIDEO_VIEW_URL, query);
-    session
-        .get(url)
-        .send()
-        .await?
-        .json::<BiliResponse<_>>()
-        .await?
-        .data()
+    bili_query_get(session, VIDEO_VIEW_URL, query).await
 }
 
 pub async fn get_video_desc(session: &Session, query: VideoDescQuery) -> Result<VideoDesc, Error> {

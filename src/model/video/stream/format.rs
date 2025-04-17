@@ -1,11 +1,10 @@
-
-use bili_core::Data;
+//! 视频格式
 use bitflags::bitflags;
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
 ///视频清晰度标识
-#[derive(Debug,Clone,PartialEq, Eq, PartialOrd, Ord, Serialize_repr, Deserialize_repr,Data)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize_repr, Deserialize_repr)]
 #[repr(u32)]
 pub enum Qn {
     /// 240p急速
@@ -101,7 +100,7 @@ impl Ord for AudioQn {
 }
 
 /// 支持格式的详细信息
-#[derive(Debug, Clone, PartialEq,Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct SupportFormats {
     pub quality: Qn,
     pub format: String,

@@ -14,7 +14,6 @@ use serde_aux::field_attributes::deserialize_bool_from_anything;
 
 ///导航栏   
 /// 
-/// https://github.com/SocialSisterYi/bilibili-API-collect/blob/master/docs/login/login_info.md#%E5%AF%BC%E8%88%AA%E6%A0%8F%E7%94%A8%E6%88%B7%E4%BF%A1%E6%81%AF
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Data)]
 pub struct NavInfo {
     #[serde(rename = "isLogin")]

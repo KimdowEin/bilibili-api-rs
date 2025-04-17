@@ -1,4 +1,4 @@
-//! 登陆的请求
+//! 密码登录
 //!
 //! 先完成人机验证拿到validate与seccode
 //!
@@ -13,6 +13,7 @@ use rsa::{pkcs8::DecodePublicKey, Pkcs1v15Encrypt, RsaPublicKey};
 use serde::{Deserialize, Serialize};
 
 /// 登录盐
+/// 
 /// 有效时间为 20s
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Data)]
 pub struct LoginKey {

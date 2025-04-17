@@ -1,15 +1,18 @@
-use std::time::{self, UNIX_EPOCH};
+//! 风控验证之一
 
+use crate::{
+    error::Error,
+    {Csrf, Query},
+};
 use hmac::{Hmac, Mac};
 use serde::{Deserialize, Serialize};
 use sha2::Sha256;
-
-use crate::{error::Error, {Query,Csrf}};
+use std::time::{self, UNIX_EPOCH};
 
 pub const BILI_TICKET_URL: &str =
     "https://api.bilibili.com/bapis/bilibili.api.ticket.v1.Ticket/GenWebTicket";
 
-#[derive(Debug, Serialize, Deserialize,Query,Csrf)]
+#[derive(Debug, Serialize, Deserialize, Query, Csrf)]
 pub struct BiliTicketQuery {
     // ec02
     pub key_id: String,

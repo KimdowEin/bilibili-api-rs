@@ -1,9 +1,7 @@
-use std::fmt::Display;
-
+use crate::error::Error;
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
-
-use crate::error::Error;
+use std::fmt::Display;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct BiliResponse<T> {
@@ -25,7 +23,7 @@ impl<T> BiliResponse<T> {
     }
 }
 
-#[derive(Debug, Serialize_repr, Deserialize_repr, PartialEq,Eq)]
+#[derive(Debug, Serialize_repr, Deserialize_repr, PartialEq, Eq)]
 #[repr(i32)]
 pub enum BiliResponseCode {
     Success = 0,
@@ -101,7 +99,7 @@ impl Display for BiliResponseCode {
 
             BiliResponseCode::DangerError => write!(f, "风控错误"),
             BiliResponseCode::GeetestError => write!(f, "极验服务出错"),
-            
+
             BiliResponseCode::LikeCancelFailed => write!(f, "取消点赞失败"),
             BiliResponseCode::LikeAgain => write!(f, "已经点赞过了"),
             BiliResponseCode::LiveRoomInfoNotFound => write!(f, "房间信息不存在"),

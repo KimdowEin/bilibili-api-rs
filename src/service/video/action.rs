@@ -1,3 +1,5 @@
+//! 视频交互
+
 use crate::{
     error::Error,
     model::{
@@ -14,8 +16,8 @@ use crate::{
         like::{LikeVideoQuery, LIKE_VIDEO_URL},
         share::{ShareVideoQuery, SHARE_VIDEO_URL},
     },
-    service::session::Session,
-    traits::{Csrf, Query},
+    service::{bili_query_get, session::Session},
+    traits::Csrf,
 };
 
 pub async fn like_video(session: &Session, query: LikeVideoQuery) -> Result<bool, Error> {
@@ -54,14 +56,7 @@ pub async fn coin_video(session: &Session, query: CoinVideoQuery) -> Result<Coin
 }
 
 pub async fn is_coin(session: &Session, query: IsCoinQuery) -> Result<IsCoin, Error> {
-    let url = format!("{}?{}", IS_COIN_URL, query.to_query()?);
-    session
-        .get(url)
-        .send()
-        .await?
-        .json::<BiliResponse<_>>()
-        .await?
-        .data()
+    bili_query_get(session, IS_COIN_URL, query).await
 }
 
 pub async fn collect_video(
@@ -74,23 +69,16 @@ pub async fn collect_video(
         query.csrf(&session.bili_jct().await)?
     );
     session
-        .post(url)
-        .send()
-        .await?
-        .json::<BiliResponse<_>>()
-        .await?
-        .data()
+    .post(url)
+    .send()
+    .await?
+    .json::<BiliResponse<_>>()
+    .await?
+    .data()
 }
 
 pub async fn is_collect(session: &Session, query: IsCollectQuery) -> Result<IsCollect, Error> {
-    let url = format!("{}?{}", IS_COLLECT_URL, query.to_query()?);
-    session
-        .get(url)
-        .send()
-        .await?
-        .json::<BiliResponse<_>>()
-        .await?
-        .data()
+    bili_query_get(session, IS_COLLECT_URL, query).await
 }
 
 pub async fn share_video(session: &Session, query: ShareVideoQuery) -> Result<ShareVideo, Error> {

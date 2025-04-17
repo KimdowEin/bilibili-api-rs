@@ -1,3 +1,28 @@
+//! 会话管理
+//! 
+//! 用于与服务器进行交互
+//! 
+//! 已经封装好了cookies的处理逻辑,
+//! 不建议再造轮子
+//! 
+//! 从浏览器复制cookie
+//! ```json
+//! ./cookies.json
+//! [
+//! {
+//!   "url":"https://api.bilibili.com",
+//!   "cookies":"a=abcdefg; b=hijklmn"
+//! }
+//! ]
+//! ```
+//! 
+//! 创建会话
+//! ```no_run
+//! let session = Session::new_with_path("./cookies.json").unwrap();
+//! ```
+//! 
+//! 或者new_with_client,可以更精细的控制
+
 use std::{
     fs::File,
     io::{BufReader, Write},
@@ -5,15 +30,13 @@ use std::{
     path::{Path, PathBuf},
     sync::Arc,
 };
-
-use bili_core::Data;
+use bili_core::{Csrf, Data, Query, Sign};
 use reqwest::{
     cookie::{CookieStore, Jar},
     header, Client, Url,
 };
 use serde::{Deserialize, Serialize};
 use tokio::sync::RwLock;
-
 use crate::{error::Error, model::response::BiliResponse};
 
 pub const COOKIES_URL: &str = "https://api.bilibili.com";
@@ -215,10 +238,58 @@ struct CookieItem {
     cookies: String,
 }
 
-pub async fn bili_get<T>(session: &Session, url: &str) -> Result<T, Error>
+pub async fn bili_get<D>(session: &Session, url: &str) -> Result<D, Error>
 where
-    T: Data,
+    D: Data,
 {
+    session
+        .get(url)
+        .send()
+        .await?
+        .json::<BiliResponse<_>>()
+        .await?
+        .data()
+}
+
+pub async fn bili_query_get<D, Q>(session: &Session, url: &str, query: Q) -> Result<D, Error>
+where
+    D: Data,
+    Q: Query,
+{
+    let url = format!("{}?{}", url, query.to_query()?);
+    session
+        .get(url)
+        .send()
+        .await?
+        .json::<BiliResponse<_>>()
+        .await?
+        .data()
+}
+
+pub async fn bili_sign_get<D, Q>(session: &Session, url: &str, query: Q) -> Result<D, Error>
+where
+    D: Data,
+    Q: Query + Sign,
+{
+    let bili_jct = session.bili_jct().await;
+    let url = format!("{}?{}", url, query.sign(&bili_jct)?);
+
+    session
+        .get(url)
+        .send()
+        .await?
+        .json::<BiliResponse<_>>()
+        .await?
+        .data()
+}
+pub async fn bili_csrf_get<D, Q>(session: &Session, url: &str, query: Q) -> Result<D, Error>
+where
+    D: Data,
+    Q: Query + Csrf,
+{
+    let bili_jct = session.bili_jct().await;
+    let url = format!("{}?{}", url, query.csrf(&bili_jct)?);
+
     session
         .get(url)
         .send()

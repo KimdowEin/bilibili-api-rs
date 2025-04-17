@@ -1,10 +1,8 @@
-#![allow(deprecated)]
-
 use crate::{
     error::Error,
     model::{
         response::BiliResponse,
-        video::stream::{VideoStream, VideoStreamOld},
+        video::stream::view::{VideoStream, VideoStreamOld},
     },
     query::video::stream::{VideoStreamQuery, VIDEO_STREAM_URL},
     service::session::Session,
@@ -57,7 +55,7 @@ mod tests {
     use super::*;
 
     use crate::{
-        model::video::format::{Fnval, Qn},
+        model::video::stream::format::{Fnval, Qn},
         query::video::VideoQuery,
         service::video::get_video_cids,
     };

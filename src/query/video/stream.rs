@@ -1,11 +1,11 @@
-
-use crate::{
-    model::video::format::{Fnval, Qn},
-    {Query, Sign},
-};
-use serde::{Deserialize, Serialize};
+//! 视频流信息
 
 use super::VideoQuery;
+use crate::{
+    model::video::stream::format::{Fnval, Qn},
+    Query, Sign,
+};
+use serde::{Deserialize, Serialize};
 
 /// 获取视频流地址
 pub const VIDEO_STREAM_URL: &str = "https://api.bilibili.com/x/player/wbi/playurl";

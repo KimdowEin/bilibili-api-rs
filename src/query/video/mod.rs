@@ -1,5 +1,3 @@
-
-
 /// 对视频操作(如点赞)
 pub mod action;
 /// 视频合集
@@ -9,11 +7,11 @@ pub mod info;
 /// 视频流
 pub mod stream;
 
-use crate::{Query, Sign,Csrf};
+use crate::{Csrf, Query, Sign};
 use serde::{Deserialize, Serialize};
 
 /// 通用视频查询
-#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Query, Sign,Csrf)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Query, Sign, Csrf)]
 pub struct VideoQuery {
     pub aid: Option<u64>,
     pub bvid: Option<String>,

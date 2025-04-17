@@ -1,4 +1,6 @@
-
+//! 视频分区v1
+//! 
+//! 将要废除
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
