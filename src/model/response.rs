@@ -1,3 +1,5 @@
+//! 响应
+
 use crate::error::Error;
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
@@ -16,9 +18,12 @@ impl<T> BiliResponse<T> {
 
     pub fn data(self) -> Result<T, Error> {
         if self.is_success() {
-            self.data.ok_or(Error::from("No data in response"))
+            self.data.ok_or(Error::NullResponseError(self.code))
         } else {
-            Err(Error::QueryError(self.message))
+            Err(Error::ResponseError {
+                code: self.code,
+                message: self.message,
+            })
         }
     }
 }

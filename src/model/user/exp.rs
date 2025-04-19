@@ -21,7 +21,7 @@ pub struct LevelView {
     pub current_level: u8,
 }
 
-#[derive(Debug,Clone,PartialEq, Deserialize, Serialize)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct LevelInfo {
     /// 当前等级
     pub current_level: u8,

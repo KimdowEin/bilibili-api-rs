@@ -1,7 +1,7 @@
 //! 视频信息
-//! 
+//!
 //! 不要用VideoInfoQuery,容易被风控
-//! 
+//!
 //! 建议将其内容分开请求
 
 use super::VideoQuery;
@@ -16,7 +16,6 @@ pub const VIDEO_INFO_URL: &str = "https://api.bilibili.com/x/web-interface/wbi/v
 /// 视频超详细信息
 pub type VideoInfoQuery = VideoQuery;
 
-
 #[cfg(test)]
 mod tests {
     use bili_core::Query;
@@ -24,7 +23,7 @@ mod tests {
     use super::*;
 
     const BVID: &str = "BV1SWfwY3ENK";
-    
+
     #[test]
     fn test_query_video_view() {
         let query = VideoViewQuery::from(BVID);

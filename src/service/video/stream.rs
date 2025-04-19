@@ -1,3 +1,5 @@
+//! 获取流信息
+
 use crate::{
     error::Error,
     model::{
@@ -5,7 +7,7 @@ use crate::{
         video::stream::view::{VideoStream, VideoStreamOld},
     },
     query::video::stream::{VideoStreamQuery, VIDEO_STREAM_URL},
-    service::session::Session,
+    service::{bili_sign_get, session::Session},
     traits::Sign,
 };
 
@@ -35,19 +37,7 @@ pub async fn get_video_stream(
     session: &Session,
     query: VideoStreamQuery,
 ) -> Result<VideoStream, Error> {
-    let url = format!(
-        "{}?{}",
-        VIDEO_STREAM_URL,
-        query.sign(&session.mixin_key().await)?
-    );
-
-    session
-        .get(url)
-        .send()
-        .await?
-        .json::<BiliResponse<_>>()
-        .await?
-        .data()
+    bili_sign_get(session, VIDEO_STREAM_URL, query).await
 }
 
 #[cfg(test)]

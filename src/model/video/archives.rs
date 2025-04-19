@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use crate::Data;
 
 /// 获取视频合集信息   
-/// 
+///
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Data)]
 pub struct VideoArchive {
     /// 稿件avid

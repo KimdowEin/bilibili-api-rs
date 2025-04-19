@@ -1,10 +1,8 @@
-/// 对视频操作(如点赞)
+//! 视频查询
+
 pub mod action;
-/// 视频合集
 pub mod archives;
-/// 视频信息
 pub mod info;
-/// 视频流
 pub mod stream;
 
 use crate::{Csrf, Query, Sign};

@@ -40,7 +40,7 @@ pub struct VipView {
     pub theme_type: i32,
 }
 
-#[derive(Debug,Clone,PartialEq,Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Vip {
     #[serde(flatten)]
     pub view: VipView,
@@ -73,7 +73,7 @@ pub enum VipRole {
     Unknown,
 }
 
-#[derive(Debug,Clone,PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct VipLabel {
     /// 会员类型文案
     pub text: String,

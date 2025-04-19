@@ -7,13 +7,13 @@ pub const VIDEO_ARCHIVES_URL: &str =
     "https://api.bilibili.com/x/polymer/web-space/seasons_archives_list";
 
 /// 获取视频合集信息   
-#[derive(Debug, Serialize, Deserialize,Query,Sign)]
+#[derive(Debug, Serialize, Deserialize, Query, Sign)]
 pub struct VideoArchiveQuery {
     /// 用户mid
     pub mid: u64,
     /// 视频合集ID
     pub season_id: u64,
-    /// 页码索引	
+    /// 页码索引
     pub page_num: u64,
     /// 每页视频数量
     pub page_size: u64,

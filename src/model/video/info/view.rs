@@ -1,11 +1,11 @@
-//! 视频信息
+//! 视频信息总览
 
 use super::{
     cids::Cids,
     desc::{VideoDesc, VideoDesc2},
-    state::{Dimension, Rights, VideoCopyRight, VideoStat, VideoState,UpowerState},
-    subtitle::Subtitle, 
-    zone::Zone
+    state::{Dimension, Rights, UpowerState, VideoCopyRight, VideoStat, VideoState},
+    subtitle::Subtitle,
+    zone::Zone,
 };
 use crate::model::user::account::{OwnerCard, Staff, UserInfoBase};
 use crate::Data;
@@ -102,7 +102,6 @@ pub struct VideoView {
     /// 稿件分P总数
     pub videos: u64,
 }
-
 
 /// 视频页详细信息 别用这个
 ///

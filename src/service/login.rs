@@ -1,7 +1,7 @@
 //! 登陆
 //!
 //! Example 密码登录
-//! ```no_run
+//! ```ignore
 //! let (username, password) = ("username", "password");
 //! let session = Session::new().unwrap();
 //!
@@ -9,7 +9,7 @@
 //!
 //! // 需要启用 manual
 //! // 这里会使用默认浏览器跳转到一个过captcha的页面，需要手动验证
-//! manual_verification(&captcha.geetest).unwrap();
+//! // manual_verification(&captcha.geetest).unwrap();
 //!
 //! // 将得到的结果 verify 输入到控制台
 //! let mut buf = Vec::new();
@@ -25,22 +25,18 @@
 //! session.save_cookies().unwrap();
 //! ```
 
-use super::{bili_get, session::Session};
+use super::{bili_get, bili_query_post, session::Session};
 use crate::{
     error::Error,
-    model::{
-        login::{
-            captcha::Captcha,
-            password::{LoginKey, LoginState},
-        },
-        response::BiliResponse,
+    model::login::{
+        captcha::Captcha,
+        password::{LoginKey, LoginState},
     },
     query::login::{
         captcha::CAPTCHA_URL,
         password::{LoginQuery, LOGIN_KEY_URL, LOGIN_URL},
     },
 };
-use bili_core::Query;
 
 /// 获取验证码
 pub async fn get_captcha(session: &Session) -> Result<Captcha, Error> {
@@ -54,15 +50,7 @@ pub async fn get_login_key(session: &Session) -> Result<LoginKey, Error> {
 
 /// 登录
 pub async fn login_by_password(session: &Session, query: LoginQuery) -> Result<LoginState, Error> {
-    let url = format!("{}?{}", LOGIN_URL, query.to_query()?);
-
-    session
-        .post(url)
-        .send()
-        .await?
-        .json::<BiliResponse<_>>()
-        .await?
-        .data()
+    bili_query_post(session, LOGIN_URL, query).await
 }
 
 /// 跳转人工认证页面

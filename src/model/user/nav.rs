@@ -1,11 +1,15 @@
 //! 导航栏用户信息
-//! 
+//!
 //! 这个唯一的用处就是获得wbi
-//! 
+//!
 //! 如果想获得用户信息,应该用user/account里的接口
 
 use super::{
-    exp::LevelInfo, money::Wallet, official::{Official, OfficialVerify}, pendant::Pendant, vip::Vip
+    exp::LevelInfo,
+    money::Wallet,
+    official::{Official, OfficialVerify},
+    pendant::Pendant,
+    vip::Vip,
 };
 use crate::model::sign::wbi::Wbi;
 use bili_core::Data;
@@ -13,7 +17,7 @@ use serde::{Deserialize, Serialize};
 use serde_aux::field_attributes::deserialize_bool_from_anything;
 
 ///导航栏   
-/// 
+///
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Data)]
 pub struct NavInfo {
     #[serde(rename = "isLogin")]
@@ -64,14 +68,11 @@ pub struct UserNav {
     pub shop_url: String,
 
     // pub answer_status: u8,
-    
     /// 是否硬核会员
     pub is_senior_member: u8,
     /// 是否是风纪委员
     pub is_jury: bool,
 }
-
-
 
 #[cfg(test)]
 mod tests {

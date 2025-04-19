@@ -1,12 +1,11 @@
 //! 视频流信息
 
+use super::format::{AudioQn, Qn, SupportFormats, VideoCodeCid};
 use crate::Data;
 use serde::{Deserialize, Serialize};
 use serde_aux::field_attributes::{
     deserialize_default_from_empty_object, deserialize_vec_from_string_or_vec,
 };
-
-use super::format::{AudioQn, Qn, SupportFormats, VideoCodeCid};
 
 /// Mp4格式视频流信息
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]

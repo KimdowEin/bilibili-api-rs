@@ -1,3 +1,5 @@
+//! 签名操作
+
 use crate::{
     error::Error,
     model::{response::BiliResponse, sign::ticket::BiliTicket},
@@ -10,7 +12,11 @@ use super::session::{Session, COOKIES_URL};
 impl Session {
     /// 获得ticket
     pub async fn get_ticket(&self, query: BiliTicketQuery) -> Result<BiliTicket, Error> {
-        let url = format!("{}?{}", BILI_TICKET_URL, query.csrf(&self.bili_jct().await)?);
+        let url = format!(
+            "{}?{}",
+            BILI_TICKET_URL,
+            query.csrf(&self.bili_jct().await)?
+        );
         self.post(url)
             .send()
             .await?
@@ -57,13 +63,13 @@ impl Session {
     }
 
     /// 设置bili_jct
-    pub async fn set_bili_jct(&self,bili_jct:&str){
+    pub async fn set_bili_jct(&self, bili_jct: &str) {
         let mut m = self.bili_jct.write().await;
         *m = bili_jct.to_string();
     }
-    
+
     /// 访问csrf(bili_jct)
-    pub async fn bili_jct(&self)->String{
+    pub async fn bili_jct(&self) -> String {
         self.bili_jct.read().await.clone()
     }
 }

@@ -7,4 +7,3 @@ pub const SHARE_VIDEO_URL: &str = "https://api.bilibili.com/x/web-interface/shar
 
 /// 分享视频
 pub type ShareVideoQuery = VideoQuery;
-

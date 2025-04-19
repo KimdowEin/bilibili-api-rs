@@ -73,7 +73,7 @@ pub enum LiveRoomSpecialType {
     Pay = 1,
     // 拜年祭特殊直播间
     NewYear = 2,
-    
+
     #[serde(other)]
     Unknown,
 }

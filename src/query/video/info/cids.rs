@@ -16,6 +16,7 @@ mod tests {
 
     const BVID: &str = "BV1SWfwY3ENK";
 
+    #[test]
     fn test_query_video_cids() {
         let query = VideoCidsQuery::from(BVID);
 
