@@ -6,3 +6,8 @@ pub mod money;
 pub mod nav;
 pub mod safe;
 pub mod vip;
+
+/// 用户关系
+pub mod relation;
+/// 发布信息
+pub mod publish;
