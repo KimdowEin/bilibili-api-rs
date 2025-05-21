@@ -71,6 +71,15 @@ impl Deref for Session {
     }
 }
 
+impl<P> From<P> for Session
+where
+    P: AsRef<Path>,
+{
+    fn from(value: P) -> Self {
+        Session::new_with_path(value).unwrap()
+    }
+}
+
 impl Session {
     pub fn new() -> Result<Self, Error> {
         let headers = headers();

@@ -22,6 +22,12 @@ pub struct RelationStat {
     pub follower: u64,
 }
 
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Data)]
+pub struct RelationFollows {
+    pub list: Vec<RelationItem>,
+    pub total: u64,
+}
+
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct RelationItem {
     pub mid: u64,
@@ -65,11 +71,11 @@ pub enum RelationType {
     Black = 128,
 }
 
-#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Data)]
-pub struct RelationFollowers {
-    pub list: Vec<RelationItem>,
-    pub total: u64,
-}
+/// 查询用户粉丝明细
+pub type RelationFollowers = RelationFollows;
+
+/// 查询用户粉丝明细
+pub type RelationFollowings = RelationFollows;
 
 #[cfg(test)]
 mod tests {

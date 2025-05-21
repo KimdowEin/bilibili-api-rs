@@ -29,15 +29,12 @@ pub const RELATION_FOLLOWERS_URL: &str = "https://api.bilibili.com/x/relation/fo
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Query)]
 pub struct RelationFollowersQuery {
     pub vmid: u64,
-    pub ps: u64,
-    pub pn: u64,
+    pub ps: Option<u32>,
+    pub pn: Option<u32>,
 }
 
 impl RelationFollowersQuery {
-    pub fn new(vmid: u64, ps: Option<u64>, pn: Option<u64>) -> Self {
-        let ps = ps.unwrap_or(50);
-        let pn = pn.unwrap_or(1);
-
+    pub fn new(vmid: u64, ps: Option<u32>, pn: Option<u32>) -> Self {
         Self { vmid, ps, pn }
     }
 }
@@ -46,6 +43,56 @@ impl From<u64> for RelationFollowersQuery {
         Self::new(value, None, None)
     }
 }
+
+/// 查询用户关注明细
+pub const RELATION_FOLLOWINGS_URL: &str = "https://api.bilibili.com/x/relation/followings";
+
+/// 查询用户关注明细
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Query)]
+pub struct RelationFollowingsQuery {
+    pub vmid: u64,
+    pub order_type: Option<String>,
+    pub ps: Option<u32>,
+    pub pn: Option<u32>,
+}
+impl RelationFollowingsQuery {
+    /// true按最常访问排列，false按关注顺序排列
+    pub fn new(vmid: u64, order_type: bool, ps: Option<u32>, pn: Option<u32>) -> Self {
+        Self {
+            vmid,
+            order_type: if order_type {
+                Some("attention".to_string())
+            } else {
+                None
+            },
+            ps,
+            pn,
+        }
+    }
+}
+impl From<u64> for RelationFollowingsQuery {
+    fn from(vmid: u64) -> Self {
+        Self::new(vmid, false, None, None)
+    }
+}
+
+pub const RELATION_FOLLOWINGS_SEARCH_URL: &str =
+    "https://api.bilibili.com/x/relation/followings/search";
+
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Query)]
+pub struct RelationFollowingsSearchQuery {
+    pub vmid: u64,
+    pub name: String,
+    pub ps: Option<u32>,
+    pub pn: Option<u32>,
+}
+impl RelationFollowingsSearchQuery {
+    pub fn new<S>(vmid: u64, name: S, ps: Option<u32>, pn: Option<u32>) -> Self
+    where S: Into<String> {
+        Self { vmid, name:name.into(), ps, pn }
+    }
+}
+
 
 #[cfg(test)]
 mod tests {
@@ -67,7 +114,29 @@ mod tests {
         let url = format!("{}?{}", RELATION_FOLLOWERS_URL, query.to_query().unwrap());
         assert_eq!(
             url,
-            "https://api.bilibili.com/x/relation/followers?vmid=546189&ps=50&pn=1"
+            "https://api.bilibili.com/x/relation/followers?vmid=546189"
         )
-  }
+    }
+
+    #[test]
+    fn test_query_relation_followings() {
+        let query = RelationFollowingsQuery::from(546189);
+        let url = format!("{}?{}", RELATION_FOLLOWINGS_URL, query.to_query().unwrap());
+        assert_eq!(
+            url,
+            "https://api.bilibili.com/x/relation/followings?vmid=546189"
+        )
+    }
+
+    #[test]
+    fn test_query_relation_followings_search() {
+        let query = RelationFollowingsSearchQuery::new(293793435,"warma",None,None);
+        let url = format!("{}?{}", RELATION_FOLLOWINGS_SEARCH_URL, query.to_query().unwrap());
+
+        assert_eq!(
+            url,
+            "https://api.bilibili.com/x/relation/followings/search?vmid=293793435&name=warma"
+        )
+    }
+        
 }
