@@ -61,8 +61,8 @@ pub enum BiliResponseCode {
 
     VideoNotFound2 = 10003,
 
-    FollowingsLocked=22115,
-    FollowersLocked=22118,
+    FollowingsLocked = 22115,
+    FollowersLocked = 22118,
 
     CoinToSelf = 34002,
     CoinNumIllegal = 34003,
@@ -106,8 +106,8 @@ impl Display for BiliResponseCode {
             BiliResponseCode::CoinTooMuch => write!(f, "投币数量超过限制"),
 
             BiliResponseCode::DangerError => write!(f, "风控错误"),
-            BiliResponseCode::FollowersLocked=>  write!(f, "粉丝列表锁定"),
-            BiliResponseCode::FollowingsLocked=> write!(f, "关注列表锁定"),
+            BiliResponseCode::FollowersLocked => write!(f, "粉丝列表锁定"),
+            BiliResponseCode::FollowingsLocked => write!(f, "关注列表锁定"),
             BiliResponseCode::GeetestError => write!(f, "极验服务出错"),
 
             BiliResponseCode::LikeCancelFailed => write!(f, "取消点赞失败"),

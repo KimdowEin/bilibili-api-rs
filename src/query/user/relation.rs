@@ -88,11 +88,69 @@ pub struct RelationFollowingsSearchQuery {
 }
 impl RelationFollowingsSearchQuery {
     pub fn new<S>(vmid: u64, name: S, ps: Option<u32>, pn: Option<u32>) -> Self
-    where S: Into<String> {
-        Self { vmid, name:name.into(), ps, pn }
+    where
+        S: Into<String>,
+    {
+        Self {
+            vmid,
+            name: name.into(),
+            ps,
+            pn,
+        }
     }
 }
 
+/// 查询共同关注明细
+pub const RELATION_SAME_FOLLOWINGS_URL: &str =
+    "https://api.bilibili.com/x/relation/same/followings";
+
+///查询共同关注明细
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Query)]
+pub struct RelationSameFollowingsQuery {
+    vmid: u64,
+    ps: Option<u32>,
+    pn: Option<u32>,
+}
+impl RelationSameFollowingsQuery {
+    pub fn new(vmid: u64, ps: Option<u32>, pn: Option<u32>) -> Self {
+        Self { vmid, ps, pn }
+    }
+}
+impl From<u64> for RelationSameFollowingsQuery {
+    fn from(value: u64) -> Self {
+        Self::new(value, None, None)
+    }
+}
+
+pub const RELATION_WHISPER_FOLLOWINGS_URL: &str = "https://api.bilibili.com/x/relation/whispers";
+
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Query)]
+pub struct RelationWhisperFollowingsQuery;
+impl RelationWhisperFollowingsQuery {
+    pub fn new() -> Self {
+        Self
+    }
+}
+
+pub const RELATION_FRIENDS_URL: &str = "https://api.bilibili.com/x/relation/friends";
+
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Query)]
+pub struct RelationFriendsQuery;
+impl RelationFriendsQuery {
+    pub fn new() -> Self {
+        Self
+    }
+}
+
+pub const RELATION_BLACKS_URL: &str = "https://api.bilibili.com/x/relation/blacks";
+
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Query)]
+pub struct RelationBlacksQuery;
+impl RelationBlacksQuery {
+    pub fn new() -> Self {
+        Self
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -130,13 +188,57 @@ mod tests {
 
     #[test]
     fn test_query_relation_followings_search() {
-        let query = RelationFollowingsSearchQuery::new(293793435,"warma",None,None);
-        let url = format!("{}?{}", RELATION_FOLLOWINGS_SEARCH_URL, query.to_query().unwrap());
+        let query = RelationFollowingsSearchQuery::new(293793435, "warma", None, None);
+        let url = format!(
+            "{}?{}",
+            RELATION_FOLLOWINGS_SEARCH_URL,
+            query.to_query().unwrap()
+        );
 
         assert_eq!(
             url,
             "https://api.bilibili.com/x/relation/followings/search?vmid=293793435&name=warma"
         )
     }
-        
+
+    #[test]
+    fn test_query_relation_same_followings() {
+        let query = RelationSameFollowingsQuery::from(546189);
+        let url = format!(
+            "{}?{}",
+            RELATION_SAME_FOLLOWINGS_URL,
+            query.to_query().unwrap()
+        );
+
+        assert_eq!(
+            url,
+            "https://api.bilibili.com/x/relation/same/followings?vmid=546189"
+        )
+    }
+
+    #[test]
+    fn test_query_relation_whisper_followings() {
+        let query = RelationWhisperFollowingsQuery::new();
+        let url = format!(
+            "{}?{}",
+            RELATION_WHISPER_FOLLOWINGS_URL,
+            query.to_query().unwrap()
+        );
+        assert_eq!(url, "https://api.bilibili.com/x/relation/whispers?")
+    }
+
+    #[test]
+    fn test_query_relation_friends() {
+        let query = RelationFriendsQuery::new();
+        let url = format!("{}?{}", RELATION_FRIENDS_URL, query.to_query().unwrap());
+        assert_eq!(url, "https://api.bilibili.com/x/relation/friends?")
+    }
+
+    #[test]
+    fn test_query_relation_blacks() {
+        let query = RelationBlacksQuery::new();
+        let url = format!("{}?{}", RELATION_BLACKS_URL, query.to_query().unwrap());
+
+        assert_eq!(url, "https://api.bilibili.com/x/relation/blacks?")
+    }
 }

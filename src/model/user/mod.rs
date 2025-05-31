@@ -16,7 +16,7 @@ pub mod safe;
 /// 大会员信息
 pub mod vip;
 
-/// 用户关系
-pub mod relation;
 /// 发布信息
 pub mod publish;
+/// 用户关系
+pub mod relation;

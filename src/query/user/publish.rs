@@ -4,7 +4,7 @@ use bili_core::Query;
 use serde::{Deserialize, Serialize};
 
 /// UP主状态数
-pub const PUBLISH_UPSTAT_URL: &str ="https://api.bilibili.com/x/space/upstat";
+pub const PUBLISH_UPSTAT_URL: &str = "https://api.bilibili.com/x/space/upstat";
 
 /// UP主状态数
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Query)]

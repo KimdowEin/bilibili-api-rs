@@ -1,13 +1,13 @@
 #[cfg(feature = "session")]
-mod tests{
+mod tests {
     use bilibili_api_rs::query::video::info::{
         cids::VideoCidsQuery, desc::VideoDescQuery, view::VideoViewQuery,
     };
-    use serde::Deserialize;
     use bilibili_api_rs::service::{
         video::{get_video_cids, get_video_desc, get_video_view},
         Session,
     };
+    use serde::Deserialize;
 
     #[derive(Debug, Deserialize)]
     struct TestItems {
@@ -70,7 +70,3 @@ mod tests{
         }
     }
 }
-
-
-
-

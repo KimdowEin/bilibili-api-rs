@@ -25,6 +25,7 @@ pub struct RelationStat {
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Data)]
 pub struct RelationFollows {
     pub list: Vec<RelationItem>,
+    #[serde(default)]
     pub total: u64,
 }
 

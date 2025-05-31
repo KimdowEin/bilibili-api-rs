@@ -10,7 +10,6 @@ pub struct Official {
     pub verify: OfficialVerify,
 }
 
-
 /// 认证信息
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize)]
 pub struct OfficialVerify {
