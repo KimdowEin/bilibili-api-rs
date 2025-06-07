@@ -78,6 +78,29 @@ pub type RelationFollowers = RelationFollows;
 /// 查询用户粉丝明细
 pub type RelationFollowings = RelationFollows;
 
+#[derive(Debug, Clone, PartialEq, Deserialize_repr, Serialize_repr)]
+#[repr(u8)]
+pub enum RelationModifyAction {
+    Follow = 1,
+    UnFollow = 2,
+    #[deprecated(since = "1.0.0", note = "已下线")]
+    Slient = 3,
+    UnSlient = 4,
+    Black = 5,
+    UnBlack = 6,
+    /// 踢出粉丝
+    RidFollower,
+}
+
+#[derive(Debug, Clone, PartialEq, Deserialize_repr, Serialize_repr)]
+#[repr(u8)]
+pub enum RelationModifyResource {
+    UserSpace = 11,
+    Video = 14,
+    Article = 115,
+    Event = 222,
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

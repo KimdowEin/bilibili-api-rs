@@ -1,7 +1,9 @@
 // 好友，关注，粉丝等
 
-use bili_core::Query;
+use bili_core::{Csrf, Query};
 use serde::{Deserialize, Serialize};
+
+use crate::model::user::relation::{RelationModifyAction, RelationModifyResource};
 
 /// 关系状态数
 pub const RELATION_STAT_URL: &str = "https://api.bilibili.com/x/relation/stat";
@@ -152,6 +154,27 @@ impl RelationBlacksQuery {
     }
 }
 
+pub const RELATION_MODIFY_URL: &str = "https://api.bilibili.com/x/relation/modify";
+
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Query, Csrf)]
+pub struct RelationModifyQuery {
+    fid: u64,
+    act: RelationModifyAction,
+    re_src: RelationModifyResource,
+}
+impl RelationModifyQuery {
+    pub fn new(fid: u64, act: RelationModifyAction, re_src: RelationModifyResource) -> Self {
+        Self { fid, act, re_src }
+    }
+    pub fn modify(fid: u64, act: RelationModifyAction) -> Self {
+        Self {
+            fid,
+            act,
+            re_src: RelationModifyResource::UserSpace,
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -240,5 +263,20 @@ mod tests {
         let url = format!("{}?{}", RELATION_BLACKS_URL, query.to_query().unwrap());
 
         assert_eq!(url, "https://api.bilibili.com/x/relation/blacks?")
+    }
+
+    #[test]
+    fn test_query_relation_modify() {
+        let query = RelationModifyQuery::new(
+            1234,
+            RelationModifyAction::Follow,
+            RelationModifyResource::UserSpace,
+        );
+        let url = format!("{}?{}", RELATION_MODIFY_URL, query.to_query().unwrap());
+
+        assert_eq!(
+            url,
+            "https://api.bilibili.com/x/relation/modify?fid=1234&act=1&re_src=11"
+        )
     }
 }

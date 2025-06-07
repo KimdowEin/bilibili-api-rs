@@ -18,7 +18,7 @@ impl<T> BiliResponse<T> {
 
     pub fn data(self) -> Result<T, Error> {
         if self.is_success() {
-            self.data.ok_or(Error::NullResponseError(self.code))
+            self.data.ok_or(Error::NullResponseError)
         } else {
             Err(Error::ResponseError {
                 code: self.code,
@@ -61,7 +61,16 @@ pub enum BiliResponseCode {
 
     VideoNotFound2 = 10003,
 
-    FollowingsLocked = 22115,
+    ActionSelf = 22001,
+    PrivacyRejected = 22002,
+    FollowingBlacked = 22003,
+    BlackNumLimit = 22008,
+    FollowingNumLimit = 22009,
+    ActionIllegalAcount = 22013,
+    HaveFollowing = 22014,
+    HaveBlack = 22120,
+
+    FollowingListLocked = 22115,
     FollowersLocked = 22118,
 
     CoinToSelf = 34002,
@@ -72,6 +81,7 @@ pub enum BiliResponseCode {
     UserSingAllergy = 40015,
     UserSingHasEmoji = 40021,
     UserSingTooLong = 40022,
+    AccountNotFound = 40061,
 
     VideoInvisible = 62002,
     LikeCancelFailed = 65004,
@@ -93,27 +103,44 @@ impl Display for BiliResponseCode {
 
             BiliResponseCode::AccountEmpty => write!(f, "账号为空"),
             BiliResponseCode::AccountException => write!(f, "账号异常"),
+            BiliResponseCode::AccountNotFound => write!(f, "用户不存在"),
             BiliResponseCode::AccountSuspended => write!(f, "账号被封禁"),
+
+            BiliResponseCode::ActionIllegalAcount => write!(f, "账号已注销"),
+            BiliResponseCode::ActionSelf => write!(f, "不能对自己进行此操作"),
+
             BiliResponseCode::APIKeyError => write!(f, "API校验密匙错误"),
             BiliResponseCode::ArgsError => write!(f, "参数错误"),
+
+            BiliResponseCode::BlackNumLimit => write!(f, "黑名单上限"),
 
             BiliResponseCode::CaptchaError => write!(f, "验证码错误"),
             BiliResponseCode::CoinDurationError => write!(f, "投币时间间隔太短"),
             BiliResponseCode::CsrfError => write!(f, "csrf校验失败"),
+
             BiliResponseCode::CoinShortage => write!(f, "硬币不足"),
             BiliResponseCode::CoinNumIllegal => write!(f, "投币数量不合法"),
             BiliResponseCode::CoinToSelf => write!(f, "不能给自己投币"),
             BiliResponseCode::CoinTooMuch => write!(f, "投币数量超过限制"),
 
             BiliResponseCode::DangerError => write!(f, "风控错误"),
+
             BiliResponseCode::FollowersLocked => write!(f, "粉丝列表锁定"),
-            BiliResponseCode::FollowingsLocked => write!(f, "关注列表锁定"),
+            BiliResponseCode::FollowingBlacked => write!(f, "关注用户在黑名单中"),
+            BiliResponseCode::FollowingListLocked => write!(f, "关注列表锁定"),
+            BiliResponseCode::FollowingNumLimit => write!(f, "关注用户数上限"),
+
             BiliResponseCode::GeetestError => write!(f, "极验服务出错"),
+
+            BiliResponseCode::HaveBlack => write!(f, "已拉黑"),
+            BiliResponseCode::HaveFollowing => write!(f, "已关注"),
 
             BiliResponseCode::LikeCancelFailed => write!(f, "取消点赞失败"),
             BiliResponseCode::LikeAgain => write!(f, "已经点赞过了"),
+
             BiliResponseCode::LiveRoomInfoNotFound => write!(f, "房间信息不存在"),
             BiliResponseCode::LiveRoomNotFound => write!(f, "直播间不存在"),
+
             BiliResponseCode::LoginKeyError => write!(f, "登录密匙错误"),
 
             BiliResponseCode::MissingParams => write!(f, "缺少参数"),
@@ -123,6 +150,7 @@ impl Display for BiliResponseCode {
 
             BiliResponseCode::PasswordError => write!(f, "密码错误"),
             BiliResponseCode::PostTimeout => write!(f, "提交超时"),
+            BiliResponseCode::PrivacyRejected => write!(f, "因对方隐私设置，你还不能关注"),
 
             BiliResponseCode::RequestError => write!(f, "请求错误"),
             BiliResponseCode::RsaDecryptFail => write!(f, "RSA解密失败"),

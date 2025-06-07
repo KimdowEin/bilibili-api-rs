@@ -14,8 +14,8 @@ pub enum Error {
         message: String,
     },
 
-    #[error("bilibili response data is null,code:{0:?}")]
-    NullResponseError(BiliResponseCode),
+    #[error("bilibili response without data")]
+    NullResponseError,
 
     #[error(transparent)]
     QsError(#[from] serde_qs::Error),
