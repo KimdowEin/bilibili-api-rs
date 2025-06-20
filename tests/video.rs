@@ -3,10 +3,11 @@ mod tests {
     use bilibili_api_rs::query::video::info::{
         cids::VideoCidsQuery, desc::VideoDescQuery, view::VideoViewQuery,
     };
+    use bilibili_api_rs::service::video::{VideoCidsRequest, VideoDescRequest, VideoViewRequest};
     use bilibili_api_rs::service::{
-        video::{get_video_cids, get_video_desc, get_video_view},
         Session,
     };
+    use bilibili_api_rs::traits::BiliRequest;
     use serde::Deserialize;
 
     #[derive(Debug, Deserialize)]
@@ -38,7 +39,7 @@ mod tests {
         // 测试视频信息
         for bvid in bvids {
             let query = VideoViewQuery::from(bvid.as_str());
-            let result = get_video_view(&session, query).await;
+            let result = VideoViewRequest::send_request(&session, query).await;
 
             if result.is_err() {
                 println!("video view error bvid:{}", bvid);
@@ -50,7 +51,7 @@ mod tests {
         // 测试视频简介
         for bvid in bvids {
             let query = VideoDescQuery::from(bvid.as_str());
-            let result = get_video_desc(&session, query).await;
+            let result = VideoDescRequest::send_request(&session, query).await;
 
             if result.is_err() {
                 println!("video desc error bvid:{}", bvid);
@@ -62,7 +63,7 @@ mod tests {
         // 测试视频分P
         for bvid in bvids {
             let query = VideoCidsQuery::from(bvid.as_str());
-            let result = get_video_cids(&session, query).await;
+            let result = VideoCidsRequest::send_request(&session, query).await;
 
             if result.is_err() {
                 println!("video cids error bvid:{}", bvid);

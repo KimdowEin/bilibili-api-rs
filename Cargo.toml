@@ -1,6 +1,6 @@
 [package]
 name = "bilibili-api-rs"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 
 [dependencies]
@@ -13,10 +13,11 @@ rsa = "0.9.7"
 hmac = "0.12.1"
 sha2 = "0.10.8"
 hex = "0.4.3"
+md5 = "0.7.0"
 
 serde = { version = "1.0.216", features = ["derive"] }
 serde_json = "1.0.133"
-serde_qs = "0.14.0"
+serde_qs = "0.15.0"
 serde_repr = "0.1.19"
 serde-aux = "4.5.0"
 
@@ -29,21 +30,21 @@ reqwest = { version = "0.12.9", optional = true, features = [
     "json",
     "stream",
 ] }
+paste = { version = "1.0.15", optional = true }
 webbrowser = { version = "1.0.3", optional = true }
+futures = { version = "0.3.31", optional = true }
+async-trait = { version = "0.1.88", optional = true }
 
-[dependencies.bili_core]
-path = "./bili_core"
-features = ["derive"]
+[dependencies.bili_derive]
+path = "./bili_derive"
 
 
 [dev-dependencies]
 toml = "0.8.20"
-futures-util = "0.3.31"
 indicatif = "0.17.9"
 
 [features]
-default = []
-# default = ["session"]
-session = ["reqwest", "tokio"]
+# default = []
+default = ["session"]
+session = ["reqwest", "tokio", "futures", "async-trait", "paste"]
 manual = ["webbrowser"]
-derive = []

@@ -1,28 +1,22 @@
 //! 签名操作
 
+use_bili_request!();
 use crate::{
+    define_bili_request,
     error::Error,
-    model::{response::BiliResponse, sign::ticket::BiliTicket},
-    query::sign::ticket::{BiliTicketQuery, BILI_TICKET_URL},
-    traits::Csrf,
+    model::auth::ticket::BiliTicket,
+    query::auth::ticket::{BiliTicketQuery, BILI_TICKET_URL}, use_bili_request,
 };
 
 use super::session::{Session, COOKIES_URL};
 
+
+define_bili_request!(BiliTicket, BILI_TICKET_URL, Post, Csrf);
+
 impl Session {
     /// 获得ticket
     pub async fn get_ticket(&self, query: BiliTicketQuery) -> Result<BiliTicket, Error> {
-        let url = format!(
-            "{}?{}",
-            BILI_TICKET_URL,
-            query.csrf(&self.bili_jct().await)?
-        );
-        self.post(url)
-            .send()
-            .await?
-            .json::<BiliResponse<_>>()
-            .await?
-            .data()
+        BiliTicketRequest::send_request(self, query).await
     }
 
     /// 刷新 获得ticket 获得wbi key 从cookies获取csrf(bili_jct)
@@ -45,12 +39,12 @@ impl Session {
     }
 
     /// 获取 wbi 签名，每日更新
-    pub async fn get_mixin_key(&self) -> Result<(), Error> {
-        let wbi = self.get_nav().await?.wbi_img;
-        let mixin_key = wbi.mixin_key();
-        self.set_mixin_key(&mixin_key).await;
-        Ok(())
-    }
+    // pub async fn get_mixin_key(&self) -> Result<(), Error> {
+    //     let wbi = self.get_nav().await?.wbi_img;
+    //     let mixin_key = wbi.mixin_key();
+    //     self.set_mixin_key(&mixin_key).await;
+    //     Ok(())
+    // }
 
     /// 设置 wbi 签名
     pub async fn set_mixin_key(&self, mixin_key: &str) {
@@ -82,7 +76,7 @@ mod tests {
         let session = Session::new_with_path("cookies.json").unwrap();
         session.refresh_sign().await.unwrap();
 
-        session.get_nav().await.unwrap();
+        // session.get_nav().await.unwrap();
 
         session.save_cookies().unwrap();
     }

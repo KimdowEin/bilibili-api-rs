@@ -3,7 +3,7 @@
 use serde::{Deserialize, Serialize};
 
 use super::VideoQuery;
-use crate::{Csrf, Query};
+use crate::traits::{Csrf, Query};
 
 // Web端点赞接口
 pub const LIKE_VIDEO_URL: &str = "https://api.bilibili.com/x/web-interface/archive/like";

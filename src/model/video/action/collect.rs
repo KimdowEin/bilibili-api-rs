@@ -1,6 +1,6 @@
 //! 收藏
 
-use crate::Data;
+use crate::traits::Data;
 use serde::{Deserialize, Serialize};
 
 // 收藏视频返回

@@ -6,8 +6,8 @@
 - [x] 重构video info
 - [x] 重构video stream
 - [x] 重构video action
-- [] 补完video
 - [] 用户信息
+- [] 补完video
 - [] 直播信息
 
 ## 2.0目标
@@ -33,3 +33,12 @@
 
  #[derive(Debug,Clone,PartialEq, Deserialize, Serialize,Query)]
  impl new()
+
+
+## 3.0计划
+serve
+
+创建端点结构体
+绑定和生成
+定义宏快速生成
+有余力用宏再自动生成函数式版本

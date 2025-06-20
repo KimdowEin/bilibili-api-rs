@@ -1,23 +1,22 @@
-//! 分享视频
-
 use std::ops::{Deref, DerefMut};
 
 use serde::{Deserialize, Serialize};
 
 use crate::traits::Data;
 
-/// 当前分享数
+/// 实际无返回，为了配合bilirequest trait而定义的LikeVideo类型
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Data)]
-pub struct ShareVideo(u64);
-impl Deref for ShareVideo {
-    type Target = u64;
+pub struct LikeVideo(pub bool);
+impl Deref for LikeVideo {
+    type Target = bool;
 
     fn deref(&self) -> &Self::Target {
         &self.0
     }
 }
-impl DerefMut for ShareVideo {
+impl DerefMut for LikeVideo {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.0
     }
 }
+

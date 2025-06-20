@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::Data;
+use crate::traits::Data;
 
 /// 获取视频合集信息   
 ///

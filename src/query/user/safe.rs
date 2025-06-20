@@ -1,4 +1,4 @@
-use crate::traits::Query;
+use crate::traitss::Query;
 use serde::{Deserialize, Serialize};
 
 pub const ACCOUNT_SAFE_URL: &str = "https://passport.bilibili.com/web/site/user/info";

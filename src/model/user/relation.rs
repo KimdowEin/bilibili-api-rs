@@ -1,4 +1,4 @@
-use bili_core::Data;
+use crate::traits::Data;
 use serde::{Deserialize, Serialize};
 use serde_aux::field_attributes::{
     deserialize_bool_from_anything, deserialize_default_from_empty_object,

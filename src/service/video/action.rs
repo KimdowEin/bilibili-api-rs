@@ -1,12 +1,17 @@
 //! 视频交互
 
+use async_trait::async_trait;
+
 use crate::{
+    auth::csrf,
+    define_bili_request,
     error::Error,
     model::{
         response::BiliResponse,
         video::action::{
             coin::{CoinVideo, IsCoin},
             collect::{CollectVideo, IsCollect},
+            like::LikeVideo,
             share::ShareVideo,
         },
     },
@@ -16,71 +21,52 @@ use crate::{
         like::{LikeVideoQuery, LIKE_VIDEO_URL},
         share::{ShareVideoQuery, SHARE_VIDEO_URL},
     },
-    service::{bili_csrf_post, bili_query_get, session::Session},
-    traits::Csrf,
+    service::Session,
+    use_bili_request,
 };
 
-pub async fn like_video(session: &Session, query: LikeVideoQuery) -> Result<bool, Error> {
-    let url = format!(
-        "{}?{}",
-        LIKE_VIDEO_URL,
-        query.csrf(&session.bili_jct().await)?
-    );
-    let response = session
-        .post(url)
-        .send()
-        .await?
-        .json::<BiliResponse<()>>()
-        .await?;
+use_bili_request!();
 
-    if response.is_success() {
-        Ok(true)
-    } else {
-        Err(Error::ResponseError {
-            code: response.code,
-            message: response.message,
-        })
+pub struct LikeVideoRequest;
+#[async_trait]
+impl BiliRequest for LikeVideoRequest {
+    type Query = LikeVideoQuery;
+    type Response = LikeVideo;
+    const AUTH: AuthType = AuthType::Csrf;
+    const METHOD: RequestMethod = RequestMethod::Post;
+    const URL: &str = LIKE_VIDEO_URL;
+
+    async fn send_request(session: &Session, query: Self::Query) -> Result<Self::Response, Error> {
+        let url = format!("{}?{}", Self::URL, csrf(&query, &session.bili_jct().await)?);
+        let response = session
+            .post(url)
+            .send()
+            .await?
+            .json::<BiliResponse<()>>()
+            .await?;
+
+        if response.is_success() {
+            Ok(LikeVideo(true))
+        } else {
+            Err(Error::ResponseError {
+                code: response.code,
+                message: response.message,
+            })
+        }
     }
 }
 
-pub async fn coin_video(session: &Session, query: CoinVideoQuery) -> Result<CoinVideo, Error> {
-    bili_csrf_post(session, COIN_VIDEO_URL, query).await
-}
-
-pub async fn is_coin(session: &Session, query: IsCoinQuery) -> Result<IsCoin, Error> {
-    bili_query_get(session, IS_COIN_URL, query).await
-}
-
-pub async fn collect_video(
-    session: &Session,
-    query: CollectVideoQuery,
-) -> Result<CollectVideo, Error> {
-    bili_csrf_post(session, COLLECT_VIDEO_URL, query).await
-}
-pub async fn is_collect(session: &Session, query: IsCollectQuery) -> Result<IsCollect, Error> {
-    bili_query_get(session, IS_COLLECT_URL, query).await
-}
-
-pub async fn share_video(session: &Session, query: ShareVideoQuery) -> Result<ShareVideo, Error> {
-    let url = format!(
-        "{}?{}",
-        SHARE_VIDEO_URL,
-        query.csrf(&session.bili_jct().await)?
-    );
-    session
-        .post(url)
-        .send()
-        .await?
-        .json::<BiliResponse<_>>()
-        .await?
-        .data()
-}
+define_bili_request!(CoinVideo, COIN_VIDEO_URL, Post, Csrf);
+define_bili_request!(IsCoin, IS_COIN_URL, Get, None);
+define_bili_request!(CollectVideo, COLLECT_VIDEO_URL, Post, Csrf);
+define_bili_request!(IsCollect, IS_COLLECT_URL, Get, None);
+define_bili_request!(ShareVideo, SHARE_VIDEO_URL, Post, Csrf);
 
 #[cfg(test)]
 mod test {
     use crate::query::video::VideoQuery;
 
-    const BVID: &str = "BV1biAZeLECK";
+    const BVID: &str = "BV1cwKAz3EmJ";
 
     use super::*;
 
@@ -88,10 +74,13 @@ mod test {
     #[tokio::test]
     async fn action_like_video() {
         let session = Session::new_with_path("./cookies.json").unwrap();
-        let query = VideoQuery::from(BVID);
-        let query = LikeVideoQuery::new(query, true);
 
-        like_video(&session, query).await.unwrap();
+        let query = VideoQuery::from(BVID);
+        let query = LikeVideoQuery::new(query, false);
+        LikeVideoRequest::send_request(&session, query)
+        .await
+        .unwrap();
+    
     }
 
     #[ignore]
@@ -101,15 +90,17 @@ mod test {
         session.refresh_sign().await.unwrap();
         let vid = VideoQuery::from(BVID);
 
-        let query = CoinVideoQuery::new(vid, true, false);
-        coin_video(&session, query).await.unwrap();
+        let query = CoinVideoQuery::new(vid, false, false);
+        CoinVideoRequest::send_request(&session, query)
+            .await
+            .unwrap();
     }
 
     #[tokio::test]
     async fn action_is_coin() {
         let session = Session::new_with_path("./cookies.json").unwrap();
         let query = IsCoinQuery::from(BVID);
-        is_coin(&session, query).await.unwrap();
+        IsCoinRequest::send_request(&session, query).await.unwrap();
     }
 
     #[ignore]
@@ -119,14 +110,18 @@ mod test {
 
         let query = CollectVideoQuery::new(114041867536793, Some(vec![137762769]), None);
 
-        collect_video(&session, query).await.unwrap();
+        CollectVideoRequest::send_request(&session, query)
+            .await
+            .unwrap();
     }
 
     #[tokio::test]
     async fn action_is_collect() {
         let session = Session::new_with_path("./cookies.json").unwrap();
         let query = IsCollectQuery::new(114041867536793);
-        is_collect(&session, query).await.unwrap();
+        IsCollectRequest::send_request(&session, query)
+            .await
+            .unwrap();
     }
 
     #[ignore]
@@ -135,6 +130,8 @@ mod test {
         let session = Session::new_with_path("./cookies.json").unwrap();
         let query = ShareVideoQuery::from(BVID);
 
-        share_video(&session, query).await.unwrap();
+        ShareVideoRequest::send_request(&session, query)
+            .await
+            .unwrap();
     }
 }

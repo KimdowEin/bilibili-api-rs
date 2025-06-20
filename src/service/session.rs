@@ -23,11 +23,11 @@
 //!
 //! 或者new_with_client,可以更精细的控制
 
+use crate::traits::Data;
 use crate::{error::Error, model::response::BiliResponse};
-use bili_core::{Csrf, Data, Query, Sign};
 use reqwest::{
     cookie::{CookieStore, Jar},
-    header, Client, Url,
+    header, Client, IntoUrl, Url,
 };
 use serde::{Deserialize, Serialize};
 use std::{
@@ -41,7 +41,7 @@ use tokio::sync::RwLock;
 
 pub const COOKIES_URL: &str = "https://api.bilibili.com";
 
-pub fn headers() -> header::HeaderMap {
+fn headers() -> header::HeaderMap {
     let mut headers = header::HeaderMap::new();
     headers.insert(
         "referer",
@@ -247,12 +247,25 @@ struct CookieItem {
     cookies: String,
 }
 
-pub async fn bili_get<D>(session: &Session, url: &str) -> Result<D, Error>
+pub enum RequestMethod {
+    Get,
+    Post,
+}
+
+pub async fn bili_request<D>(
+    session: &Session,
+    url: impl IntoUrl,
+    method: RequestMethod,
+) -> Result<D, Error>
 where
     D: Data,
 {
-    session
-        .get(url)
+    let builder = match method {
+        RequestMethod::Get => session.get(url),
+        RequestMethod::Post => session.post(url),
+    };
+
+    builder
         .send()
         .await?
         .json::<BiliResponse<_>>()
@@ -260,97 +273,33 @@ where
         .data()
 }
 
-pub async fn bili_query_get<D, Q>(session: &Session, url: &str, query: Q) -> Result<D, Error>
-where
-    D: Data,
-    Q: Query,
-{
-    let url = format!("{}?{}", url, query.to_query()?);
-    session
-        .get(url)
-        .send()
-        .await?
-        .json::<BiliResponse<_>>()
-        .await?
-        .data()
+#[macro_export]
+macro_rules! use_bili_request {
+    () => {
+        use crate::{
+            auth::AuthType,
+            service::session::RequestMethod,
+            traits::{BiliRequest, Csrf, Data, Query, Sign},
+        };
+    };
 }
+#[macro_export]
+/// Response,url,method,auth
+macro_rules! define_bili_request {
+    ($response:ident, $url:expr, $method:ident, $auth:ident) => {
+        paste::paste! {
+            // 自动生成结构体名: Response名 + "Request"
+            pub struct [<$response Request>];
 
-pub async fn bili_sign_get<D, Q>(session: &Session, url: &str, query: Q) -> Result<D, Error>
-where
-    D: Data,
-    Q: Query + Sign,
-{
-    let bili_jct = session.bili_jct().await;
-    let url = format!("{}?{}", url, query.sign(&bili_jct)?);
+            impl BiliRequest for [<$response Request>] {
+                // 自动生成Query类型: Response名 + "Query"
+                type Query = [<$response Query>];
+                type Response = $response;
 
-    session
-        .get(url)
-        .send()
-        .await?
-        .json::<BiliResponse<_>>()
-        .await?
-        .data()
-}
-pub async fn bili_csrf_get<D, Q>(session: &Session, url: &str, query: Q) -> Result<D, Error>
-where
-    D: Data,
-    Q: Query + Csrf,
-{
-    let bili_jct = session.bili_jct().await;
-    let url = format!("{}?{}", url, query.csrf(&bili_jct)?);
-
-    session
-        .get(url)
-        .send()
-        .await?
-        .json::<BiliResponse<_>>()
-        .await?
-        .data()
-}
-
-pub async fn bili_query_post<D, Q>(session: &Session, url: &str, query: Q) -> Result<D, Error>
-where
-    D: Data,
-    Q: Query,
-{
-    let url = format!("{}?{}", url, query.to_query()?);
-    session
-        .post(url)
-        .send()
-        .await?
-        .json::<BiliResponse<_>>()
-        .await?
-        .data()
-}
-
-pub async fn bili_sign_post<D, Q>(session: &Session, url: &str, query: Q) -> Result<D, Error>
-where
-    D: Data,
-    Q: Query + Sign,
-{
-    let bili_jct = session.bili_jct().await;
-    let url = format!("{}?{}", url, query.sign(&bili_jct)?);
-    session
-        .post(url)
-        .send()
-        .await?
-        .json::<BiliResponse<_>>()
-        .await?
-        .data()
-}
-
-pub async fn bili_csrf_post<D, Q>(session: &Session, url: &str, query: Q) -> Result<D, Error>
-where
-    D: Data,
-    Q: Query + Csrf,
-{
-    let bili_jct = session.bili_jct().await;
-    let url = format!("{}?{}", url, query.csrf(&bili_jct)?);
-    session
-        .post(url)
-        .send()
-        .await?
-        .json::<BiliResponse<_>>()
-        .await?
-        .data()
+                const URL: &'static str = $url;
+                const METHOD: RequestMethod = RequestMethod::$method;
+                const AUTH: AuthType = AuthType::$auth;
+            }
+        }
+    };
 }

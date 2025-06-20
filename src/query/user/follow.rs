@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::traits::Query;
+use crate::traitss::Query;
 
 /// 获得关注数，粉丝数，动态数
 pub const D_FOLLOW_STAT_URL: &str = "https://api.bilibili.com/x/web-interface/nav/stat";

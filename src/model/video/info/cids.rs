@@ -1,11 +1,27 @@
 //! 视频分P
 
-use crate::Data;
+use std::ops::{Deref, DerefMut};
+
+use crate::traits::Data;
 use serde::{Deserialize, Serialize};
 
 use super::state::Dimension;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Data)]
+pub struct VideoCids(Vec<Cids>);
+impl Deref for VideoCids {
+    type Target = Vec<Cids>;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl DerefMut for VideoCids {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Cids {
     /// 视频分P的cid
     pub cid: u64,

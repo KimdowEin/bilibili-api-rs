@@ -1,6 +1,6 @@
 // 好友，关注，粉丝等
 
-use bili_core::{Csrf, Query};
+use crate::traits::{Csrf, Query};
 use serde::{Deserialize, Serialize};
 
 use crate::model::user::relation::{RelationModifyAction, RelationModifyResource};

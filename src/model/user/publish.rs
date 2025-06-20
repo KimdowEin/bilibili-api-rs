@@ -1,4 +1,4 @@
-use bili_core::Data;
+use crate::traits::Data;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Data)]

@@ -1,4 +1,4 @@
-use crate::traits::Query;
+use crate::traitss::Query;
 use serde::{Deserialize, Serialize};
 
 /// 查询每日奖励状态

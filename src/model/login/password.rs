@@ -8,7 +8,7 @@
 
 use crate::error::Error;
 use base64::{engine::general_purpose::URL_SAFE, Engine as _};
-use bili_core::Data;
+use crate::traits::Data;
 use rsa::{pkcs8::DecodePublicKey, Pkcs1v15Encrypt, RsaPublicKey};
 use serde::{Deserialize, Serialize};
 
@@ -37,7 +37,7 @@ impl LoginKey {
 
 /// 登录响应数据
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Data)]
-pub struct LoginState {
+pub struct PasswordLogin {
     pub message: String,
     pub refresh_token: String,
     pub timestamp: u64,

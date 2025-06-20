@@ -3,7 +3,7 @@
 use super::VideoQuery;
 use crate::{
     model::video::stream::format::{Fnval, Qn},
-    Query, Sign,
+    traits::{Query, Sign},
 };
 use serde::{Deserialize, Serialize};
 

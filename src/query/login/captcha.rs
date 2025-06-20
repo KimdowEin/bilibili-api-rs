@@ -10,7 +10,7 @@
 //!
 //! 3.返回验证结果validate与seccode，进行后续短信或密码登录
 
-use crate::Query;
+use crate::traits::Query;
 use serde::{Deserialize, Serialize};
 
 /// 申请captcha验证码

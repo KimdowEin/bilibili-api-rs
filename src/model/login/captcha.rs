@@ -10,7 +10,7 @@
 //!
 //! 3.返回验证结果validate与seccode，进行后续短信或密码登录
 
-use bili_core::Data;
+use crate::traits::Data;
 use serde::{Deserialize, Serialize};
 
 /// CAPTCHA_URL响应Data

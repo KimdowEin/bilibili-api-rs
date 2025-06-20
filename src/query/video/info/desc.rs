@@ -10,7 +10,7 @@ pub type VideoDescQuery = VideoQuery;
 
 #[cfg(test)]
 mod tests {
-    use bili_core::Query;
+    use crate::traits::Query;
 
     use super::*;
 

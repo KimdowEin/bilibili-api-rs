@@ -1,10 +1,26 @@
 //! 视频简介
 
+use std::ops::{Deref, DerefMut};
+
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
+use crate::traits::Data;
+
 /// V1简介
-pub type VideoDesc = String;
+ #[derive(Debug,Clone,PartialEq, Deserialize, Serialize,Data)]
+pub struct  VideoDesc(String);
+impl Deref for VideoDesc {
+    type Target = String;
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+impl DerefMut for VideoDesc {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
 
 /// V2简介
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]

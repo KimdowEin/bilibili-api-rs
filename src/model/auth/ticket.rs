@@ -1,6 +1,6 @@
 //! ticket 签名
 
-use bili_core::Data;
+use crate::traits::Data;
 use serde::{Deserialize, Serialize};
 
 use super::wbi::Wbi;

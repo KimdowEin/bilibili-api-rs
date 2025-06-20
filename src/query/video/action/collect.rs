@@ -2,7 +2,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::{Csrf, Query};
+use crate::traits::{Csrf, Query};
 
 /// 收藏视频（Web端）
 pub const COLLECT_VIDEO_URL: &str = "https://api.bilibili.com/x/v3/fav/resource/deal";

@@ -8,7 +8,7 @@ use super::{
     zone::Zone,
 };
 use crate::model::user::account::{OwnerCard, Staff, UserInfoBase};
-use crate::Data;
+use crate::traits::Data;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use serde_aux::field_attributes::{

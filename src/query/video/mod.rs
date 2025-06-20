@@ -5,7 +5,7 @@ pub mod archives;
 pub mod info;
 pub mod stream;
 
-use crate::{Csrf, Query, Sign};
+use crate::traits::{Csrf, Query, Sign};
 use serde::{Deserialize, Serialize};
 
 /// 通用视频查询

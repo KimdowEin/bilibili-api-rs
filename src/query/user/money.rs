@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::traits::Query;
+use crate::traitss::Query;
 
 /// 获取硬币数
 pub const COIN_URL: &str = "https://account.bilibili.com/site/getCoin";

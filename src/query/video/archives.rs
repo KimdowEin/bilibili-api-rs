@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::{Query, Sign};
+use crate::traits::{Query, Sign};
 
 /// 获取视频合集信息   
 pub const VIDEO_ARCHIVES_URL: &str =

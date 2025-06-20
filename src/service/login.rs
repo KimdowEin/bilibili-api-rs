@@ -25,33 +25,24 @@
 //! session.save_cookies().unwrap();
 //! ```
 
-use super::{bili_get, bili_query_post, session::Session};
 use crate::{
-    error::Error,
+    define_bili_request,
     model::login::{
         captcha::Captcha,
-        password::{LoginKey, LoginState},
+        password::{LoginKey, PasswordLogin},
     },
     query::login::{
-        captcha::CAPTCHA_URL,
-        password::{LoginQuery, LOGIN_KEY_URL, LOGIN_URL},
+        captcha::{CaptchaQuery, CAPTCHA_URL},
+        password::{LoginKeyQuery, PasswordLoginQuery, LOGIN_KEY_URL, LOGIN_URL},
     },
+    traits::BiliRequest,
+    auth::AuthType,
 };
+use super::session::RequestMethod;
 
-/// 获取验证码
-pub async fn get_captcha(session: &Session) -> Result<Captcha, Error> {
-    bili_get(session, CAPTCHA_URL).await
-}
-
-/// 获取登录秘钥
-pub async fn get_login_key(session: &Session) -> Result<LoginKey, Error> {
-    bili_get(session, LOGIN_KEY_URL).await
-}
-
-/// 登录
-pub async fn login_by_password(session: &Session, query: LoginQuery) -> Result<LoginState, Error> {
-    bili_query_post(session, LOGIN_URL, query).await
-}
+define_bili_request!(Captcha, CAPTCHA_URL, Get, None);
+define_bili_request!(LoginKey, LOGIN_KEY_URL, Get, None);
+define_bili_request!(PasswordLogin, LOGIN_URL, Post, None);
 
 /// 跳转人工认证页面
 /// 外源，可能会失效
@@ -66,12 +57,16 @@ pub fn manual_verification(geetest: &Geetest) -> Result<(), Error> {
 
 #[cfg(test)]
 mod tests {
+    use crate::{query::login::password::LoginKeyQuery, service::Session};
+
     use super::*;
 
     #[tokio::test]
     async fn test_get_captcha() {
         let session = Session::new().unwrap();
-        let captcha = get_captcha(&session).await.unwrap();
+        let captcha = CaptchaRequest::send_request(&session, CaptchaQuery::new())
+            .await
+            .unwrap();
 
         assert!(!captcha.token.is_empty())
     }
@@ -79,7 +74,9 @@ mod tests {
     #[tokio::test]
     async fn test_get_login_key() {
         let session = Session::new().unwrap();
-        let key = get_login_key(&session).await.unwrap();
+        let key = LoginKeyRequest::send_request(&session, LoginKeyQuery::new())
+            .await
+            .unwrap();
 
         assert!(!key.salt.is_empty())
     }
@@ -87,8 +84,10 @@ mod tests {
     #[tokio::test]
     async fn test_login_by_password() {
         let session = Session::new().unwrap();
-        let captcha = get_captcha(&session).await.unwrap();
-        let query = LoginQuery::new(
+        let captcha = CaptchaRequest::send_request(&session, CaptchaQuery::new())
+            .await
+            .unwrap();
+        let query = PasswordLoginQuery::new(
             "testuser".to_string(),
             "testpassword".to_string(),
             captcha,
@@ -96,7 +95,7 @@ mod tests {
             None,
             None,
         );
-        let err = login_by_password(&session, query).await;
+        let err = PasswordLoginRequest::send_request(&session, query).await;
 
         assert!(err.is_err());
     }

@@ -1,7 +1,7 @@
 //! 投币
 
 use super::VideoQuery;
-use crate::{Csrf, Query};
+use crate::traits::{Csrf, Query};
 use serde::{Deserialize, Serialize};
 
 /// 投币视频（web端）

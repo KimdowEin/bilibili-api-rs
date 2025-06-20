@@ -1,6 +1,6 @@
 // 发布相关，比如累计播放量
 
-use bili_core::Query;
+use crate::traits::Query;
 use serde::{Deserialize, Serialize};
 
 /// UP主状态数

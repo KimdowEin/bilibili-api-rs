@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use crate::traits::Query;
+use crate::traitss::Query;
 
 pub const CONTRIBUTE_VIEW: &str = "https://api.bilibili.com/x/space/upstat";
 

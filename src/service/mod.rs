@@ -1,8 +1,8 @@
 pub mod login;
 
-pub mod sign;
+pub mod auth;
 
-pub mod user;
+// pub mod user;
 
 pub mod video;
 

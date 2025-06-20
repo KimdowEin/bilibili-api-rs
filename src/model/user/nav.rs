@@ -11,8 +11,8 @@ use super::{
     pendant::Pendant,
     vip::Vip,
 };
-use crate::model::sign::wbi::Wbi;
-use bili_core::Data;
+use crate::model::auth::wbi::Wbi;
+use crate::traits::Data;
 use serde::{Deserialize, Serialize};
 use serde_aux::field_attributes::deserialize_bool_from_anything;
 

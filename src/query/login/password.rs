@@ -6,7 +6,7 @@
 //!
 //! LoginQuery登陆(post)
 
-use crate::{model::login::captcha::Captcha, Query};
+use crate::{model::login::captcha::Captcha, traits::Query};
 use serde::{Deserialize, Serialize};
 
 /// 获取公钥&盐(只有web端需要)
@@ -24,9 +24,9 @@ impl LoginKeyQuery {
 /// Web端登录操作(post)
 pub const LOGIN_URL: &str = "https://passport.bilibili.com/x/passport-login/web/login";
 
-/// 登录操作(post)
+/// 密码登录操作(post)
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Query)]
-pub struct LoginQuery {
+pub struct PasswordLoginQuery {
     pub username: String,
     pub password: String,
     pub keep: u8,
@@ -37,7 +37,7 @@ pub struct LoginQuery {
     pub go_url: Option<String>,
     pub source: Option<String>,
 }
-impl LoginQuery {
+impl PasswordLoginQuery {
     pub fn new(
         username: String,
         password: String,
@@ -50,7 +50,7 @@ impl LoginQuery {
         let challenge = geetest.challenge;
         let seccode = format!("{}|jordan", validate);
 
-        LoginQuery {
+        PasswordLoginQuery {
             username,
             password,
             keep: 0,

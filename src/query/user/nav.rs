@@ -4,7 +4,7 @@
 //!
 //! 如果想获得用户信息,应该用user/account里的接口
 
-use bili_core::Query;
+use crate::traits::Query;
 use serde::{Deserialize, Serialize};
 
 // 导航栏用户信息

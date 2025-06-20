@@ -1,6 +1,6 @@
 //! 投币
 
-use crate::Data;
+use crate::traits::Data;
 use serde::{Deserialize, Serialize};
 
 /// 投币返回
