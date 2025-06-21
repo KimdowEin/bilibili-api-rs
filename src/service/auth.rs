@@ -3,12 +3,11 @@
 use_bili_request!();
 use crate::{
     define_bili_request,
-    error::Error,
     model::auth::ticket::BiliTicket,
     query::auth::ticket::{BiliTicketQuery, BILI_TICKET_URL}, use_bili_request,
 };
 
-use super::session::{Session, COOKIES_URL};
+use super::session::{COOKIES_URL};
 
 
 define_bili_request!(BiliTicket, BILI_TICKET_URL, Post, Csrf);

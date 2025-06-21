@@ -3,9 +3,7 @@
 use async_trait::async_trait;
 
 use crate::{
-    auth::csrf,
     define_bili_request,
-    error::Error,
     model::{
         response::BiliResponse,
         video::action::{
@@ -21,7 +19,6 @@ use crate::{
         like::{LikeVideoQuery, LIKE_VIDEO_URL},
         share::{ShareVideoQuery, SHARE_VIDEO_URL},
     },
-    service::Session,
     use_bili_request,
 };
 

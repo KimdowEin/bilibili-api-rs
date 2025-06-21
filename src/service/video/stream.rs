@@ -3,15 +3,10 @@
 use_bili_request!();
 
 use crate::{
-    define_bili_request,
-    error::Error,
-    model::{
+    define_bili_request, model::{
         response::BiliResponse,
         video::stream::view::{VideoStream, VideoStreamOld},
-    },
-    query::video::stream::{VideoStreamQuery, VIDEO_STREAM_URL},
-    service::session::Session,
-    use_bili_request,
+    }, query::video::stream::{VideoStreamQuery, VIDEO_STREAM_URL}, traits::Sign, use_bili_request
 };
 
 /// 获取视频流地址(旧Mp4格式)

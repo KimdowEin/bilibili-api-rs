@@ -23,6 +23,7 @@ impl LoginKeyQuery {
 
 /// Web端登录操作(post)
 pub const LOGIN_URL: &str = "https://passport.bilibili.com/x/passport-login/web/login";
+pub const PASSWORD_LOGIN_URL:&str  = LOGIN_URL;
 
 /// 密码登录操作(post)
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Query)]

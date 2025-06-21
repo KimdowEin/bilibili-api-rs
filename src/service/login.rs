@@ -25,6 +25,7 @@
 //! session.save_cookies().unwrap();
 //! ```
 
+use_bili_request!();
 use crate::{
     define_bili_request,
     model::login::{
@@ -33,16 +34,14 @@ use crate::{
     },
     query::login::{
         captcha::{CaptchaQuery, CAPTCHA_URL},
-        password::{LoginKeyQuery, PasswordLoginQuery, LOGIN_KEY_URL, LOGIN_URL},
+        password::{LoginKeyQuery, PasswordLoginQuery, LOGIN_KEY_URL, PASSWORD_LOGIN_URL},
     },
-    traits::BiliRequest,
-    auth::AuthType,
+    use_bili_request,
 };
-use super::session::RequestMethod;
 
 define_bili_request!(Captcha, CAPTCHA_URL, Get, None);
 define_bili_request!(LoginKey, LOGIN_KEY_URL, Get, None);
-define_bili_request!(PasswordLogin, LOGIN_URL, Post, None);
+define_bili_request!(PasswordLogin, PASSWORD_LOGIN_URL, Post, None);
 
 /// 跳转人工认证页面
 /// 外源，可能会失效

@@ -32,7 +32,8 @@ mod tests {
 
         let query = VideoViewQuery::from(BVID);
 
-        let video_info = VideoViewRequest::send_request(&session, query).await.unwrap();
+        let video_info = VideoViewRequest::send_request(&session, query.clone()).await.unwrap();
+        get_video_view(&session, query).await.unwrap();
 
         assert_eq!("躁転彼女 / 香椎モイミ feat. 雪解", video_info.title);
     }
