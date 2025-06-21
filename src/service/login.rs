@@ -27,7 +27,6 @@
 
 use_bili_request!();
 use crate::{
-    define_bili_request,
     model::login::{
         captcha::Captcha,
         password::{LoginKey, PasswordLogin},

@@ -1,6 +1,5 @@
 //! 请求鉴权
 
-
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use crate::{error::Error, traits::Query};
@@ -38,5 +37,3 @@ pub fn csrf(query: &impl Query, bili_jct: &str) -> Result<String, Error> {
     let query = format!("{}&csrf={}", ori_query, bili_jct);
     Ok(query)
 }
-
-

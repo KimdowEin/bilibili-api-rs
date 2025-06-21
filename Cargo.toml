@@ -44,7 +44,7 @@ toml = "0.8.20"
 indicatif = "0.17.9"
 
 [features]
-default = []
-# default = ["session"]
+# default = []
+default = ["session"]
 session = ["reqwest", "tokio", "futures", "async-trait", "paste"]
 manual = ["webbrowser"]

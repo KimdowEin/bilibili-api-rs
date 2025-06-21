@@ -6,17 +6,17 @@ use serde_repr::{Deserialize_repr, Serialize_repr};
 use std::fmt::Display;
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct BiliResponse<T> {
+pub struct BiliResponse<D> {
     pub code: BiliResponseCode,
     pub message: String,
-    pub data: Option<T>,
+    pub data: Option<D>,
 }
-impl<T> BiliResponse<T> {
+impl<D> BiliResponse<D> {
     pub fn is_success(&self) -> bool {
         self.code == BiliResponseCode::Success
     }
 
-    pub fn data(self) -> Result<T, Error> {
+    pub fn data(self) -> Result<D, Error> {
         if self.is_success() {
             self.data.ok_or(Error::NullResponseError)
         } else {

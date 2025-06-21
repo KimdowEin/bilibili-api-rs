@@ -1,7 +1,6 @@
 //! 获取视频信息
 
 use crate::{
-    define_bili_request,
     model::video::info::{cids::VideoCids, desc::VideoDesc, view::VideoView},
     query::video::info::{
         cids::{VideoCidsQuery, VIDEO_CIDS_URL},
@@ -28,12 +27,13 @@ mod tests {
     #[tokio::test]
     async fn test_get_video_view() {
         let session = Session::new_with_path("./cookies.json").unwrap();
-        session.refresh_sign().await.unwrap();
+        session.refresh_auth().await.unwrap();
 
         let query = VideoViewQuery::from(BVID);
 
-        let video_info = VideoViewRequest::send_request(&session, query.clone()).await.unwrap();
-        get_video_view(&session, query).await.unwrap();
+        let video_info = VideoViewRequest::send_request(&session, query.clone())
+            .await
+            .unwrap();
 
         assert_eq!("躁転彼女 / 香椎モイミ feat. 雪解", video_info.title);
     }
@@ -54,7 +54,9 @@ mod tests {
         let session = Session::new_with_path("./cookies.json").unwrap();
         let query = VideoCidsQuery::from(BVID);
 
-        let cids = VideoCidsRequest::send_request(&session, query).await.unwrap();
+        let cids = VideoCidsRequest::send_request(&session, query)
+            .await
+            .unwrap();
         assert_eq!("躁転彼女 / 香椎モイミ feat. 雪解", cids[0].part);
     }
 
@@ -63,7 +65,9 @@ mod tests {
         let session = Session::new_with_path("./cookies.json").unwrap();
         let query = VideoDescQuery::from(BVID);
 
-        let desc = VideoDescRequest::send_request(&session, query).await.unwrap();
+        let desc = VideoDescRequest::send_request(&session, query)
+            .await
+            .unwrap();
 
         assert!(!desc.is_empty());
     }

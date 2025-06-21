@@ -19,4 +19,3 @@ impl DerefMut for LikeVideo {
         &mut self.0
     }
 }
-

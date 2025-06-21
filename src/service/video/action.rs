@@ -3,7 +3,8 @@
 use async_trait::async_trait;
 
 use crate::{
-    define_bili_request,
+    auth::csrf,
+    error::Error,
     model::{
         response::BiliResponse,
         video::action::{
@@ -19,6 +20,7 @@ use crate::{
         like::{LikeVideoQuery, LIKE_VIDEO_URL},
         share::{ShareVideoQuery, SHARE_VIDEO_URL},
     },
+    service::Session,
     use_bili_request,
 };
 
@@ -75,16 +77,15 @@ mod test {
         let query = VideoQuery::from(BVID);
         let query = LikeVideoQuery::new(query, false);
         LikeVideoRequest::send_request(&session, query)
-        .await
-        .unwrap();
-    
+            .await
+            .unwrap();
     }
 
     #[ignore]
     #[tokio::test]
     async fn action_coin_video() {
         let session = Session::new_with_path("./cookies.json").unwrap();
-        session.refresh_sign().await.unwrap();
+        session.refresh_auth().await.unwrap();
         let vid = VideoQuery::from(BVID);
 
         let query = CoinVideoQuery::new(vid, false, false);

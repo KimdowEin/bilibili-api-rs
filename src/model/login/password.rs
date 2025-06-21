@@ -7,8 +7,8 @@
 //! 登陆(post),检查LoginState判断是否登陆成功
 
 use crate::error::Error;
-use base64::{engine::general_purpose::URL_SAFE, Engine as _};
 use crate::traits::Data;
+use base64::{engine::general_purpose::URL_SAFE, Engine as _};
 use rsa::{pkcs8::DecodePublicKey, Pkcs1v15Encrypt, RsaPublicKey};
 use serde::{Deserialize, Serialize};
 

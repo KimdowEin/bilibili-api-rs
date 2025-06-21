@@ -277,10 +277,8 @@ where
 macro_rules! use_bili_request {
     () => {
         use crate::{
-            auth::{AuthType,sign,csrf},
-            service::session::{RequestMethod,Session,bili_request},
-            traits::{BiliRequest, Query},
-            error::Error,
+            auth::AuthType, define_bili_request, service::session::RequestMethod,
+            traits::BiliRequest,
         };
     };
 }
@@ -301,19 +299,6 @@ macro_rules! define_bili_request {
                 const METHOD: RequestMethod = RequestMethod::$method;
                 const AUTH: AuthType = AuthType::$auth;
             }
-
-            pub async fn [<$method:lower _ $response:snake:lower>](
-                session:&Session,
-                query:[<$response Query>]
-            )-> Result<$response,Error>{
-                let url = match AuthType::$auth {
-                    AuthType::None => format!("{}?{}", [<$response:snake:upper _ URL>], query.to_query()?),
-                    AuthType::Sign => format!("{}?{}", [<$response:snake:upper _ URL>], sign(&query, &session.bili_jct().await)?),
-                    AuthType::Csrf => format!("{}?{}", [<$response:snake:upper _ URL>], csrf(&query, &session.bili_jct().await)?),
-                };
-                bili_request(session, url, RequestMethod::$method).await
-            }
-
         }
     };
 }

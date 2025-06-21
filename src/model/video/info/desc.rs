@@ -8,8 +8,8 @@ use serde_repr::{Deserialize_repr, Serialize_repr};
 use crate::traits::Data;
 
 /// V1简介
- #[derive(Debug,Clone,PartialEq, Deserialize, Serialize,Data)]
-pub struct  VideoDesc(String);
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Data)]
+pub struct VideoDesc(String);
 impl Deref for VideoDesc {
     type Target = String;
     fn deref(&self) -> &Self::Target {

@@ -36,7 +36,7 @@ pub trait Csrf: Query {
     }
 }
 
-pub trait Data: DeserializeOwned + Sized {}
+pub trait Data: DeserializeOwned {}
 
 #[cfg(feature = "session")]
 #[async_trait]

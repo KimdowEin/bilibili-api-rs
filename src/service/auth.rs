@@ -2,32 +2,24 @@
 
 use_bili_request!();
 use crate::{
-    define_bili_request,
+    error::Error,
     model::auth::ticket::BiliTicket,
-    query::auth::ticket::{BiliTicketQuery, BILI_TICKET_URL}, use_bili_request,
+    query::auth::ticket::{BiliTicketQuery, BILI_TICKET_URL},
+    service::Session,
+    use_bili_request,
 };
 
-use super::session::{COOKIES_URL};
-
+use super::session::COOKIES_URL;
 
 define_bili_request!(BiliTicket, BILI_TICKET_URL, Post, Csrf);
 
 impl Session {
-    /// 获得ticket
-    pub async fn get_ticket(&self, query: BiliTicketQuery) -> Result<BiliTicket, Error> {
-        BiliTicketRequest::send_request(self, query).await
-    }
-
     /// 刷新 获得ticket 获得wbi key 从cookies获取csrf(bili_jct)
-    pub async fn refresh_sign(&self) -> Result<(), Error> {
-        if let Some(bili_jct) = self.get_cookie(COOKIES_URL, "bili_jct") {
-            self.set_bili_jct(&bili_jct).await;
-        } else {
-            Err(Error::OtherError("未登录".to_string()))?
-        };
+    pub async fn refresh_auth(&self) -> Result<(), Error> {
+        self.refresh_csrf().await?;
 
         let query = BiliTicketQuery::new()?;
-        let ticket = self.get_ticket(query).await?;
+        let ticket = BiliTicketRequest::send_request(&self, query).await?;
 
         self.set_ticket(&ticket.ticket);
 
@@ -35,6 +27,15 @@ impl Session {
         self.set_mixin_key(&mixin_key).await;
 
         Ok(())
+    }
+
+    async fn refresh_csrf(&self) -> Result<(), Error> {
+        if let Some(bili_jct) = self.get_cookie(COOKIES_URL, "bili_jct") {
+            self.set_bili_jct(&bili_jct).await;
+            Ok(())
+        } else {
+            Err(Error::OtherError("未登录".to_string()))?
+        }
     }
 
     /// 获取 wbi 签名，每日更新
@@ -73,7 +74,7 @@ mod tests {
     #[tokio::test]
     async fn test_refresh_sign() {
         let session = Session::new_with_path("cookies.json").unwrap();
-        session.refresh_sign().await.unwrap();
+        session.refresh_auth().await.unwrap();
 
         // session.get_nav().await.unwrap();
 

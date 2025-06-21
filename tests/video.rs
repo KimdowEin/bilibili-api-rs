@@ -4,9 +4,7 @@ mod tests {
         cids::VideoCidsQuery, desc::VideoDescQuery, view::VideoViewQuery,
     };
     use bilibili_api_rs::service::video::{VideoCidsRequest, VideoDescRequest, VideoViewRequest};
-    use bilibili_api_rs::service::{
-        Session,
-    };
+    use bilibili_api_rs::service::Session;
     use bilibili_api_rs::traits::BiliRequest;
     use serde::Deserialize;
 

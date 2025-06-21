@@ -2,32 +2,38 @@
 
 use_bili_request!();
 
+use async_trait::async_trait;
+
 use crate::{
-    define_bili_request, model::{
-        response::BiliResponse,
-        video::stream::view::{VideoStream, VideoStreamOld},
-    }, query::video::stream::{VideoStreamQuery, VIDEO_STREAM_URL}, traits::Sign, use_bili_request
+    auth::{csrf, sign},
+    error::Error,
+    model::video::stream::view::{VideoStream, VideoStreamOld},
+    query::video::stream::{VideoStreamQuery, VIDEO_STREAM_URL},
+    service::{bili_request, Session},
+    traits::Query,
+    use_bili_request,
 };
 
 /// 获取视频流地址(旧Mp4格式)
 #[deprecated(since = "1.0.0")]
-pub async fn get_video_stream_old(
-    session: &Session,
-    query: VideoStreamQuery,
-) -> Result<VideoStreamOld, Error> {
-    let url = format!(
-        "{}?{}",
-        VIDEO_STREAM_URL,
-        query.sign(&session.mixin_key().await)?
-    );
+pub struct VideoStreamOldRequest;
+#[async_trait]
+impl BiliRequest for VideoStreamOldRequest {
+    type Query = VideoStreamQuery;
+    type Response = VideoStreamOld;
 
-    session
-        .get(url)
-        .send()
-        .await?
-        .json::<BiliResponse<_>>()
-        .await?
-        .data()
+    const METHOD: RequestMethod = RequestMethod::Get;
+    const URL: &str = VIDEO_STREAM_URL;
+    const AUTH: AuthType = AuthType::Sign;
+
+    async fn send_request(session: &Session, query: Self::Query) -> Result<Self::Response, Error> {
+        let url = match Self::AUTH {
+            AuthType::None => format!("{}?{}", Self::URL, query.to_query()?),
+            AuthType::Sign => format!("{}?{}", Self::URL, sign(&query, &session.bili_jct().await)?),
+            AuthType::Csrf => format!("{}?{}", Self::URL, csrf(&query, &session.bili_jct().await)?),
+        };
+        bili_request(session, url, Self::METHOD).await
+    }
 }
 
 define_bili_request!(VideoStream, VIDEO_STREAM_URL, Get, Sign);
@@ -61,7 +67,9 @@ mod tests {
             None,
             None,
         );
-        let stream = VideoStreamRequest::send_request(&session, query).await.unwrap();
+        let stream = VideoStreamRequest::send_request(&session, query)
+            .await
+            .unwrap();
         let dash = stream.dash;
         let video1 = dash.video[0].clone();
         let url1 = video1.base_url;
