@@ -273,32 +273,3 @@ where
         .data()
 }
 
-#[macro_export]
-macro_rules! use_bili_request {
-    () => {
-        use crate::{
-            auth::AuthType, define_bili_request, service::session::RequestMethod,
-            traits::BiliRequest,
-        };
-    };
-}
-#[macro_export]
-/// Response,url,method,auth
-macro_rules! define_bili_request {
-    ($response:ident, $url:expr, $method:ident, $auth:ident) => {
-        paste::paste! {
-            // 自动生成结构体名: Response名 + "Request"
-            pub struct [<$response Request>];
-
-            impl BiliRequest for [<$response Request>] {
-                // 自动生成Query类型: Response名 + "Query"
-                type Query = [<$response Query>];
-                type Response = $response;
-
-                const URL: &'static str = $url;
-                const METHOD: RequestMethod = RequestMethod::$method;
-                const AUTH: AuthType = AuthType::$auth;
-            }
-        }
-    };
-}

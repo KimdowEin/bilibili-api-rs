@@ -1,15 +1,15 @@
 // 好友，关注，粉丝等
 
-use crate::traits::{Csrf, Query};
 use serde::{Deserialize, Serialize};
 
-use crate::model::user::relation::{RelationModifyAction, RelationModifyResource};
+use crate::{model::user::relation::{RelationModifyAction, RelationModifyResource}, traits::QueryTag,auth::AuthType};
 
 /// 关系状态数
 pub const RELATION_STAT_URL: &str = "https://api.bilibili.com/x/relation/stat";
 
 /// 关系状态数
-#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Query)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, QueryTag)]
+#[tag(Query)]
 pub struct RelationStatQuery {
     pub vmid: u64,
 }
@@ -28,7 +28,8 @@ impl From<u64> for RelationStatQuery {
 pub const RELATION_FOLLOWERS_URL: &str = "https://api.bilibili.com/x/relation/followers";
 
 /// 查询用户粉丝明细
-#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Query)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, QueryTag)]
+#[tag(Query)]
 pub struct RelationFollowersQuery {
     pub vmid: u64,
     pub ps: Option<u32>,
@@ -50,7 +51,9 @@ impl From<u64> for RelationFollowersQuery {
 pub const RELATION_FOLLOWINGS_URL: &str = "https://api.bilibili.com/x/relation/followings";
 
 /// 查询用户关注明细
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Query)]
+
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, QueryTag)]
+#[tag(Query)]
 pub struct RelationFollowingsQuery {
     pub vmid: u64,
     pub order_type: Option<String>,
@@ -78,10 +81,12 @@ impl From<u64> for RelationFollowingsQuery {
     }
 }
 
+/// 搜索关注明细
 pub const RELATION_FOLLOWINGS_SEARCH_URL: &str =
     "https://api.bilibili.com/x/relation/followings/search";
 
-#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Query)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, QueryTag)]
+#[tag(Query)]
 pub struct RelationFollowingsSearchQuery {
     pub vmid: u64,
     pub name: String,
@@ -107,7 +112,8 @@ pub const RELATION_SAME_FOLLOWINGS_URL: &str =
     "https://api.bilibili.com/x/relation/same/followings";
 
 ///查询共同关注明细
-#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Query)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, QueryTag)]
+#[tag(Query)]
 pub struct RelationSameFollowingsQuery {
     vmid: u64,
     ps: Option<u32>,
@@ -126,7 +132,8 @@ impl From<u64> for RelationSameFollowingsQuery {
 
 pub const RELATION_WHISPER_FOLLOWINGS_URL: &str = "https://api.bilibili.com/x/relation/whispers";
 
-#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Query)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, QueryTag)]
+#[tag(Query)]
 pub struct RelationWhisperFollowingsQuery;
 impl RelationWhisperFollowingsQuery {
     pub fn new() -> Self {
@@ -136,7 +143,8 @@ impl RelationWhisperFollowingsQuery {
 
 pub const RELATION_FRIENDS_URL: &str = "https://api.bilibili.com/x/relation/friends";
 
-#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Query)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, QueryTag)]
+#[tag(Query)]
 pub struct RelationFriendsQuery;
 impl RelationFriendsQuery {
     pub fn new() -> Self {
@@ -146,7 +154,8 @@ impl RelationFriendsQuery {
 
 pub const RELATION_BLACKS_URL: &str = "https://api.bilibili.com/x/relation/blacks";
 
-#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Query)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, QueryTag)]
+#[tag(Query)]
 pub struct RelationBlacksQuery;
 impl RelationBlacksQuery {
     pub fn new() -> Self {
@@ -156,7 +165,8 @@ impl RelationBlacksQuery {
 
 pub const RELATION_MODIFY_URL: &str = "https://api.bilibili.com/x/relation/modify";
 
-#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Query, Csrf)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, QueryTag)]
+#[tag(Csrf)]
 pub struct RelationModifyQuery {
     fid: u64,
     act: RelationModifyAction,
@@ -177,12 +187,14 @@ impl RelationModifyQuery {
 
 #[cfg(test)]
 mod tests {
+    use crate::auth::to_query;
+
     use super::*;
 
     #[test]
     fn test_query_relation_stat() {
         let query = RelationStatQuery::from(200435669);
-        let url = format!("{}?{}", RELATION_STAT_URL, query.to_query().unwrap());
+        let url = format!("{}?{}", RELATION_STAT_URL, to_query(&query).unwrap());
         assert_eq!(
             url,
             "https://api.bilibili.com/x/relation/stat?vmid=200435669"
@@ -192,7 +204,7 @@ mod tests {
     #[test]
     fn test_query_relation_followers() {
         let query = RelationFollowersQuery::from(546189);
-        let url = format!("{}?{}", RELATION_FOLLOWERS_URL, query.to_query().unwrap());
+        let url = format!("{}?{}", RELATION_FOLLOWERS_URL, to_query(&query).unwrap());
         assert_eq!(
             url,
             "https://api.bilibili.com/x/relation/followers?vmid=546189"
@@ -202,7 +214,7 @@ mod tests {
     #[test]
     fn test_query_relation_followings() {
         let query = RelationFollowingsQuery::from(546189);
-        let url = format!("{}?{}", RELATION_FOLLOWINGS_URL, query.to_query().unwrap());
+        let url = format!("{}?{}", RELATION_FOLLOWINGS_URL, to_query(&query).unwrap());
         assert_eq!(
             url,
             "https://api.bilibili.com/x/relation/followings?vmid=546189"
@@ -215,7 +227,7 @@ mod tests {
         let url = format!(
             "{}?{}",
             RELATION_FOLLOWINGS_SEARCH_URL,
-            query.to_query().unwrap()
+            to_query(&query).unwrap()
         );
 
         assert_eq!(
@@ -230,7 +242,7 @@ mod tests {
         let url = format!(
             "{}?{}",
             RELATION_SAME_FOLLOWINGS_URL,
-            query.to_query().unwrap()
+            to_query(&query).unwrap()
         );
 
         assert_eq!(
@@ -245,7 +257,7 @@ mod tests {
         let url = format!(
             "{}?{}",
             RELATION_WHISPER_FOLLOWINGS_URL,
-            query.to_query().unwrap()
+            to_query(&query).unwrap()
         );
         assert_eq!(url, "https://api.bilibili.com/x/relation/whispers?")
     }
@@ -253,14 +265,14 @@ mod tests {
     #[test]
     fn test_query_relation_friends() {
         let query = RelationFriendsQuery::new();
-        let url = format!("{}?{}", RELATION_FRIENDS_URL, query.to_query().unwrap());
+        let url = format!("{}?{}", RELATION_FRIENDS_URL, to_query(&query).unwrap());
         assert_eq!(url, "https://api.bilibili.com/x/relation/friends?")
     }
 
     #[test]
     fn test_query_relation_blacks() {
         let query = RelationBlacksQuery::new();
-        let url = format!("{}?{}", RELATION_BLACKS_URL, query.to_query().unwrap());
+        let url = format!("{}?{}", RELATION_BLACKS_URL, to_query(&query).unwrap());
 
         assert_eq!(url, "https://api.bilibili.com/x/relation/blacks?")
     }
@@ -272,7 +284,7 @@ mod tests {
             RelationModifyAction::Follow,
             RelationModifyResource::UserSpace,
         );
-        let url = format!("{}?{}", RELATION_MODIFY_URL, query.to_query().unwrap());
+        let url = format!("{}?{}", RELATION_MODIFY_URL, to_query(&query).unwrap());
 
         assert_eq!(
             url,

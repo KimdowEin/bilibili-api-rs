@@ -10,7 +10,7 @@
 //!
 //! 3.返回验证结果validate与seccode，进行后续短信或密码登录
 
-use crate::traits::Query;
+use crate::{auth::AuthType, traits::QueryTag};
 use serde::{Deserialize, Serialize};
 
 /// 申请captcha验证码
@@ -18,7 +18,8 @@ pub const CAPTCHA_URL: &str =
     "https://passport.bilibili.com/x/passport-login/captcha?source=main_web";
 
 /// 申请captcha验证码
-#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Query)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, QueryTag)]
+#[tag(Query)]
 pub struct CaptchaQuery;
 
 impl CaptchaQuery {

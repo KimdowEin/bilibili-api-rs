@@ -1,77 +1,41 @@
 use crate::{
-    error::Error,
-    model::user::relation::{RelationFollowers, RelationFollowings, RelationFollows, RelationStat},
+    model::user::relation::{
+        RelationBlacks, RelationFollowers, RelationFollowings, RelationFollowingsSearch,
+        RelationFriends, RelationSameFollowings, RelationStat, RelationWhisperFollowings,
+    },
     query::user::relation::{
         RelationBlacksQuery, RelationFollowersQuery, RelationFollowingsQuery,
-        RelationFollowingsSearchQuery, RelationFriendsQuery, RelationSameFollowingsQuery,
-        RelationStatQuery, RelationWhisperFollowingsQuery, RELATION_FOLLOWERS_URL,
-        RELATION_FOLLOWINGS_SEARCH_URL, RELATION_FOLLOWINGS_URL, RELATION_SAME_FOLLOWINGS_URL,
-        RELATION_STAT_URL,
+        RelationFollowingsSearchQuery, RelationFriendsQuery, RelationStatQuery,
+        RelationWhisperFollowingsQuery,RelationSameFollowingsQuery, RELATION_BLACKS_URL, RELATION_FOLLOWERS_URL,
+        RELATION_FOLLOWINGS_SEARCH_URL, RELATION_FOLLOWINGS_URL, RELATION_FRIENDS_URL,
+        RELATION_SAME_FOLLOWINGS_URL, RELATION_STAT_URL, RELATION_WHISPER_FOLLOWINGS_URL,
     },
-    service::{bili_query_get, Session},
+    use_bili_request,
 };
 
-/// 关系状态数
-pub async fn get_relation_stat(
-    session: &Session,
-    query: RelationStatQuery,
-) -> Result<RelationStat, Error> {
-    bili_query_get(session, RELATION_STAT_URL, query).await
-}
+use_bili_request!();
 
-/// 查询用户粉丝明细
-pub async fn get_relation_followers(
-    session: &Session,
-    query: RelationFollowersQuery,
-) -> Result<RelationFollowers, Error> {
-    bili_query_get(session, RELATION_FOLLOWERS_URL, query).await
-}
-
-/// 查询用户关注明细
-pub async fn get_relation_followings(
-    session: &Session,
-    query: RelationFollowingsQuery,
-) -> Result<RelationFollowings, Error> {
-    bili_query_get(session, RELATION_FOLLOWINGS_URL, query).await
-}
-
-pub async fn get_relation_followings_search(
-    session: &Session,
-    query: RelationFollowingsSearchQuery,
-) -> Result<RelationFollowings, Error> {
-    bili_query_get(session, RELATION_FOLLOWINGS_SEARCH_URL, query).await
-}
-
-pub async fn get_realtion_same_followings(
-    session: &Session,
-    query: RelationSameFollowingsQuery,
-) -> Result<RelationFollowings, Error> {
-    bili_query_get(session, RELATION_SAME_FOLLOWINGS_URL, query).await
-}
-
-pub async fn get_relation_whisper_followings(
-    session: &Session,
-    query: RelationWhisperFollowingsQuery,
-) -> Result<RelationFollowings, Error> {
-    bili_query_get(session, RELATION_FOLLOWINGS_URL, query).await
-}
-
-pub async fn get_relation_friends(
-    session: &Session,
-    query: RelationFriendsQuery,
-) -> Result<RelationFollows, Error> {
-    bili_query_get(session, RELATION_FOLLOWINGS_URL, query).await
-}
-
-pub async fn get_relation_blacks(
-    session: &Session,
-    query: RelationBlacksQuery,
-) -> Result<RelationFollows, Error> {
-    bili_query_get(session, RELATION_FOLLOWINGS_URL, query).await
-}
+define_bili_request!(RelationStat, RELATION_STAT_URL, Get);
+define_bili_request!(RelationFollowers, RELATION_FOLLOWERS_URL, Get);
+define_bili_request!(RelationFollowings, RELATION_FOLLOWINGS_URL, Get);
+define_bili_request!(
+    RelationFollowingsSearch,
+    RELATION_FOLLOWINGS_SEARCH_URL,
+    Get
+);
+define_bili_request!(RelationSameFollowings, RELATION_SAME_FOLLOWINGS_URL, Get);
+define_bili_request!(
+    RelationWhisperFollowings,
+    RELATION_WHISPER_FOLLOWINGS_URL,
+    Get
+);
+define_bili_request!(RelationFriends, RELATION_FRIENDS_URL, Get);
+define_bili_request!(RelationBlacks, RELATION_BLACKS_URL, Get);
 
 #[cfg(test)]
 mod tests {
+    use crate::service::Session;
+
     use super::*;
 
     #[tokio::test]
@@ -79,7 +43,9 @@ mod tests {
         let session = Session::from("./cookies.json");
 
         let query = RelationStatQuery::new(200435669);
-        let stat = get_relation_stat(&session, query).await.unwrap();
+        let stat = RelationStatRequest::send_request(&session, query)
+            .await
+            .unwrap();
 
         assert_eq!(stat.mid, 200435669);
     }
@@ -89,7 +55,9 @@ mod tests {
         let session = Session::from("./cookies.json");
 
         let query = RelationFollowersQuery::from(200435669);
-        let _ = get_relation_followers(&session, query).await.unwrap();
+        let _ = RelationFollowersRequest::send_request(&session, query)
+            .await
+            .unwrap();
     }
 
     #[tokio::test]
@@ -97,6 +65,8 @@ mod tests {
         let session = Session::from("./cookies.json");
 
         let query = RelationFollowingsQuery::from(200435669);
-        let _ = get_relation_followings(&session, query).await.unwrap();
+        let _ = RelationFollowingsRequest::send_request(&session, query)
+            .await
+            .unwrap();
     }
 }

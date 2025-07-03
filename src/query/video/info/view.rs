@@ -18,7 +18,8 @@ pub type VideoInfoQuery = VideoQuery;
 
 #[cfg(test)]
 mod tests {
-    use crate::traits::Query;
+
+    use crate::auth::to_query;
 
     use super::*;
 
@@ -28,7 +29,7 @@ mod tests {
     fn test_query_video_view() {
         let query = VideoViewQuery::from(BVID);
 
-        let url = format!("{}?{}", VIDEO_VIEW_URL, query.to_query().unwrap());
+        let url = format!("{}?{}", VIDEO_VIEW_URL, to_query(&query).unwrap());
         assert_eq!(
             url,
             "https://api.bilibili.com/x/web-interface/wbi/view?bvid=BV1SWfwY3ENK"

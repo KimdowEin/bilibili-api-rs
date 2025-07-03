@@ -5,13 +5,7 @@ use_bili_request!();
 use async_trait::async_trait;
 
 use crate::{
-    auth::{csrf, sign},
-    error::Error,
-    model::video::stream::view::{VideoStream, VideoStreamOld},
-    query::video::stream::{VideoStreamQuery, VIDEO_STREAM_URL},
-    service::{bili_request, Session},
-    traits::Query,
-    use_bili_request,
+    auth::{csrf, sign, to_query, AuthType}, error::Error, model::video::stream::view::{VideoStream, VideoStreamOld}, query::video::stream::{VideoStreamQuery, VIDEO_STREAM_URL}, service::{bili_request, Session}, traits::QueryTag, use_bili_request
 };
 
 /// 获取视频流地址(旧Mp4格式)
@@ -24,11 +18,10 @@ impl BiliRequest for VideoStreamOldRequest {
 
     const METHOD: RequestMethod = RequestMethod::Get;
     const URL: &str = VIDEO_STREAM_URL;
-    const AUTH: AuthType = AuthType::Sign;
 
     async fn send_request(session: &Session, query: Self::Query) -> Result<Self::Response, Error> {
-        let url = match Self::AUTH {
-            AuthType::None => format!("{}?{}", Self::URL, query.to_query()?),
+        let url = match Self::Query::AUTH {
+            AuthType::Query => format!("{}?{}", Self::URL, to_query(&query)?),
             AuthType::Sign => format!("{}?{}", Self::URL, sign(&query, &session.bili_jct().await)?),
             AuthType::Csrf => format!("{}?{}", Self::URL, csrf(&query, &session.bili_jct().await)?),
         };
@@ -36,7 +29,7 @@ impl BiliRequest for VideoStreamOldRequest {
     }
 }
 
-define_bili_request!(VideoStream, VIDEO_STREAM_URL, Get, Sign);
+define_bili_request!(VideoStream, VIDEO_STREAM_URL, Get);
 
 #[cfg(test)]
 mod tests {

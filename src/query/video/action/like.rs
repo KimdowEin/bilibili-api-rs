@@ -2,14 +2,16 @@
 
 use serde::{Deserialize, Serialize};
 
+use crate::{auth::AuthType, traits::QueryTag};
+
 use super::VideoQuery;
-use crate::traits::{Csrf, Query};
 
 // Web端点赞接口
 pub const LIKE_VIDEO_URL: &str = "https://api.bilibili.com/x/web-interface/archive/like";
 
 // Web端点赞接口
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Query, Csrf)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, QueryTag)]
+#[tag(Csrf)]
 pub struct LikeVideoQuery {
     #[serde(flatten)]
     pub vid: VideoQuery,

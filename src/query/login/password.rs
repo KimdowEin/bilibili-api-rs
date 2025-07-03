@@ -6,14 +6,15 @@
 //!
 //! LoginQuery登陆(post)
 
-use crate::{model::login::captcha::Captcha, traits::Query};
+use crate::{model::login::captcha::Captcha, traits::QueryTag,auth::AuthType};
 use serde::{Deserialize, Serialize};
 
 /// 获取公钥&盐(只有web端需要)
 pub const LOGIN_KEY_URL: &str = "https://passport.bilibili.com/x/passport-login/web/key";
 
 /// 获取公钥&盐(只有web端需要)
-#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Query)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, QueryTag)]
+#[tag(Query)]
 pub struct LoginKeyQuery;
 impl LoginKeyQuery {
     pub fn new() -> Self {
@@ -26,7 +27,8 @@ pub const LOGIN_URL: &str = "https://passport.bilibili.com/x/passport-login/web/
 pub const PASSWORD_LOGIN_URL: &str = LOGIN_URL;
 
 /// 密码登录操作(post)
-#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Query)]
+#[derive(Debug, Clone, PartialEq, Deserialize, Serialize, QueryTag)]
+#[tag(Query)]
 pub struct PasswordLoginQuery {
     pub username: String,
     pub password: String,

@@ -78,6 +78,12 @@ pub type RelationFollowers = RelationFollows;
 /// 查询用户粉丝明细
 pub type RelationFollowings = RelationFollows;
 
+pub type RelationFollowingsSearch = RelationFollows;
+pub type RelationSameFollowings = RelationFollows;
+pub type RelationWhisperFollowings = RelationFollows;
+pub type RelationFriends = RelationFollows;
+pub type RelationBlacks = RelationFollows;
+
 #[derive(Debug, Clone, PartialEq, Deserialize_repr, Serialize_repr)]
 #[repr(u8)]
 pub enum RelationModifyAction {
@@ -100,6 +106,8 @@ pub enum RelationModifyResource {
     Article = 115,
     Event = 222,
 }
+
+// RelationModify无返回
 
 #[cfg(test)]
 mod tests {

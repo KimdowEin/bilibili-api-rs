@@ -38,9 +38,9 @@ use crate::{
     use_bili_request,
 };
 
-define_bili_request!(Captcha, CAPTCHA_URL, Get, None);
-define_bili_request!(LoginKey, LOGIN_KEY_URL, Get, None);
-define_bili_request!(PasswordLogin, PASSWORD_LOGIN_URL, Post, None);
+define_bili_request!(Captcha, CAPTCHA_URL, Get);
+define_bili_request!(LoginKey, LOGIN_KEY_URL, Get);
+define_bili_request!(PasswordLogin, PASSWORD_LOGIN_URL, Post);
 
 /// 跳转人工认证页面
 /// 外源，可能会失效

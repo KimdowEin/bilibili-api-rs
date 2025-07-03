@@ -2,25 +2,29 @@
 
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use crate::{error::Error, traits::Query};
+use serde::Serialize;
+
+use crate::error::Error;
 
 pub enum AuthType {
-    /// 无鉴权(impl query)
-    None,
-    /// impl sign
+    /// 无鉴权
+    Query,
+
     Sign,
-    /// impl csrf
     Csrf,
 }
 
-pub fn sign(query: &impl Query, mixin_key: &str) -> Result<String, Error> {
+pub fn to_query(query:&impl Serialize)->Result<String, Error>{
+    Ok(serde_qs::to_string(query)?)
+}
+pub fn sign(query: &impl Serialize, mixin_key: &str) -> Result<String, Error> {
     let timestamp = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .unwrap()
         .as_secs();
     let wts = format!("wts={}", timestamp);
 
-    let ori_query = query.to_query()?;
+    let ori_query = to_query(query)?;
     let mut querys = ori_query.split("&").collect::<Vec<&str>>();
     querys.push(&wts);
     querys.sort();
@@ -32,8 +36,8 @@ pub fn sign(query: &impl Query, mixin_key: &str) -> Result<String, Error> {
     Ok(query)
 }
 
-pub fn csrf(query: &impl Query, bili_jct: &str) -> Result<String, Error> {
-    let ori_query = query.to_query()?;
+pub fn csrf(query: &impl Serialize, bili_jct: &str) -> Result<String, Error> {
+    let ori_query = to_query(query)?;
     let query = format!("{}&csrf={}", ori_query, bili_jct);
     Ok(query)
 }

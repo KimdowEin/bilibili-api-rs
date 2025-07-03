@@ -1,14 +1,15 @@
 //! 投币
 
+use crate::{traits::QueryTag,auth::AuthType};
 use super::VideoQuery;
-use crate::traits::{Csrf, Query};
 use serde::{Deserialize, Serialize};
 
 /// 投币视频（web端）
 pub const COIN_VIDEO_URL: &str = "https://api.bilibili.com/x/web-interface/coin/add";
 
 /// 投币视频（web端）
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Query, Csrf)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, QueryTag)]
+#[tag(Csrf)]
 pub struct CoinVideoQuery {
     #[serde(flatten)]
     pub vid: VideoQuery,

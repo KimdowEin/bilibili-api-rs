@@ -10,14 +10,14 @@ use crate::{
         video::action::{
             coin::{CoinVideo, IsCoin},
             collect::{CollectVideo, IsCollect},
-            like::LikeVideo,
+            like::{IsLikeVideo, LikeVideo},
             share::ShareVideo,
         },
     },
     query::video::action::{
         coin::{CoinVideoQuery, IsCoinQuery, COIN_VIDEO_URL, IS_COIN_URL},
         collect::{CollectVideoQuery, IsCollectQuery, COLLECT_VIDEO_URL, IS_COLLECT_URL},
-        like::{LikeVideoQuery, LIKE_VIDEO_URL},
+        like::{IsLikeVideoQuery, LikeVideoQuery, IS_LIKE_VIDEO_URL, LIKE_VIDEO_URL},
         share::{ShareVideoQuery, SHARE_VIDEO_URL},
     },
     service::Session,
@@ -31,7 +31,6 @@ pub struct LikeVideoRequest;
 impl BiliRequest for LikeVideoRequest {
     type Query = LikeVideoQuery;
     type Response = LikeVideo;
-    const AUTH: AuthType = AuthType::Csrf;
     const METHOD: RequestMethod = RequestMethod::Post;
     const URL: &str = LIKE_VIDEO_URL;
 
@@ -55,11 +54,12 @@ impl BiliRequest for LikeVideoRequest {
     }
 }
 
-define_bili_request!(CoinVideo, COIN_VIDEO_URL, Post, Csrf);
-define_bili_request!(IsCoin, IS_COIN_URL, Get, None);
-define_bili_request!(CollectVideo, COLLECT_VIDEO_URL, Post, Csrf);
-define_bili_request!(IsCollect, IS_COLLECT_URL, Get, None);
-define_bili_request!(ShareVideo, SHARE_VIDEO_URL, Post, Csrf);
+define_bili_request!(IsLikeVideo, IS_LIKE_VIDEO_URL, Get);
+define_bili_request!(CoinVideo, COIN_VIDEO_URL, Post);
+define_bili_request!(IsCoin, IS_COIN_URL, Get);
+define_bili_request!(CollectVideo, COLLECT_VIDEO_URL, Post);
+define_bili_request!(IsCollect, IS_COLLECT_URL, Get);
+define_bili_request!(ShareVideo, SHARE_VIDEO_URL, Post);
 
 #[cfg(test)]
 mod test {

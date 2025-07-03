@@ -12,9 +12,9 @@ use crate::{
 
 use_bili_request!();
 
-define_bili_request!(VideoView, VIDEO_VIEW_URL, Get, None);
-define_bili_request!(VideoDesc, VIDEO_DESC_URL, Get, None);
-define_bili_request!(VideoCids, VIDEO_CIDS_URL, Get, None);
+define_bili_request!(VideoView, VIDEO_VIEW_URL, Get);
+define_bili_request!(VideoDesc, VIDEO_DESC_URL, Get);
+define_bili_request!(VideoCids, VIDEO_CIDS_URL, Get);
 
 #[cfg(test)]
 mod tests {

@@ -7,5 +7,6 @@ pub mod auth;
 pub mod video;
 
 pub mod session;
+mod user;
 
 pub use session::*;

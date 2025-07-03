@@ -11,7 +11,7 @@ use crate::{
 
 use super::session::COOKIES_URL;
 
-define_bili_request!(BiliTicket, BILI_TICKET_URL, Post, Csrf);
+define_bili_request!(BiliTicket, BILI_TICKET_URL, Post);
 
 impl Session {
     /// 刷新 获得ticket 获得wbi key 从cookies获取csrf(bili_jct)

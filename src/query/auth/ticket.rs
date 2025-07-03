@@ -1,9 +1,6 @@
 //! ticket 风控验证之一
 
-use crate::{
-    error::Error,
-    traits::{Csrf, Query},
-};
+use crate::{auth::AuthType, error::Error, traits::QueryTag};
 use hmac::{Hmac, Mac};
 use serde::{Deserialize, Serialize};
 use sha2::Sha256;
@@ -12,7 +9,8 @@ use std::time::{self, UNIX_EPOCH};
 pub const BILI_TICKET_URL: &str =
     "https://api.bilibili.com/bapis/bilibili.api.ticket.v1.Ticket/GenWebTicket";
 
-#[derive(Debug, Serialize, Deserialize, Query, Csrf)]
+#[derive(Debug, Serialize, Deserialize, QueryTag)]
+#[tag(Csrf)]
 pub struct BiliTicketQuery {
     // ec02
     pub key_id: String,
@@ -20,6 +18,7 @@ pub struct BiliTicketQuery {
     #[serde(rename = "context[ts]")]
     pub context: u64,
 }
+
 impl BiliTicketQuery {
     pub fn new() -> Result<Self, Error> {
         let key_id = "ec02".to_string();

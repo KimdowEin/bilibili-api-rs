@@ -10,7 +10,8 @@ pub type VideoDescQuery = VideoQuery;
 
 #[cfg(test)]
 mod tests {
-    use crate::traits::Query;
+
+    use crate::auth::to_query;
 
     use super::*;
 
@@ -20,7 +21,7 @@ mod tests {
     fn test_query_video_desc() {
         let query = VideoDescQuery::from(BVID);
 
-        let url = format!("{}?{}", VIDEO_DESC_URL, query.to_query().unwrap());
+        let url = format!("{}?{}", VIDEO_DESC_URL, to_query(&query).unwrap());
 
         assert_eq!(
             url,

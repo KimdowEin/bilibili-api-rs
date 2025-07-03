@@ -2,8 +2,9 @@
 
 use super::VideoQuery;
 use crate::{
+    auth::AuthType,
     model::video::stream::format::{Fnval, Qn},
-    traits::{Query, Sign},
+    traits::QueryTag,
 };
 use serde::{Deserialize, Serialize};
 
@@ -11,7 +12,8 @@ use serde::{Deserialize, Serialize};
 pub const VIDEO_STREAM_URL: &str = "https://api.bilibili.com/x/player/wbi/playurl";
 
 /// 获取视频流地址
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Query, Sign)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, QueryTag)]
+#[tag(Sign)]
 pub struct VideoStreamQuery {
     #[serde(flatten)]
     pub vid: VideoQuery,
