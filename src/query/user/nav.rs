@@ -4,7 +4,7 @@
 //!
 //! 如果想获得用户信息,应该用user/account里的接口
 
-use crate::{traits::QueryTag,auth::AuthType};
+use crate::{auth::AuthType, traits::QueryTag};
 use serde::{Deserialize, Serialize};
 
 // 导航栏用户信息

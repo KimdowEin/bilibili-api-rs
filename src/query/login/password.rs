@@ -6,7 +6,7 @@
 //!
 //! LoginQuery登陆(post)
 
-use crate::{model::login::captcha::Captcha, traits::QueryTag,auth::AuthType};
+use crate::{auth::AuthType, model::login::captcha::Captcha, traits::QueryTag};
 use serde::{Deserialize, Serialize};
 
 /// 获取公钥&盐(只有web端需要)

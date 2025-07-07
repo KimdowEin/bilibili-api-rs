@@ -22,10 +22,7 @@ impl DerefMut for LikeVideo {
 }
 
 #[derive(Debug, Clone, PartialEq, Deserialize, Serialize, Data)]
-pub struct IsLikeVideo(
-    #[serde(deserialize_with = "deserialize_bool_from_anything")]
-    pub bool
-);
+pub struct IsLikeVideo(#[serde(deserialize_with = "deserialize_bool_from_anything")] pub bool);
 impl Deref for IsLikeVideo {
     type Target = bool;
     fn deref(&self) -> &Self::Target {

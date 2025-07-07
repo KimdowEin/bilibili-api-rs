@@ -2,7 +2,11 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::{model::user::relation::{RelationModifyAction, RelationModifyResource}, traits::QueryTag,auth::AuthType};
+use crate::{
+    auth::AuthType,
+    model::user::relation::{RelationModifyAction, RelationModifyResource},
+    traits::QueryTag,
+};
 
 /// 关系状态数
 pub const RELATION_STAT_URL: &str = "https://api.bilibili.com/x/relation/stat";

@@ -45,10 +45,7 @@ pub trait BiliRequest {
 #[macro_export]
 macro_rules! use_bili_request {
     () => {
-        use crate::{
-            define_bili_request, service::session::RequestMethod,
-            traits::BiliRequest,
-        };
+        use crate::{define_bili_request, service::session::RequestMethod, traits::BiliRequest};
     };
 }
 

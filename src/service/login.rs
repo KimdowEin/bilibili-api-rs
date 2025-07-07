@@ -5,23 +5,37 @@
 //! let (username, password) = ("username", "password");
 //! let session = Session::new().unwrap();
 //!
-//! let captcha = get_captcha(&session).await.unwrap();
+//! let query = CaptchaQuery::new();
+//! let captcha = CaptchaRequest::send_request(&session, query).await.unwrap();
 //!
-//! // 需要启用 manual
 //! // 这里会使用默认浏览器跳转到一个过captcha的页面，需要手动验证
-//! // manual_verification(&captcha.geetest).unwrap();
+//! manual_verification(&captcha.geetest).unwrap();
 //!
 //! // 将得到的结果 verify 输入到控制台
-//! let mut buf = Vec::new();
-//! tokio::io::stdin().read_buf(&mut buf).await.unwrap();
-//! let validate= String::from_utf8(buf).unwrap().trim();
+//! let mut buf = String::new();
+//! std::io::stdin().read_line(&mut buf).unwrap();
+//! let validate = buf.trim();
 //!
-//! let key = get_login_key(&session).await.unwrap();
+//! let query = LoginKeyQuery::new();
+//! let key = LoginKeyRequest::send_request(&session, query)
+//!     .await
+//!     .unwrap();
 //! let password = key.decode_password(password).unwrap();
-//! let query = LoginQuery::new(username.to_string(), password.to_string(), captcha, validate.to_string(), None, None);
-//! let response = session.login_by_password(query).await.unwrap();
+//!
+//! let query = PasswordLoginQuery::new(
+//!     username.to_string(),
+//!     password,
+//!     captcha,
+//!     validate.to_string(),
+//!     None,
+//!     None,
+//! );
+//! let response = PasswordLoginRequest::send_request(&session, query)
+//!     .await
+//!     .unwrap();
+//!
 //! println!("登录状态: {}", response.message);
-//! // 保存 cookies 到文件
+//!
 //! session.save_cookies().unwrap();
 //! ```
 
@@ -45,7 +59,7 @@ define_bili_request!(PasswordLogin, PASSWORD_LOGIN_URL, Post);
 /// 跳转人工认证页面
 /// 外源，可能会失效
 #[cfg(feature = "manual")]
-use crate::model::login::captcha::Geetest;
+use crate::{error::Error, model::login::captcha::Geetest};
 #[cfg(feature = "manual")]
 pub fn manual_verification(geetest: &Geetest) -> Result<(), Error> {
     let url = "https://kuresaru.github.io/geetest-validator/";

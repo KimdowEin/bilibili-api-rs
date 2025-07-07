@@ -1,18 +1,18 @@
 use crate::{
     error::Error,
-    model::{response::BiliResponse, user::nav::NavInfo},
-    query::user::nav::NAV_INFO_URL,
+    model::user::nav::NavInfo,
+    query::user::nav::{NavInfoQuery, NAV_INFO_URL},
     service::session::Session,
+    use_bili_request,
 };
+
+use_bili_request!();
+define_bili_request!(NavInfo, NAV_INFO_URL, Get);
 
 impl Session {
     pub async fn get_nav(&self) -> Result<NavInfo, Error> {
-        self.get(NAV_INFO_URL)
-            .send()
-            .await?
-            .json::<BiliResponse<_>>()
-            .await?
-            .data()
+        let query = NavInfoQuery::new();
+        NavInfoRequest::send_request(&self, query).await
     }
 }
 

@@ -6,7 +6,6 @@ pub mod info;
 pub mod stream;
 
 use crate::{auth::AuthType, traits::QueryTag};
-// use crate::traits::{Csrf, Query, Sign};
 use serde::{Deserialize, Serialize};
 
 /// 通用视频查询
@@ -17,31 +16,23 @@ pub struct VideoQuery {
     pub bvid: Option<String>,
 }
 impl VideoQuery {
-    pub fn new<I, S>(aid: I, bvid: S) -> Self
-    where
-        I: Into<Option<u64>>,
-        S: Into<Option<String>>,
-    {
-        VideoQuery {
-            aid: aid.into(),
-            bvid: bvid.into(),
-        }
+    pub fn new(aid: Option<u64>, bvid: Option<String>) -> Self {
+        VideoQuery { aid, bvid }
     }
 }
 impl From<u64> for VideoQuery {
     fn from(value: u64) -> Self {
-        VideoQuery::new(value, None)
+        VideoQuery::new(Some(value), None)
     }
 }
 impl From<&str> for VideoQuery {
     fn from(value: &str) -> Self {
-        {}
-        VideoQuery::new(None, value.to_string())
+        VideoQuery::new(None, Some(value.to_string()))
     }
 }
 impl From<String> for VideoQuery {
     fn from(value: String) -> Self {
-        VideoQuery::new(None, value)
+        VideoQuery::new(None, Some(value))
     }
 }
 
@@ -52,25 +43,18 @@ pub struct VideoSignQuery {
     pub bvid: Option<String>,
 }
 impl VideoSignQuery {
-    pub fn new<I, S>(aid: I, bvid: S) -> Self
-    where
-        I: Into<Option<u64>>,
-        S: Into<Option<String>>,
-    {
-        Self {
-            aid: aid.into(),
-            bvid: bvid.into(),
-        }
+    pub fn new(aid: Option<u64>, bvid: Option<String>) -> Self {
+        VideoSignQuery { aid, bvid }
     }
 }
 impl From<&str> for VideoSignQuery {
     fn from(value: &str) -> Self {
-        VideoSignQuery::new(None, value.to_string())
+        VideoSignQuery::new(None, Some(value.to_string()))
     }
 }
 impl From<String> for VideoSignQuery {
     fn from(value: String) -> Self {
-        VideoSignQuery::new(None, value)
+        VideoSignQuery::new(None, Some(value))
     }
 }
 impl From<u64> for VideoSignQuery {
@@ -86,20 +70,13 @@ pub struct VideoCsrfQuery {
     pub bvid: Option<String>,
 }
 impl VideoCsrfQuery {
-    pub fn new<I, S>(aid: I, bvid: S) -> Self
-    where
-        I: Into<Option<u64>>,
-        S: Into<Option<String>>,
-    {
-        Self {
-            aid: aid.into(),
-            bvid: bvid.into(),
-        }
+    pub fn new(aid: Option<u64>, bvid: Option<String>) -> Self {
+        VideoCsrfQuery { aid, bvid }
     }
 }
 impl From<u64> for VideoCsrfQuery {
     fn from(aid: u64) -> Self {
-        Self::new(aid, None)
+        Self::new(Some(aid), None)
     }
 }
 impl From<String> for VideoCsrfQuery {
@@ -115,12 +92,14 @@ impl From<&str> for VideoCsrfQuery {
 
 #[cfg(test)]
 mod tests {
+    use crate::auth::to_query;
+
     use super::*;
 
-    // #[test]
-    // fn test_video_query() {
-    //     let query = VideoQuery::new(1, "BV1K54y1e7YP".to_string());
-    //     let query = query.to_query().unwrap();
-    //     assert_eq!(query, "aid=1&bvid=BV1K54y1e7YP")
-    // }
+    #[test]
+    fn test_video_query() {
+        let query = VideoQuery::new(Some(1), Some("BV1K54y1e7YP".to_string()));
+        let query = to_query(&query).unwrap();
+        assert_eq!(query, "aid=1&bvid=BV1K54y1e7YP")
+    }
 }

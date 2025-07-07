@@ -6,4 +6,4 @@ use crate::query::video::VideoCsrfQuery;
 pub const SHARE_VIDEO_URL: &str = "https://api.bilibili.com/x/web-interface/share/add";
 
 /// 分享视频
-pub type  ShareVideoQuery = VideoCsrfQuery;
+pub type ShareVideoQuery = VideoCsrfQuery;

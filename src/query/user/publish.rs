@@ -1,6 +1,6 @@
 // 发布相关，比如累计播放量
 
-use crate::{traits::QueryTag,auth::AuthType};
+use crate::{auth::AuthType, traits::QueryTag};
 use serde::{Deserialize, Serialize};
 
 /// UP主状态数

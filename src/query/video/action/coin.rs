@@ -1,7 +1,7 @@
 //! 投币
 
-use crate::{traits::QueryTag,auth::AuthType};
 use super::VideoQuery;
+use crate::{auth::AuthType, traits::QueryTag};
 use serde::{Deserialize, Serialize};
 
 /// 投币视频（web端）

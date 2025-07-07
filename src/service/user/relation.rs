@@ -5,10 +5,11 @@ use crate::{
     },
     query::user::relation::{
         RelationBlacksQuery, RelationFollowersQuery, RelationFollowingsQuery,
-        RelationFollowingsSearchQuery, RelationFriendsQuery, RelationStatQuery,
-        RelationWhisperFollowingsQuery,RelationSameFollowingsQuery, RELATION_BLACKS_URL, RELATION_FOLLOWERS_URL,
-        RELATION_FOLLOWINGS_SEARCH_URL, RELATION_FOLLOWINGS_URL, RELATION_FRIENDS_URL,
-        RELATION_SAME_FOLLOWINGS_URL, RELATION_STAT_URL, RELATION_WHISPER_FOLLOWINGS_URL,
+        RelationFollowingsSearchQuery, RelationFriendsQuery, RelationSameFollowingsQuery,
+        RelationStatQuery, RelationWhisperFollowingsQuery, RELATION_BLACKS_URL,
+        RELATION_FOLLOWERS_URL, RELATION_FOLLOWINGS_SEARCH_URL, RELATION_FOLLOWINGS_URL,
+        RELATION_FRIENDS_URL, RELATION_SAME_FOLLOWINGS_URL, RELATION_STAT_URL,
+        RELATION_WHISPER_FOLLOWINGS_URL,
     },
     use_bili_request,
 };

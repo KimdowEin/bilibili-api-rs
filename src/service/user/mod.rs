@@ -1,3 +1,3 @@
 pub mod nav;
-pub mod relation;
 pub mod publish;
+pub mod relation;

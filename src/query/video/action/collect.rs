@@ -2,7 +2,7 @@
 
 use serde::{Deserialize, Serialize};
 
-use crate::{traits::QueryTag,auth::AuthType};
+use crate::{auth::AuthType, traits::QueryTag};
 
 /// 收藏视频（Web端）
 pub const COLLECT_VIDEO_URL: &str = "https://api.bilibili.com/x/v3/fav/resource/deal";

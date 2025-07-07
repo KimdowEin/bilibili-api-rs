@@ -14,7 +14,7 @@ pub enum AuthType {
     Csrf,
 }
 
-pub fn to_query(query:&impl Serialize)->Result<String, Error>{
+pub fn to_query(query: &impl Serialize) -> Result<String, Error> {
     Ok(serde_qs::to_string(query)?)
 }
 pub fn sign(query: &impl Serialize, mixin_key: &str) -> Result<String, Error> {

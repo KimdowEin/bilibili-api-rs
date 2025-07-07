@@ -29,7 +29,7 @@ impl Session {
         Ok(())
     }
 
-    async fn refresh_csrf(&self) -> Result<(), Error> {
+    pub async fn refresh_csrf(&self) -> Result<(), Error> {
         if let Some(bili_jct) = self.get_cookie(COOKIES_URL, "bili_jct") {
             self.set_bili_jct(&bili_jct).await;
             Ok(())
@@ -39,12 +39,12 @@ impl Session {
     }
 
     /// 获取 wbi 签名，每日更新
-    // pub async fn get_mixin_key(&self) -> Result<(), Error> {
-    //     let wbi = self.get_nav().await?.wbi_img;
-    //     let mixin_key = wbi.mixin_key();
-    //     self.set_mixin_key(&mixin_key).await;
-    //     Ok(())
-    // }
+    pub async fn get_mixin_key(&self) -> Result<(), Error> {
+        let wbi = self.get_nav().await?.wbi_img;
+        let mixin_key = wbi.mixin_key();
+        self.set_mixin_key(&mixin_key).await;
+        Ok(())
+    }
 
     /// 设置 wbi 签名
     pub async fn set_mixin_key(&self, mixin_key: &str) {
