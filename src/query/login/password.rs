@@ -32,13 +32,15 @@ pub const PASSWORD_LOGIN_URL: &str = LOGIN_URL;
 pub struct PasswordLoginQuery {
     pub username: String,
     pub password: String,
+    // 保留价值存疑
     pub keep: u8,
     pub token: String,
     pub challenge: String,
     pub validate: String,
     pub seccode: String,
-    pub go_url: Option<String>,
-    pub source: Option<String>,
+    //下面这两个没什么实际意义
+    // pub go_url: Option<String>,
+    // pub source: Option<String>,
 }
 impl PasswordLoginQuery {
     pub fn new(
@@ -46,8 +48,8 @@ impl PasswordLoginQuery {
         password: String,
         captcha: Captcha,
         validate: String,
-        go_url: Option<String>,
-        source: Option<String>,
+        // go_url: Option<String>,
+        // source: Option<String>,
     ) -> Self {
         let Captcha { token, geetest } = captcha;
         let challenge = geetest.challenge;
@@ -61,8 +63,8 @@ impl PasswordLoginQuery {
             challenge,
             validate,
             seccode,
-            go_url,
-            source,
+            // go_url,
+            // source,
         }
     }
 }

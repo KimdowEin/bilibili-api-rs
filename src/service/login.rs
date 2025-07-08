@@ -104,8 +104,6 @@ mod tests {
             "testpassword".to_string(),
             captcha,
             "validate".to_string(),
-            None,
-            None,
         );
         let err = PasswordLoginRequest::send_request(&session, query).await;
 

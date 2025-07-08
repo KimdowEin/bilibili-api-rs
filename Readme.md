@@ -106,7 +106,11 @@ async fn test_download_video(){
     let cid = cids[0].cid;
 
     let vid = VideoQuery::from(BVID);
-    let query = VideoStreamQuery::new(vid, cid, None, Some(Fnval::DASH),None, None);
+    let query = VideoStreamQuery::builder()
+        .vid(vid)
+        .cid(cid)
+        .fnval(Fnval::DASH)
+        .build();
     let video_stream = VideoStreamRequest::send_request(&session, query).await.unwrap();
     let (video,audio) = video_stream.dash.get_best();
     if let (Some(video),Some(audio)) = (video,audio) {

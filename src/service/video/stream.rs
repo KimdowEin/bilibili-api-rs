@@ -13,7 +13,11 @@
 //!     let cid = cids[0].cid;
 //!
 //!     let vid = VideoQuery::from(BVID);
-//!     let query = VideoStreamQuery::new(vid, cid, None, Some(Fnval::DASH),None, None);
+//!     let query = VideoStreamQuery::builder()
+//!        .vid(vid)
+//!        .cid(cid)
+//!        .fnval(Fnval::DASH)
+//!        .build();
 //!     let video_stream = VideoStreamRequest::send_request(&session, query).await.unwrap();
 //!     let (video,audio) = video_stream.dash.get_best();
 //!     if let (Some(video),Some(audio)) = (video,audio) {
@@ -144,14 +148,12 @@ mod tests {
             .await
             .unwrap()[0]
             .cid;
-        let query = VideoStreamQuery::new(
-            query,
-            cid,
-            Some(Qn::FHD),
-            Some(Fnval::DASH | Fnval::HDR),
-            None,
-            None,
-        );
+        let query = VideoStreamQuery::builder()
+            .vid(query)
+            .cid(cid)
+            .qn(Qn::FHD)
+            .fnval(Fnval::DASH | Fnval::HDR)
+            .build();
         let stream = VideoStreamRequest::send_request(&session, query)
             .await
             .unwrap();
