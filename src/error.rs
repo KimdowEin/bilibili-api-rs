@@ -1,39 +1,13 @@
-use crate::model::response::BiliResponseCode;
-use std::time;
 use thiserror::Error;
 
-#[derive(Error, Debug)]
+#[derive(Debug, Error)]
 pub enum Error {
-    #[cfg(feature = "session")]
     #[error(transparent)]
-    RequestError(#[from] reqwest::Error),
-
-    #[error("bilibili response error, code:{code:?}, message:{message}")]
-    ResponseError {
-        code: BiliResponseCode,
-        message: String,
-    },
-
-    #[error("bilibili response without data")]
-    NullResponseError,
+    BiliCoreError(#[from] bili_core::error::Error),
 
     #[error(transparent)]
-    QsError(#[from] serde_qs::Error),
+    EncryptError(#[from] bili_login::error::Error),
 
     #[error(transparent)]
-    JsonError(#[from] serde_json::Error),
-
-    #[error(transparent)]
-    SignError(#[from] rsa::pkcs8::spki::Error),
-    #[error(transparent)]
-    SignError2(#[from] rsa::errors::Error),
-
-    #[error(transparent)]
-    IoError(#[from] std::io::Error),
-
-    #[error(transparent)]
-    TimeError(#[from] time::SystemTimeError),
-
-    #[error("other error:{0}")]
-    OtherError(String),
+    ServiceError(#[from] bili_service::error::Error),
 }

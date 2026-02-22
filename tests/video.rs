@@ -1,124 +1,184 @@
-#![cfg(feature = "session")]
-
-use std::path::Path;
-
-use bilibili_api_rs::{
-    model::video::stream::format::Fnval,
-    query::video::{info::cids::VideoCidsQuery, stream::VideoStreamQuery, VideoQuery},
-    service::{
-        video::{VideoCidsRequest, VideoStreamRequest},
-        Session,
-    },
-    traits::BiliRequest,
+use std::{
+    process::Command,
+    sync::{Arc, LazyLock},
 };
-use futures::StreamExt;
-use indicatif::{ProgressBar, ProgressStyle};
+
+use anyhow::Error;
+use bili_auth::nav::{NAV_URL, Nav, NavQuery};
+use bili_core::*;
+use bili_service::{Session, SessionState};
+use bili_video::{
+    VideoQuery,
+    format::Fnval,
+    info::cids::{VIDEO_CIDS_URL, VideoCids, VideoCidsQuery},
+    stream::{VIDEO_STREAM_URL, VideoStream, VideoStreamQuery},
+};
+use futures_util::TryStreamExt;
+use reqwest::{
+    ClientBuilder,
+    header::{self, HeaderMap, HeaderValue},
+};
 use tempfile::TempDir;
-use tokio::{fs::File, io::AsyncWriteExt};
+use tokio::io::{AsyncWriteExt, BufWriter};
 
-///下载视频单例测试
-#[tokio::test]
-#[ignore]
-async fn test_download_video() {
-    const BVID: &str = "BV1RHMgz4EnY";
+const BVID: &str = "BV1raFvzEEuU";
+static HEADER: LazyLock<HeaderMap> = LazyLock::new(|| {
+    let mut headers = header::HeaderMap::new();
 
-    let session = Session::new_with_path("./cookies.json").unwrap();
-
-    let query = VideoCidsQuery::from(BVID);
-    let cids = VideoCidsRequest::send_request(&session, query)
-        .await
-        .unwrap();
-    let cid = cids[0].cid;
-
-    let vid = VideoQuery::from(BVID);
-    let query = VideoStreamQuery::builder()
-        .vid(vid)
-        .cid(cid)
-        .fnval(Fnval::DASH)
-        .build();
-    let video_stream = VideoStreamRequest::send_request(&session, query)
-        .await
-        .unwrap();
-    let (video, audio) = video_stream.dash.get_best();
-    if let (Some(video), Some(audio)) = (video, audio) {
-        let temp_dir = TempDir::new().unwrap();
-
-        let video_path = temp_dir.path().join("video");
-        let audio_path = temp_dir.path().join("audio");
-
-        let download_video = download_file(&session, &video.base_url, &video_path);
-        let download_audio = download_file(&session, &audio.base_url, &audio_path);
-
-        tokio::try_join!(download_video, download_audio).expect("下载失败");
-
-        let output_path = "./tests/output/output.mp4";
-        merge_video_audio(&video_path, &audio_path, output_path)
-            .await
-            .expect("合并失败");
-
-        // 删除源文件（临时文件会随 temp_dir 被自动删除）
-        println!("合并完成，输出文件：{}", output_path);
-    }
-}
-
-async fn download_file(
-    session: &Session,
-    url: &str,
-    path: &std::path::Path,
-) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    let response = session.get(url).send().await?;
-    let total_size = response.content_length().unwrap_or(0);
-
-    let pb = ProgressBar::new(total_size as u64);
-    pb.set_style(
-        ProgressStyle::default_bar()
-            .template("[{elapsed_precise}] [{wide_bar}] {bytes}/{total_bytes} ({eta})")
-            .unwrap()
-            .progress_chars("#>-"),
+    // 设置常见的 headers
+    headers.insert(
+        header::USER_AGENT,
+        HeaderValue::from_static(
+            "Mozilla/5.0 (Windows NT 10.0; Linux; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0",
+        ),
     );
+    headers.insert(header::ACCEPT, HeaderValue::from_static("*/*"));
+    headers.insert(
+        header::ACCEPT_LANGUAGE,
+        HeaderValue::from_static("zh-CN,zh-TW;q=0.9,zh;q=0.8,fr;q=0.7,en;q=0.6,ja;q=0.5"),
+    );
+    headers.insert(header::CONNECTION, HeaderValue::from_static("keep-alive"));
+    headers.insert(
+        header::REFERER,
+        HeaderValue::from_static("https://www.bilibili.com/"),
+    );
+    headers
+});
 
-    let mut file = File::create(path).await?;
-    let mut downloaded = 0u64;
-    let mut stream = response.bytes_stream();
+#[tokio::test]
+async fn test_video_download() -> Result<(), Error> {
+    let session = {
+        let state = SessionState::from_path("./cookies.json").map(Arc::new)?;
 
-    while let Some(chunk) = stream.next().await {
-        let chunk = chunk?;
-        file.write_all(&chunk).await?;
-        downloaded += chunk.len() as u64;
-        pb.set_position(downloaded);
+        let client = ClientBuilder::new()
+            .cookie_provider(state.store.clone())
+            .default_headers(HEADER.clone())
+            .build()?;
+
+        let session = Session::new(client, state);
+        session.refresh_csrf();
+
+        // let url = BiliTicketQuery::new()
+        //     .to_query()?
+        //     .with_csrf(&session.bili_jct())?
+        //     .to_url(BILI_TICKET_URL);
+
+        // let ticket = session
+        //     .post(url)
+        //     .send()
+        //     .await?
+        //     .json::<BiliResponse<BiliTicket>>()
+        //     .await?
+        //     .data()?;
+
+        // session.set_ticket(&ticket.ticket)?;
+        // let mixin_key = ticket.wbi.mixin_key();
+
+        let url = NavQuery::new().to_query()?.to_url(NAV_URL);
+
+        let nav = session
+            .get(url)
+            .send()
+            .await?
+            .json::<BiliResponse<Nav>>()
+            .await
+            .unwrap()
+            .data()?;
+
+        let mixin_key = nav.wbi_img.mixin_key();
+        session.set_mixin_key(&mixin_key);
+
+        session
+    };
+
+    let stream = {
+        let url = VideoCidsQuery::from(BVID)
+            .to_query()?
+            .to_url(VIDEO_CIDS_URL);
+
+        let cid = session
+            .get(&url)
+            .send()
+            .await?
+            .json::<BiliResponse<VideoCids>>()
+            .await
+            .unwrap()
+            .data()?
+            .get(0)
+            .ok_or(Error::msg("cid"))?
+            .cid;
+
+        let url = VideoStreamQuery::builder()
+            .cid(cid)
+            .fnval(Fnval::DASH)
+            .vid(VideoQuery::from(BVID))
+            .build()
+            .to_query()?
+            .with_sign(&session.mixin_key())?
+            .to_url(VIDEO_STREAM_URL);
+
+        let stream = session
+            .get(url)
+            .send()
+            .await?
+            .json::<BiliResponse<VideoStream>>()
+            .await?
+            .data()?;
+
+        stream
+    };
+
+    let (video, audio) = if let (Some(video), Some(audio)) = stream.dash.get_best() {
+        (video, audio)
+    } else {
+        return Ok(());
+    };
+
+    let video_url = video.base_url.clone();
+    let audio_url = audio.base_url.clone();
+
+    // dbg!(&video_url, &audio_url);
+
+    let dir = TempDir::new()?;
+
+    let video = dir.path().join("video");
+    let mut file = tokio::fs::File::create(&video).await.map(BufWriter::new)?;
+    let mut stream = session.get(video_url).send().await?.bytes_stream();
+
+    while let Some(bytes) = stream.try_next().await? {
+        file.write_all(&bytes).await?;
     }
 
-    pb.finish_with_message("下载完成");
-    Ok(())
-}
+    file.flush().await?;
 
-async fn merge_video_audio(
-    video_path: &Path,
-    audio_path: &Path,
-    output_path: &str,
-) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    let output = tokio::process::Command::new("ffmpeg")
+    // dbg!("video success");
+
+    let audio = dir.path().join("audio");
+    let mut file = tokio::fs::File::create(&audio).await.map(BufWriter::new)?;
+    let mut stream = session.get(audio_url).send().await?.bytes_stream();
+
+    while let Some(bytes) = stream.try_next().await? {
+        file.write_all(&bytes).await?;
+    }
+    file.flush().await?;
+
+    // dbg!("audio success");
+
+    // dir.disable_cleanup(true);
+
+    // dbg!(dir.keep());
+
+    Command::new("ffmpeg")
         .arg("-i")
-        .arg(video_path)
+        .arg(video)
         .arg("-i")
-        .arg(audio_path)
-        .arg("-c:v")
+        .arg(audio)
+        .arg("-c:v ")
         .arg("copy")
         .arg("-c:a")
         .arg("aac")
-        .arg("-strict")
-        .arg("experimental")
-        .arg(output_path)
-        .output()
-        .await?;
-
-    if !output.status.success() {
-        return Err(format!(
-            "FFmpeg 合并失败: {}",
-            String::from_utf8_lossy(&output.stderr)
-        )
-        .into());
-    }
-
+        .arg("./test/output.mp4")
+        .spawn()?
+        .wait()?;
     Ok(())
 }

@@ -14,9 +14,7 @@
 
 会坚持弄完的
 
-v0.3.0建设中,会重构大部分api,并重构部分模块
-
-后续会逐步完成其他不常用的模块,并补充文档
+v0.4.0建设中,已重新设计项目结构，进入堆量期
 
 ## 快速开始
 
@@ -27,55 +25,17 @@ v0.3.0建设中,会重构大部分api,并重构部分模块
 [dependencies.bilibili-api-rs]
 git = "https://github.com/KimdowEin/bilibili-api-rs"
 brance = "night"
-features = ["session"]
 ```
 
-### 登录(password)
+### 制作cookies
 
-```rust
+cookies格式有v1、v2两个版本
 
-#[tokio::test]
-async fn test_login() {
-    let (username, password) = ("username", "password");
-    let session = Session::new().unwrap();
+v1是能够人工写入的，v2则机器易读
 
-    let query = CaptchaQuery::new();
-    let captcha = CaptchaRequest::send_request(&session, query).await.unwrap();
+v1是兼容的，导入v1后，保存得到的是v2文件
 
-    // 这里会使用默认浏览器跳转到一个过captcha的页面，需要手动验证
-    // 需要启用 feature = manual
-    manual_verification(&captcha.geetest).unwrap();
-
-    // 将得到的结果 verify 输入到控制台
-    let mut buf = String::new();
-    std::io::stdin().read_line(&mut buf).unwrap();
-    let validate = buf.trim();
-
-    let query = LoginKeyQuery::new();
-    let key = LoginKeyRequest::send_request(&session, query)
-        .await
-        .unwrap();
-    let password = key.decode_password(password).unwrap();
-
-    let query = PasswordLoginQuery::new(
-        username.to_string(),
-        password,
-        captcha,
-        validate.to_string(),
-        None,
-        None,
-    );
-    let response = PasswordLoginRequest::send_request(&session, query)
-        .await
-        .unwrap();
-
-    println!("登录状态: {}", response.message);
-
-    session.save_cookies().unwrap();
-}
-```
-
-或者直接在浏览器复制cookies(推荐)
+在浏览器复制cookies，按如下格式粘贴
 
 ```json
 // ./cookies.json
@@ -83,12 +43,50 @@ async fn test_login() {
   {
     "url":"https://api.bilibili.com",
     "cookies":"a=abcdefg; b=hijklmn"
-  }
+  }，
+  // 将上面的cookies多复制几个，然后修改url覆盖其他子域名会更好
+  // 直接用https://.bilibili.com是不行的
+  // {
+  //   "url":"https://www.bilibili.com",
+  //   "cookies":"a=abcdefg; b=hijklmn"
+  // }
 ]
 ```
 
+### 制作session
+
+创建session
+
 ```rust
-let session = Session::new_with_path("./cookies.json").unwrap();
+let state = SessionState::from_path("./cookies.json").map(Arc::new)?;
+state.set_path("./cookies_v2.json");//修改保存路径，避免覆盖v1
+
+let client = ClientBuilder::new()
+    .cookie_provider(state.store.clone())//需要启动reqwest -F cookies
+    .default_headers(HEADER.clone())
+    .build()?;
+
+let session = Session::new(client, state);
+```
+
+制备密钥
+
+```rust
+session.refresh_csrf(); // 制备csrf，即bili_jct
+
+let url = NavQuery::new().to_query()?.to_url(NAV_URL);
+
+let mixin_key = session
+    .get(url)
+    .send()
+    .await?
+    .json::<BiliResponse<Nav>>()
+    .await
+    .unwrap()
+    .data()?
+    .wbi_img
+    .mixin_key();
+session.set_mixin_key(&mixin_key); // 制备sign
 ```
 
 ### 下载视频
@@ -99,156 +97,93 @@ let session = Session::new_with_path("./cookies.json").unwrap();
 async fn test_download_video(){
     const BVID:&str = "BV1RHMgz4EnY";
 
-    let session = Session::new_with_path("./cookies.json").unwrap();
+    let url = VideoCidsQuery::from(BVID)
+        .to_query()?
+        .to_url(VIDEO_CIDS_URL);
 
-    let query = VideoCidsQuery::from(BVID);
-    let cids = VideoCidsRequest::send_request(&session, query).await.unwrap();
-    let cid = cids[0].cid;
+    let cid = session
+        .get(&url)
+        .send()
+        .await?
+        .json::<BiliResponse<VideoCids>>()
+        .await
+        .unwrap()
+        .data()?
+        .get(0)
+        .ok_or(Error::msg("cid"))?
+        .cid;
 
-    let vid = VideoQuery::from(BVID);
-    let query = VideoStreamQuery::builder()
-        .vid(vid)
+    let url = VideoStreamQuery::builder()
         .cid(cid)
         .fnval(Fnval::DASH)
-        .build();
-    let video_stream = VideoStreamRequest::send_request(&session, query).await.unwrap();
-    let (video,audio) = video_stream.dash.get_best();
-    if let (Some(video),Some(audio)) = (video,audio) {
-        let temp_dir = TempDir::new().unwrap();
+        .vid(VideoQuery::from(BVID))
+        .build()
+        .to_query()?
+        .with_sign(&session.mixin_key())?
+        .to_url(VIDEO_STREAM_URL);
+
+    let stream = session
+        .get(url)
+        .send()
+        .await?
+        .json::<BiliResponse<VideoStream>>()
+        .await?
+        .data()?;
+    if let (Some(video), Some(audio)) = stream.dash.get_best() {
+        (video.base_url.clone(), audio.base_url.clone())
         
-        let video_path = temp_dir.path().join("video");
-        let audio_path = temp_dir.path().join("audio");
-
-        let download_video = download_file(&session, &video.base_url, &video_path);
-        let download_audio = download_file(&session, &audio.base_url, &audio_path);
-
-        tokio::try_join!(download_video, download_audio).expect("下载失败");
-
-        let output_path = "./tests/output/output.mp4";
-        merge_video_audio(&video_path, &audio_path, output_path).await.expect("合并失败");
-
-        // 删除源文件（临时文件会随 temp_dir 被自动删除）
-        println!("合并完成，输出文件：{}", output_path);
+        todo!("获得流，自行下载和合并")
     }
+
     
-}
-
-async fn download_file(session: &Session, url: &str, path: &std::path::Path) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    let response = session.get(url).send().await?;
-    let total_size = response.content_length().unwrap_or(0);
-
-    let pb = ProgressBar::new(total_size as u64);
-    pb.set_style(ProgressStyle::default_bar()
-        .template("[{elapsed_precise}] [{wide_bar}] {bytes}/{total_bytes} ({eta})")
-        .unwrap()
-        .progress_chars("#>-"));
-
-    let mut file = File::create(path).await?;
-    let mut downloaded = 0u64;
-    let mut stream = response.bytes_stream();
-
-    while let Some(chunk) = stream.next().await {
-        let chunk = chunk?;
-        file.write_all(&chunk).await?;
-        downloaded += chunk.len() as u64;
-        pb.set_position(downloaded);
-    }
-
-    pb.finish_with_message("下载完成");
-    Ok(())
-}
-
-async fn merge_video_audio(video_path: &Path, audio_path: &Path, output_path: &str) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
-    let output = tokio::process::Command::new("ffmpeg")
-        .arg("-i")
-        .arg(video_path)
-        .arg("-i")
-        .arg(audio_path)
-        .arg("-c:v")
-        .arg("copy")
-        .arg("-c:a")
-        .arg("aac")
-        .arg("-strict")
-        .arg("experimental")
-        .arg(output_path)
-        .output()
-        .await?;
-
-    if !output.status.success() {
-        return Err(format!("FFmpeg 合并失败: {}", String::from_utf8_lossy(&output.stderr)).into());
-    }
-
-    Ok(())
 }
 
 ```
 
 ### 一般流程
 
-理论上，所有接口都有对应模板代码
+先前版本用于省略模板代码的宏被发现并没有使使用变轻松，
+并且对库的制作增加了很多工作量，现已删除
 
-1. new XXXQuery -> query
-2. XXXRequest::send_request(&session,query) -> XXX
+请求的基本流程如下
 
-如果是非常新的版本，可能还没有创建,则按照如下步骤
-
-1. 找到请求体(XXXQuery),生成请求(query/sign/csrf)
-2. 和url(XXX_URL)拼接({}?{},url,query)
+1. new XXXQuery -> query  //对于参数大于3的Query,使用builder
+2. url = query.to_query()?.with_sign/with_csrf()?.to_url(URL);//如无需加密则省去sign/csrf
 3. 发起请求
 4. 解释响应体json(BiliResponse<XXX>)
-5. 获得数据(response.data())
+5. 获得数据(response.data()) // 存在请求成功而data为空的情况，此时response.data()会产生NullResponseDataError
 
 ```rust
 const BVID: &str = "BV1wDCwYfE2f";
 
 #[tokio::test]
-async fn get_video_desc() {
-
-  let session = Session::new_with_path("./cookies.json").unwrap();
-
-  let query = VideoDescQuery::new(None,Some(BVID));
-  // 部分需要鉴权,将to_query()替换sign()
-  let url = format!("{}?{}",VIDEO_DESC_URL,query.to_query().unwrap());
-
-  let desc = session.get(url)
-      .send()
-      .await
+async fn get_video_desc(session:&Session) {
+  let url = VideoDescQuery::from(BVID)
+      .to_query()
       .unwrap()
-      .json::<BiliResponse<VideoDesc>>()
+      .to_url(VIDEO_DESC_URL);
+
+  let json = session.get(url).send().await.unwrap().text().await.unwrap();
+
+  fs::write("../tests/datas/video_desc.json", &json)
       .await
+      .unwrap();
+
+  let desc = serde_json::from_str::<BiliResponse<VideoDesc>>(&json)
       .unwrap()
       .data()
       .unwrap();
+
+  assert!(desc.starts_with("「あたしはまた弱虫モンブランだったみたいだ」"));
 }
 ```
 
-## 功能 feature
+## workspace
 
-- "session"
-  - 提供一个会话
-  - 请求端口
-  - cookies的导入和保存
-- "manual"
-  - 提供一个函数跳转到过人机验证的网站
+理论上支持wasm,还没测试
 
 ## 进度
 
-经过几次大改后进度混乱，暂时无法确定各模块完整性。
-
-但具有端口结构的能保证可靠性
+上游挂了
 
 ## 共同建设
-
-需要大量测试用例
-
-将仓库clone下来,配置好cookies.json,
-在tests/tests.toml中添加测试用例,
-然后执行cargo test.(还没写好)
-
-将失败的用例提交issue,或者自己修bug
-
-测试代码以后会逐渐变得复杂且耗时
-
-api的更新是很迅速的,如观测到变化,
-请提交到[bilibili-API-collect](https://github.com/SocialSisterYi/bilibili-API-collect).
-然后@我,我再更新到这个仓库中.
