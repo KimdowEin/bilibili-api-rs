@@ -1,7 +1,7 @@
 use std::{
     fs::File,
     io::{BufReader, BufWriter, Write},
-    path::{Path, PathBuf},
+    path::Path,
     sync::Arc,
 };
 
@@ -14,13 +14,11 @@ use crate::error::Error;
 
 #[derive(Debug)]
 pub struct SessionState {
-    path: Option<PathBuf>,
     pub store: Arc<CookieStoreMutex>,
 }
 impl Default for SessionState {
     fn default() -> Self {
         Self {
-            path: Some(PathBuf::from("cookies.json")),
             store: Arc::new(CookieStoreMutex::default()),
         }
     }
@@ -36,14 +34,9 @@ impl SessionState {
             .map(Arc::new)
             .expect("there will always be success");
 
-        let path = Some(path.as_ref().to_path_buf());
-
-        Ok(Self { store, path })
+        Ok(Self { store })
     }
 
-    pub fn set_path(&mut self, path: impl AsRef<Path>) {
-        self.path.replace(path.as_ref().to_path_buf());
-    }
     pub fn set_cookie(&self, cookie_str: &str, url: &str) -> Result<(), Error> {
         let url = Url::parse(url)?;
         let cookie = cookie_store::Cookie::parse(cookie_str.to_string(), &url)?;
@@ -60,8 +53,8 @@ impl SessionState {
             .map(|cookie| cookie.value().to_string())
     }
 
-    pub async fn save_cookies(&self) -> Result<(), Error> {
-        let path = self.path.clone().unwrap_or("./cookies_v2.json".into());
+    pub async fn save_cookies(&self, path: impl AsRef<Path>) -> Result<(), Error> {
+        // let path = self.path.load_full().unwrap_or("./cookies_v2.json".into());
         let mut writer = File::create(&path).map(BufWriter::new)?;
         let store = self.store.lock().unwrap();
 
@@ -137,13 +130,12 @@ mod tests {
     #[tokio::test]
     #[ignore]
     async fn test_session_state() {
-        let mut state = SessionState::from_path("../cookies.json").unwrap();
-        state.set_path("../cookies_v2.json");
-        state.save_cookies().await.unwrap();
+        let state = SessionState::from_path("../cookies.json").unwrap();
+        state.save_cookies("../cookies_v2.json").await.unwrap();
 
         SessionState::from_path("../cookies_v2.json")
             .unwrap()
-            .save_cookies()
+            .save_cookies("../cookies_v2.json")
             .await
             .unwrap();
     }

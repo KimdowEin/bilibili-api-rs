@@ -59,7 +59,6 @@ v1是兼容的，导入v1后，保存得到的是v2文件
 
 ```rust
 let state = SessionState::from_path("./cookies.json").map(Arc::new)?;
-state.set_path("./cookies_v2.json");//修改保存路径，避免覆盖v1
 
 let client = ClientBuilder::new()
     .cookie_provider(state.store.clone())//需要启动reqwest -F cookies
@@ -134,8 +133,8 @@ async fn test_download_video(){
         
         todo!("获得流，自行下载和合并")
     }
-
     
+    session.save_cookies("./cookies_v2.json");
 }
 
 ```

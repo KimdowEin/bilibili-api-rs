@@ -22,7 +22,7 @@
 //! ```
 //!
 
-use std::sync::Arc;
+use std::{path::Path, sync::Arc};
 
 use arc_swap::ArcSwap;
 use derive_more::Deref;
@@ -70,8 +70,8 @@ impl Session {
         }
     }
 
-    pub async fn save_cookies(&self) -> Result<(), Error> {
-        self.state.save_cookies().await
+    pub async fn save_cookies(&self, path: impl AsRef<Path>) -> Result<(), Error> {
+        self.state.save_cookies(path).await
     }
 
     pub fn get_cookie(&self, domain: &str, key: &str) -> Option<String> {
