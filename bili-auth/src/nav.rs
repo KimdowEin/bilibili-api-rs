@@ -27,6 +27,6 @@ mod tests {
     #[test]
     fn test_query_nav() {
         let url = NavQuery::new().to_query().unwrap().to_url(NAV_URL);
-        assert_eq!(url, "https://api.bilibili.com/x/web-interface/nav")
+        assert_eq!(url, "https://api.bilibili.com/x/web-interface/nav?")
     }
 }

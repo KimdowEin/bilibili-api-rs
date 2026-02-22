@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 
 [dependencies]
-bili-core = { version = "0.1.0", path = "../bili-core" }
+bili-core = { path = "../bili-core" }
 hex = "0.4.3"
 hmac = "0.12.1"
 serde.workspace = true

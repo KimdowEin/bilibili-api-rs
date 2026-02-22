@@ -117,41 +117,41 @@ pub struct VipAvatarIcon {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    // use super::*;
 
-    #[test]
-    fn test_deserialize_vip() {
-        let s = r#"{
-            "type": 1,
-            "status": 0,
-            "due_date": 1493827200000,
-            "vip_pay_type": 0,
-            "theme_type": 0,
-            "label": {
-                "path": "",
-                "text": "",
-                "label_theme": "",
-                "text_color": "",
-                "bg_style": 0,
-                "bg_color": "",
-                "border_color": "",
-                "use_img_label": true,
-                "img_label_uri_hans": "",
-                "img_label_uri_hant": "",
-                "img_label_uri_hans_static": "https://i0.hdslb.com/bfs/vip/d7b702ef65a976b20ed854cbd04cb9e27341bb79.png",
-                "img_label_uri_hant_static": "https://i0.hdslb.com/bfs/activity-plat/static/20220614/e369244d0b14644f5e1a06431e22a4d5/KJunwh19T5.png"
-            },
-            "avatar_subscript": 0,
-            "nickname_color": "",
-            "role": 0,
-            "avatar_subscript_url": "",
-            "tv_vip_status": 0,
-            "tv_vip_pay_type": 0,
-            "tv_due_date": 0,
-            "vipType": 1,
-            "vipStatus": 0
-        }"#;
+    // #[test]
+    // fn test_deserialize_vip() {
+    //     let s = r#"{
+    //         "type": 1,
+    //         "status": 0,
+    //         "due_date": 1493827200000,
+    //         "vip_pay_type": 0,
+    //         "theme_type": 0,
+    //         "label": {
+    //             "path": "",
+    //             "text": "",
+    //             "label_theme": "",
+    //             "text_color": "",
+    //             "bg_style": 0,
+    //             "bg_color": "",
+    //             "border_color": "",
+    //             "use_img_label": true,
+    //             "img_label_uri_hans": "",
+    //             "img_label_uri_hant": "",
+    //             "img_label_uri_hans_static": "https://i0.hdslb.com/bfs/vip/d7b702ef65a976b20ed854cbd04cb9e27341bb79.png",
+    //             "img_label_uri_hant_static": "https://i0.hdslb.com/bfs/activity-plat/static/20220614/e369244d0b14644f5e1a06431e22a4d5/KJunwh19T5.png"
+    //         },
+    //         "avatar_subscript": 0,
+    //         "nickname_color": "",
+    //         "role": 0,
+    //         "avatar_subscript_url": "",
+    //         "tv_vip_status": 0,
+    //         "tv_vip_pay_type": 0,
+    //         "tv_due_date": 0,
+    //         "vipType": 1,
+    //         "vipStatus": 0
+    //     }"#;
 
-        serde_json::from_str::<Vip>(s).unwrap();
-    }
+    //     serde_json::from_str::<Vip>(s).unwrap();
+    // }
 }

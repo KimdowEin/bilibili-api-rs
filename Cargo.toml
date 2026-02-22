@@ -4,11 +4,11 @@ version.workspace = true
 edition.workspace = true
 
 [dependencies]
-bili-auth = { version = "0.1.0", path = "bili-auth" }
-bili-core = { version = "0.1.0", path = "bili-core" }
-bili-login = { version = "0.1.0", path = "bili-login" }
-bili-service = { version = "0.1.0", path = "bili-service" }
-bili-video = { version = "0.1.0", path = "bili-video" }
+bili-auth = {  path = "bili-auth" }
+bili-core = { path = "bili-core" }
+bili-login = {path = "bili-login" }
+bili-service = {  path = "bili-service" }
+bili-video = {  path = "bili-video" }
 serde = { workspace = true, features = ["derive"] }
 thiserror.workspace = true
 

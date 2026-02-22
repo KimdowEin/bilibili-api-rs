@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 
 [dependencies]
-bili-derive = { version = "0.1.0", path = "../bili-derive" }
+bili-derive = { path = "../bili-derive" }
 derive_more.workspace = true
 md5 = "0.8.0"
 serde.workspace = true

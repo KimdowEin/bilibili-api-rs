@@ -4,7 +4,7 @@ version.workspace = true
 edition.workspace = true
 
 [dependencies]
-bili-core = { version = "0.1.0", path = "../bili-core" }
+bili-core = { path = "../bili-core" }
 chrono = { version = "0.4.43", features = ["serde"] }
 serde = { workspace = true, features = ["derive"] }
 serde-aux.workspace = true

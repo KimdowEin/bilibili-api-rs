@@ -74,7 +74,7 @@ checksum = "2af50177e190e07a26ab74f8b1efbfe2ef87da2116221318cb1c2e82baf7de06"
 
 [[package]]
 name = "bili-account"
-version = "0.1.0"
+version = "0.4.0"
 dependencies = [
  "bili-core",
  "chrono",
@@ -86,7 +86,7 @@ dependencies = [
 
 [[package]]
 name = "bili-auth"
-version = "0.1.0"
+version = "0.4.0"
 dependencies = [
  "bili-core",
  "bili-service",
@@ -102,7 +102,7 @@ dependencies = [
 
 [[package]]
 name = "bili-core"
-version = "0.1.0"
+version = "0.4.0"
 dependencies = [
  "bili-derive",
  "derive_more",
@@ -114,7 +114,7 @@ dependencies = [
 
 [[package]]
 name = "bili-derive"
-version = "0.1.0"
+version = "0.4.0"
 dependencies = [
  "quote",
  "syn",
@@ -122,7 +122,7 @@ dependencies = [
 
 [[package]]
 name = "bili-login"
-version = "0.1.0"
+version = "0.4.0"
 dependencies = [
  "base64",
  "bili-core",
@@ -138,7 +138,7 @@ dependencies = [
 
 [[package]]
 name = "bili-service"
-version = "0.1.0"
+version = "0.4.0"
 dependencies = [
  "arc-swap",
  "cookie_store",
@@ -154,7 +154,7 @@ dependencies = [
 
 [[package]]
 name = "bili-video"
-version = "0.1.0"
+version = "0.4.0"
 dependencies = [
  "bili-core",
  "bili-service",
@@ -172,7 +172,7 @@ dependencies = [
 
 [[package]]
 name = "bilibili-api-rs"
-version = "0.1.0"
+version = "0.4.0"
 dependencies = [
  "anyhow",
  "bili-auth",

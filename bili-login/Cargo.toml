@@ -5,7 +5,7 @@ edition.workspace = true
 
 [dependencies]
 base64 = "0.22.1"
-bili-core = { version = "0.1.0", path = "../bili-core" }
+bili-core = {  path = "../bili-core" }
 rand = "0.8.5"
 rsa = "0.9.10"
 serde.workspace = true

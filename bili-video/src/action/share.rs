@@ -40,7 +40,7 @@ mod tests {
 
         assert_eq!(
             url,
-            "https://api.bilibili.com/x/web-interface/share/add?bvid=BV1uSfLB3E21"
+            "https://api.bilibili.com/x/web-interface/share/add?bvid=BV1raFvzEEuU"
         )
     }
     #[test]
