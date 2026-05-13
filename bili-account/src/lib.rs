@@ -1,5 +1,11 @@
 pub mod certification;
+pub mod fans_medal;
+pub mod info;
+pub mod name_plate;
+pub mod notice;
 pub mod pendant;
 pub mod rank;
+pub mod relation;
 pub mod space;
+pub mod status;
 pub mod vip;

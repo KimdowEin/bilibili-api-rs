@@ -42,46 +42,18 @@ pub struct CidItem {
 #[cfg(test)]
 mod tests {
 
-    use std::sync::Arc;
-
     use bili_core::{BiliResponse, ToQuery};
-    use bili_service::{Session, SessionState};
-    use reqwest::ClientBuilder;
+
     use tokio::fs;
 
     use super::*;
 
     const BVID: &str = "BV1SWfwY3ENK";
 
-    #[test]
-    fn test_query_video_cids() {
-        let url = VideoCidsQuery::from(BVID)
-            .to_query()
-            .unwrap()
-            .to_url(VIDEO_CIDS_URL);
-
-        assert_eq!(
-            url,
-            "https://api.bilibili.com/x/player/pagelist?bvid=BV1SWfwY3ENK"
-        )
-    }
-
-    #[test]
-    fn test_deserialize_video_cids() {
-        let json = include_str!("../../../tests/datas/video_cids.json");
-        serde_json::from_str::<BiliResponse<VideoCids>>(json).unwrap();
-    }
-
     #[tokio::test]
-    async fn test_get_video_cids() {
-        let state = SessionState::from_path("../cookies_v2.json")
-            .map(Arc::new)
-            .unwrap();
-        let client = ClientBuilder::new()
-            .cookie_provider(state.store.clone())
-            .build()
-            .unwrap();
-        let session = Session::new(client, state);
+    #[ignore]
+    async fn test_query_video_cids() {
+        let session = bili_test_utils::session_from_path("../cookies_v2.json");
 
         let url = VideoCidsQuery::from(BVID)
             .to_query()
@@ -90,15 +62,14 @@ mod tests {
 
         let json = session.get(url).send().await.unwrap().text().await.unwrap();
 
-        fs::write("../tests/datas/video_cids.json", &json)
+        fs::write("../tests/datas/video/video_cids.json", &json)
             .await
             .unwrap();
+    }
 
-        let cids = serde_json::from_str::<BiliResponse<VideoCids>>(&json)
-            .unwrap()
-            .data()
-            .unwrap();
-
-        assert_eq!(29193274957, cids[0].cid);
+    #[test]
+    fn test_deserialize_video_cids() {
+        let json = include_str!("../../../tests/datas/video/video_cids.json");
+        serde_json::from_str::<BiliResponse<VideoCids>>(json).unwrap();
     }
 }

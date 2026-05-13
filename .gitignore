@@ -1,4 +1,6 @@
 /target
-/old
 cookies.json
 cookies_v2.json
+/tests/outputs
+/bilibili-api-collect-backup
+AGENTS.md

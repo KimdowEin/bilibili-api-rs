@@ -13,7 +13,7 @@ serde = { workspace = true, features = ["derive"] }
 thiserror.workspace = true
 
 [workspace]
-members = ["bili-account","bili-auth","bili-core", "bili-derive", "bili-login", "bili-service", "bili-video"]
+members = ["bili-account","bili-auth","bili-core", "bili-derive", "bili-login", "bili-service", "bili-test-utils", "bili-video"]
 
 [workspace.package]
 version = "0.4.0"
@@ -29,7 +29,10 @@ serde_qs = "0.15.0"
 
 [dev-dependencies]
 anyhow = "1.0.100"
+bili-test-utils = { path = "bili-test-utils" }
+futures = "0.3.32"
 futures-util = "0.3.31"
 reqwest = { version = "0.13.1", features = ["cookies", "json", "stream"] }
+tap = "1.0.1"
 tempfile = "3.25.0"
 tokio = { version = "1.49.0", features = ["full"] }

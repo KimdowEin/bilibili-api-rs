@@ -28,11 +28,8 @@ impl SessionState {
     pub fn from_path(path: impl AsRef<Path>) -> Result<Self, Error> {
         let store = load_cookies_v2(&path)
             .or_else(|_| load_cookies_v1(&path))
-            .ok()
-            .or_else(|| Some(reqwest_cookie_store::CookieStore::new()))
             .map(reqwest_cookie_store::CookieStoreMutex::new)
-            .map(Arc::new)
-            .expect("there will always be success");
+            .map(Arc::new)?;
 
         Ok(Self { store })
     }
@@ -41,22 +38,21 @@ impl SessionState {
         let url = Url::parse(url)?;
         let cookie = cookie_store::Cookie::parse(cookie_str.to_string(), &url)?;
 
-        self.store.lock().unwrap().insert(cookie, &url)?;
+        self.store.lock().expect("").insert(cookie, &url)?;
         Ok(())
     }
 
     pub fn get_cookie(&self, domain: &str, key: &str) -> Option<String> {
         self.store
             .lock()
-            .unwrap()
+            .expect("")
             .get_any(domain, "/", key)
             .map(|cookie| cookie.value().to_string())
     }
 
     pub async fn save_cookies(&self, path: impl AsRef<Path>) -> Result<(), Error> {
-        // let path = self.path.load_full().unwrap_or("./cookies_v2.json".into());
         let mut writer = File::create(&path).map(BufWriter::new)?;
-        let store = self.store.lock().unwrap();
+        let store = self.store.lock().expect("");
 
         cookie_store::serde::json::save_incl_expired_and_nonpersistent(&store, &mut writer)?;
 

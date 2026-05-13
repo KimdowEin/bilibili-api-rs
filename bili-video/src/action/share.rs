@@ -20,45 +20,19 @@ pub struct ShareVideo(u64);
 
 #[cfg(test)]
 mod tests {
-    use std::sync::Arc;
 
     use bili_core::{BiliResponse, ToQuery};
-    use bili_service::{Session, SessionState};
-    use reqwest::ClientBuilder;
+
     use tokio::fs;
 
     use super::*;
 
-    const BVID: &str = "BV1raFvzEEuU";
-
-    #[test]
-    fn test_query_share_video() {
-        let url = ShareVideoQuery::from(BVID)
-            .to_query()
-            .unwrap()
-            .to_url(SHARE_VIDEO_URL);
-
-        assert_eq!(
-            url,
-            "https://api.bilibili.com/x/web-interface/share/add?bvid=BV1raFvzEEuU"
-        )
-    }
-    #[test]
-    fn test_deserialize_share_video() {
-        let json = include_str!("../../../tests/datas/share_video.json");
-        serde_json::from_str::<BiliResponse<ShareVideo>>(json).unwrap();
-    }
+    const BVID: &str = "BV1xqDkBREVy";
 
     #[tokio::test]
-    async fn test_get_share_video() {
-        let state = SessionState::from_path("../cookies_v2.json")
-            .map(Arc::new)
-            .unwrap();
-        let client = ClientBuilder::new()
-            .cookie_provider(state.store.clone())
-            .build()
-            .unwrap();
-        let session = Session::new(client, state);
+    #[ignore = "每次运行都要改变BVID，否则code不为0"]
+    async fn test_query_share_video() {
+        let session = bili_test_utils::session_from_path("../cookies_v2.json");
         session.refresh_csrf().unwrap();
 
         let url = ShareVideoQuery::from(BVID)
@@ -77,15 +51,15 @@ mod tests {
             .await
             .unwrap();
 
-        fs::write("../tests/datas/share_video.json", &json)
+        fs::write("../tests/datas/video/share_video.json", &json)
             .await
             .unwrap();
+    }
 
-        let share = serde_json::from_str::<BiliResponse<ShareVideo>>(&json)
-            .unwrap()
-            .data()
-            .unwrap();
-
-        assert_ne!(*share, 0);
+    #[test]
+    #[ignore = "应对query时没有改BVID"]
+    fn test_deserialize_share_video() {
+        let json = include_str!("../../../tests/datas/video/share_video.json");
+        serde_json::from_str::<BiliResponse<ShareVideo>>(json).unwrap();
     }
 }

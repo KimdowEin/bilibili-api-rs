@@ -4,7 +4,15 @@ pub mod action;
 pub mod archives;
 pub mod format;
 pub mod info;
+pub mod newlist;
+pub mod pbp;
+pub mod popular;
+pub mod ranking;
+pub mod recommend;
+pub mod report;
+pub mod snapshot;
 pub mod stream;
+pub mod summary;
 
 use bili_core::ToQuery;
 use serde::{Deserialize, Serialize};

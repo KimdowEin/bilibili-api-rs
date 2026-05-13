@@ -2,7 +2,10 @@ use bili_core::{Data, ToQuery};
 use serde::{Deserialize, Serialize};
 use serde_aux::prelude::*;
 
-use crate::{certification::Official, pendant::Pendant, rank::AccountPowerRank, vip::Vip};
+use crate::{
+    certification::Official, fans_medal::FansMedal, name_plate::NamePlate, notice::AccountNotice,
+    pendant::Pendant, rank::AccountPowerRank, vip::Vip,
+};
 
 /// 用户空间详细信息
 pub const ACCOUNT_SPACE_INFO_URL: &str = "https://api.bilibili.com/x/space/wbi/acc/info";
@@ -37,16 +40,16 @@ pub struct AccountSpaceInfo {
     pub silence: bool,
     pub coins: u64,
     pub fans_badge: bool,
-    // pub fans_medal: FansMedal,
+    pub fans_medal: FansMedal,
     pub official: Official,
     pub vip: Vip,
     pub pendant: Pendant,
-    // pub nameplate: NamePlate,
+    pub nameplate: NamePlate,
     // pub user_honour_info: UserHonourInfo,
     pub is_followed: bool,
     pub top_photo: String,
     // pub theme:Theme
-    // pub sys_notice: Option<AccountNotice>,
+    pub sys_notice: Option<AccountNotice>,
     // pub live_room: LiveRoom,
     pub birthday: String,
     // pub school:School,

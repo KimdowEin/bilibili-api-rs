@@ -1,0 +1,11 @@
+{
+  "code": 0,
+  "message": "OK",
+  "ttl": 1,
+  "data": {
+    "total": "2",
+    "count": "2",
+    "show_switch": { "total": true, "count": true },
+    "abtest": { "group": "b" }
+  }
+}

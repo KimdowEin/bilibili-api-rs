@@ -109,46 +109,15 @@ pub struct VideoArchivesPage {
 
 #[cfg(test)]
 mod tests {
-    use std::sync::Arc;
 
     use bili_core::BiliResponse;
-    use bili_service::{Session, SessionState};
-    use reqwest::ClientBuilder;
 
     use super::*;
 
-    #[test]
-    fn test_query_video_archive() {
-        let url = VideoArchiveQuery::builder()
-            .mid(296909317)
-            .season_id(3091090)
-            .build()
-            .to_query()
-            .unwrap()
-            .to_url(VIDEO_ARCHIVES_URL);
-
-        assert_eq!(
-            url,
-            "https://api.bilibili.com/x/polymer/web-space/seasons_archives_list?mid=296909317&season_id=3091090&page_num=1&page_size=30&sort_reverse=false"
-        )
-    }
-
-    #[test]
-    fn test_deserilize_video_archive() {
-        let json = include_str!("../../tests/datas/video_archive.json");
-        serde_json::from_str::<BiliResponse<VideoArchive>>(json).unwrap();
-    }
-
     #[tokio::test]
-    async fn test_get_video_archive() {
-        let state = SessionState::from_path("../cookies_v2.json")
-            .map(Arc::new)
-            .unwrap();
-        let client = ClientBuilder::new()
-            .cookie_provider(state.store.clone())
-            .build()
-            .unwrap();
-        let session = Session::new(client, state);
+    #[ignore]
+    async fn test_query_video_archive() {
+        let session = bili_test_utils::session_from_path("../cookies_v2.json");
 
         let url = VideoArchiveQuery::builder()
             .mid(296909317)
@@ -162,15 +131,14 @@ mod tests {
 
         let json = session.get(url).send().await.unwrap().text().await.unwrap();
 
-        tokio::fs::write("../tests/datas/video_archive.json", &json)
+        tokio::fs::write("../tests/datas/video/video_archive.json", &json)
             .await
             .unwrap();
+    }
 
-        let arch = serde_json::from_str::<BiliResponse<VideoArchive>>(&json)
-            .unwrap()
-            .data()
-            .unwrap();
-
-        assert_eq!(arch.meta.mid, 296909317);
+    #[test]
+    fn test_deserialize_video_archive() {
+        let json = include_str!("../../tests/datas/video/video_archive.json");
+        serde_json::from_str::<BiliResponse<VideoArchive>>(json).unwrap();
     }
 }

@@ -64,25 +64,15 @@ pub struct BiliTicket {
 
 #[cfg(test)]
 mod tests {
-    use std::sync::Arc;
 
     use bili_core::{BiliResponse, ToQuery};
-    use bili_service::{Session, SessionState};
-    use reqwest::ClientBuilder;
 
     use crate::ticket::{BILI_TICKET_URL, BiliTicket, BiliTicketQuery};
 
     #[tokio::test]
-    #[ignore = "error"]
-    async fn test_get_ticket() {
-        let state = SessionState::from_path("../cookies.json")
-            .map(Arc::new)
-            .unwrap();
-        let client = ClientBuilder::new()
-            .cookie_provider(state.store.clone())
-            .build()
-            .unwrap();
-        let session = Session::new(client, state);
+    #[ignore]
+    async fn test_query_ticket() {
+        let session = bili_test_utils::session_from_path("../cookies.json");
 
         let url = BiliTicketQuery::new()
             .to_query()
@@ -103,14 +93,11 @@ mod tests {
         tokio::fs::write("../tests/datas/auth_ticket.json", &json)
             .await
             .unwrap();
+    }
 
-        let ticket = serde_json::from_str::<BiliResponse<BiliTicket>>(&json)
-            .unwrap()
-            .data()
-            .unwrap();
-
-        session.set_ticket(&ticket.ticket).unwrap();
-
-        // eprintln!("{}", ticket.ticket);
+    #[test]
+    fn test_deserialize_ticket() {
+        let json = include_str!("../../tests/datas/auth_ticket.json");
+        serde_json::from_str::<BiliResponse<BiliTicket>>(json).unwrap();
     }
 }

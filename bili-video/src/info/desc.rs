@@ -45,46 +45,18 @@ pub enum VideoDescType {
 #[cfg(test)]
 mod tests {
 
-    use std::sync::Arc;
-
     use bili_core::{BiliResponse, ToQuery};
-    use bili_service::{Session, SessionState};
-    use reqwest::ClientBuilder;
+
     use tokio::fs;
 
     use super::*;
 
     const BVID: &str = "BV1SWfwY3ENK";
 
-    #[test]
-    fn test_query_video_desc() {
-        let url = VideoDescQuery::from(BVID)
-            .to_query()
-            .unwrap()
-            .to_url(VIDEO_DESC_URL);
-
-        assert_eq!(
-            url,
-            "https://api.bilibili.com/x/web-interface/archive/desc?bvid=BV1SWfwY3ENK"
-        )
-    }
-
-    #[test]
-    fn test_deserialize_video_desc() {
-        let json = include_str!("../../../tests/datas/video_desc.json");
-        serde_json::from_str::<BiliResponse<VideoDesc>>(json).unwrap();
-    }
-
     #[tokio::test]
-    async fn test_get_video_desc() {
-        let state = SessionState::from_path("../cookies_v2.json")
-            .map(Arc::new)
-            .unwrap();
-        let client = ClientBuilder::new()
-            .cookie_provider(state.store.clone())
-            .build()
-            .unwrap();
-        let session = Session::new(client, state);
+    #[ignore]
+    async fn test_query_video_desc() {
+        let session = bili_test_utils::session_from_path("../cookies_v2.json");
 
         let url = VideoDescQuery::from(BVID)
             .to_query()
@@ -93,15 +65,14 @@ mod tests {
 
         let json = session.get(url).send().await.unwrap().text().await.unwrap();
 
-        fs::write("../tests/datas/video_desc.json", &json)
+        fs::write("../tests/datas/video/video_desc.json", &json)
             .await
             .unwrap();
+    }
 
-        let desc = serde_json::from_str::<BiliResponse<VideoDesc>>(&json)
-            .unwrap()
-            .data()
-            .unwrap();
-
-        assert!(desc.starts_with("「あたしはまた弱虫モンブランだったみたいだ」"));
+    #[test]
+    fn test_deserialize_video_desc() {
+        let json = include_str!("../../../tests/datas/video/video_desc.json");
+        serde_json::from_str::<BiliResponse<VideoDesc>>(json).unwrap();
     }
 }

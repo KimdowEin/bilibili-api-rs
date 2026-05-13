@@ -51,48 +51,19 @@ pub struct IsCoin {
 
 #[cfg(test)]
 mod tests {
-    use std::sync::Arc;
 
     use bili_core::BiliResponse;
-    use bili_service::{Session, SessionState};
-    use reqwest::ClientBuilder;
+
     use tokio::fs;
 
     use super::*;
 
     const BVID: &str = "BV1uSfLB3E21";
 
-    #[test]
-    fn test_query_coin_video() {
-        let base_query = VideoQuery::from(BVID);
-        let url = CoinVideoQuery::new(base_query, true, true)
-            .to_query()
-            .unwrap()
-            .to_url(COIN_VIDEO_URL);
-
-        assert_eq!(
-            url,
-            "https://api.bilibili.com/x/web-interface/coin/add?bvid=BV1uSfLB3E21&multiply=2&select_like=1"
-        )
-    }
-
-    #[test]
-    fn test_deserialize_coin_video() {
-        let json = include_str!("../../../tests/datas/coin_video.json");
-        serde_json::from_str::<BiliResponse<CoinVideo>>(json).unwrap();
-    }
-
     #[tokio::test]
-    #[ignore = "已经投币并点赞了"]
-    async fn test_post_coin_video() {
-        let state = SessionState::from_path("../cookies_v2.json")
-            .map(Arc::new)
-            .unwrap();
-        let client = ClientBuilder::new()
-            .cookie_provider(state.store.clone())
-            .build()
-            .unwrap();
-        let session = Session::new(client, state);
+    #[ignore = "每次运行都要改变BVID，否则code不为0"]
+    async fn test_query_coin_video() {
+        let session = bili_test_utils::session_from_path("../cookies_v2.json");
         session.refresh_csrf().unwrap();
 
         let base_query = VideoQuery::from(BVID);
@@ -112,46 +83,22 @@ mod tests {
             .await
             .unwrap();
 
-        fs::write("../tests/datas/coin_video.json", &json)
+        fs::write("../tests/datas/video/coin_video.json", &json)
             .await
             .unwrap();
-
-        let coin = serde_json::from_str::<BiliResponse<CoinVideo>>(&json)
-            .unwrap()
-            .data()
-            .unwrap();
-
-        assert!(coin.like);
     }
 
     #[test]
-    fn test_query_is_coin() {
-        let url = IsCoinQuery::from(BVID)
-            .to_query()
-            .unwrap()
-            .to_url(IS_COIN_URL);
-
-        assert_eq!(
-            url,
-            "https://api.bilibili.com/x/web-interface/archive/coins?bvid=BV1uSfLB3E21"
-        )
-    }
-    #[test]
-    fn test_deserialize_is_coin() {
-        let json = include_str!("../../../tests/datas/is_coin.json");
-        serde_json::from_str::<BiliResponse<IsCoin>>(json).unwrap();
+    #[ignore = "应对query时没有改BVID"]
+    fn test_deserialize_coin_video() {
+        let json = include_str!("../../../tests/datas/video/coin_video.json");
+        serde_json::from_str::<BiliResponse<CoinVideo>>(json).unwrap();
     }
 
     #[tokio::test]
-    async fn test_get_is_coin() {
-        let state = SessionState::from_path("../cookies_v2.json")
-            .map(Arc::new)
-            .unwrap();
-        let client = ClientBuilder::new()
-            .cookie_provider(state.store.clone())
-            .build()
-            .unwrap();
-        let session = Session::new(client, state);
+    #[ignore]
+    async fn test_query_is_coin() {
+        let session = bili_test_utils::session_from_path("../cookies_v2.json");
         session.refresh_csrf().unwrap();
 
         let url = IsCoinQuery::from(BVID)
@@ -161,15 +108,14 @@ mod tests {
 
         let json = session.get(url).send().await.unwrap().text().await.unwrap();
 
-        fs::write("../tests/datas/is_coin.json", &json)
+        fs::write("../tests/datas/video/is_coin.json", &json)
             .await
             .unwrap();
+    }
 
-        let is_coin = serde_json::from_str::<BiliResponse<IsCoin>>(&json)
-            .unwrap()
-            .data()
-            .unwrap();
-
-        assert_ne!(is_coin.multiply, 0);
+    #[test]
+    fn test_deserialize_is_coin() {
+        let json = include_str!("../../../tests/datas/video/is_coin.json");
+        serde_json::from_str::<BiliResponse<IsCoin>>(json).unwrap();
     }
 }

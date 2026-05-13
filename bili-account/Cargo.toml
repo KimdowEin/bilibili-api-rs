@@ -11,4 +11,8 @@ serde-aux.workspace = true
 serde_repr.workspace = true
 
 [dev-dependencies]
+bili-service = { path = "../bili-service" }
+bili-test-utils = { path = "../bili-test-utils" }
+reqwest = { version = "0.13.3", features = ["cookies"] }
 serde_json = "1.0.149"
+tokio = { version = "1.52.3", features = ["full"] }

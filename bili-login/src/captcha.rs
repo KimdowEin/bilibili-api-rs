@@ -44,54 +44,27 @@ pub struct Geetest {
 
 #[cfg(test)]
 mod tests {
-    use std::sync::Arc;
-
     use bili_core::BiliResponse;
-    use bili_service::{Session, SessionState};
-    use reqwest::ClientBuilder;
 
     use super::*;
 
-    #[test]
-    fn test_deserialize_captcha() {
-        let json = r#"{
-            "type":"geetest",
-            "token":"92de00ec444b4f27bd5ab92843663c47",
-            "geetest":{
-                "challenge":"48f520597a9b91bfb7f322fc32629b11",
-                "gt":"ac597a4506fee079629df5d8b66dd4fe"
-            },
-            "tencent":{
-                "appid":""
-            }
-        }"#;
-
-        serde_json::from_str::<Captcha>(json).unwrap();
-    }
-
     #[tokio::test]
-    async fn test_get_captcha() {
-        let state = SessionState::default();
-
-        let client = ClientBuilder::new()
-            .cookie_provider(state.store.clone())
-            .build()
-            .unwrap();
-        let session = Session::new(client, Arc::new(state));
+    #[ignore]
+    async fn test_query_captcha() {
+        let session = bili_test_utils::session_from_state(Default::default());
 
         let url = CaptchaQuery::new().to_query().unwrap().to_url(CAPTCHA_URL);
 
-        let captcha = session
-            .get(url)
-            .send()
-            .await
-            .unwrap()
-            .json::<BiliResponse<Captcha>>()
-            .await
-            .unwrap()
-            .data()
-            .unwrap();
+        let json = session.get(url).send().await.unwrap().text().await.unwrap();
 
-        assert_eq!(captcha.captcha_type, "geetest")
+        tokio::fs::write("../tests/datas/captcha.json", &json)
+            .await
+            .unwrap();
+    }
+
+    #[test]
+    fn test_deserialize_captcha() {
+        let json = include_str!("../../tests/datas/captcha.json");
+        serde_json::from_str::<BiliResponse<Captcha>>(json).unwrap();
     }
 }

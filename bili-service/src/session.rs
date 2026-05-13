@@ -122,20 +122,10 @@ impl Session {
 
 #[cfg(test)]
 mod tests {
-    use reqwest::ClientBuilder;
-
-    use super::*;
 
     #[test]
     pub fn test_refresh_csrf() {
-        let state = SessionState::from_path("../cookies_v2.json")
-            .map(Arc::new)
-            .unwrap();
-        let client = ClientBuilder::new()
-            .cookie_provider(state.store.clone())
-            .build()
-            .unwrap();
-        let session = Session::new(client, state);
+        let session = bili_test_utils::session_from_path("../cookies_v2.json");
         session.refresh_csrf().unwrap();
     }
 }

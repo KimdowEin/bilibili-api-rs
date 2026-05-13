@@ -5,18 +5,17 @@ use serde::Serialize;
 
 use crate::error::Error;
 
-#[derive(Debug, Clone, AsRef, Deref, DerefMut, From, Into, Display)]
+#[derive(Debug, Clone, AsRef, Deref, DerefMut, From, Into, Display, PartialEq)]
 pub struct Query(String);
 impl Query {
     pub fn with_sign(&self, mixin_key: &str) -> Result<Query, Error> {
         let timestamp = SystemTime::now()
             .duration_since(UNIX_EPOCH)
-            .unwrap()
+            .expect("")
             .as_secs();
         let wts = format!("wts={}", timestamp);
 
-        let mut querys = self.split("&").collect::<Vec<&str>>();
-        querys.push(&wts);
+        let mut querys = self.split("&").chain([wts.as_ref()]).collect::<Vec<&str>>();
         querys.sort();
         let mut hash_query = querys.join("&");
         hash_query.push_str(mixin_key);
@@ -31,8 +30,8 @@ impl Query {
         Ok(query)
     }
 
-    pub fn to_url(self, bash: &str) -> String {
-        format!("{}?{}", bash, self)
+    pub fn to_url(self, base: &str) -> String {
+        format!("{}?{}", base, self)
     }
     pub fn inner(self) -> String {
         self.0
